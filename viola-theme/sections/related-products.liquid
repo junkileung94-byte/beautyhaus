@@ -1,0 +1,31 @@
+<section class="block" data-related-products data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit=4">
+  {%- if recommendations.performed and recommendations.products_count > 0 -%}
+    <div class="wrap">
+      <h2 class="section-heading">{{ 'products.product.you_may_also_like' | t }}</h2>
+      <div class="grid">
+        {%- for rec in recommendations.products -%}
+          {% render 'product-card', product: rec %}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+<script>
+  (function () {
+    var el = document.querySelector('[data-related-products]');
+    if (!el || el.querySelector('.grid')) return;
+    fetch(el.dataset.url)
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var inner = doc.querySelector('[data-related-products]');
+        if (inner && inner.querySelector('.grid')) el.innerHTML = inner.innerHTML;
+      })
+      .catch(function () {});
+  })();
+</script>
+
+{% schema %}
+{ "name": "Related products", "settings": [] }
+{% endschema %}

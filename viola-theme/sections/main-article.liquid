@@ -1,0 +1,14 @@
+<article class="wrap wrap--narrow page-body">
+  <header class="coll-head">
+    <h1>{{ article.title }}</h1>
+    <p style="color:var(--muted); font-size:12.5px;">{{ article.published_at | date: '%B %d, %Y' }}</p>
+  </header>
+  {%- if article.image -%}
+    <img src="{{ article.image | image_url: width: 1400 }}" alt="{{ article.image.alt | escape }}" style="margin-bottom:26px;" width="1400" height="800">
+  {%- endif -%}
+  <div class="rte">{{ article.content }}</div>
+</article>
+
+{% schema %}
+{ "name": "Article", "settings": [] }
+{% endschema %}

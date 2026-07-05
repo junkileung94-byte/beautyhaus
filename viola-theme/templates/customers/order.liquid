@@ -1,0 +1,20 @@
+<div class="wrap page-body">
+  <header class="coll-head">
+    <h1>{{ 'customer.order.title' | t: name: order.name }}</h1>
+    <p style="color:var(--muted); font-size:12.5px;">{{ 'customer.order.date' | t: date: order.created_at | date: '%B %d, %Y' }}</p>
+  </header>
+  <table class="cart-table" style="max-width:760px; margin:0 auto;">
+    <thead><tr><th>{{ 'customer.order.product' | t }}</th><th>{{ 'customer.order.quantity' | t }}</th><th style="text-align:right;">{{ 'customer.order.total' | t }}</th></tr></thead>
+    <tbody>
+      {%- for line_item in order.line_items -%}
+        <tr>
+          <td>{{ line_item.title }}</td>
+          <td>{{ line_item.quantity }}</td>
+          <td style="text-align:right;">{{ line_item.final_line_price | money }}</td>
+        </tr>
+      {%- endfor -%}
+      <tr><td colspan="2"><b>{{ 'customer.order.total' | t }}</b></td><td style="text-align:right;"><b>{{ order.total_price | money }}</b></td></tr>
+    </tbody>
+  </table>
+  <p style="text-align:center; margin-top:26px;"><a class="btn" href="{{ routes.account_url }}">{{ 'customer.account.title' | t }}</a></p>
+</div>

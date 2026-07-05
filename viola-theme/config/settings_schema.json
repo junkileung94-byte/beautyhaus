@@ -1,0 +1,27 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Viola Canada",
+    "theme_version": "0.1.0",
+    "theme_author": "Viola Hair Extensions Canada",
+    "theme_documentation_url": "https://github.com/junkileung94-byte/beautyhaus",
+    "theme_support_url": "https://github.com/junkileung94-byte/beautyhaus"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      { "type": "color", "id": "color_ink", "label": "Ink (text, header, buttons)", "default": "#1C1B1B" },
+      { "type": "color", "id": "color_paper", "label": "Background", "default": "#FFFFFF" },
+      { "type": "color", "id": "color_blush", "label": "Blush accent", "default": "#F8E3EA" },
+      { "type": "color", "id": "color_blush_ink", "label": "Blush text", "default": "#96435E" },
+      { "type": "color", "id": "color_muted", "label": "Muted text", "default": "#6A6A6A" },
+      { "type": "color", "id": "color_tint", "label": "Section tint", "default": "#F5F3F4" }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      { "type": "checkbox", "id": "cart_notes", "label": "Enable order notes", "default": false }
+    ]
+  }
+]

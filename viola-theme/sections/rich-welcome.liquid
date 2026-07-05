@@ -1,0 +1,23 @@
+<section class="block welcome">
+  <div class="wrap wrap--narrow">
+    {%- if section.settings.eyebrow != blank -%}
+      <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+    {%- endif -%}
+    {%- if section.settings.heading != blank -%}
+      <h2 class="section-heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    <div class="welcome__body rte">{{ section.settings.body }}</div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Welcome copy",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "100% Human Hair Extension" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Welcome to Viola Canada" },
+    { "type": "richtext", "id": "body", "label": "Body", "default": "<p>At Viola, we offer luxurious Remy Russian Slavic hair of the highest quality, in rich and vibrant colours. We sell everything you need for your business — now serving Canada.</p>" }
+  ],
+  "presets": [{ "name": "Welcome copy" }]
+}
+{% endschema %}

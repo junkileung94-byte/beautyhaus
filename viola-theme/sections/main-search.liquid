@@ -1,0 +1,42 @@
+<div class="wrap page-body">
+  <header class="coll-head"><h1>{{ 'general.search.search' | t }}</h1></header>
+
+  <form action="{{ routes.search_url }}" method="get" role="search" style="display:flex; max-width:520px; margin:0 auto 30px;">
+    <label class="visually-hidden" for="search-q">{{ 'general.search.placeholder' | t }}</label>
+    <input id="search-q" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}"
+      style="flex:1; border:1px solid var(--ink); border-right:0; padding:12px 14px; font-family:var(--font-body); font-size:13.5px;">
+    <button class="btn btn--solid" style="padding:12px 20px;">{{ 'general.search.search' | t }}</button>
+  </form>
+
+  {%- if search.performed -%}
+    {%- if search.results_count == 0 -%}
+      <p style="text-align:center; color:var(--muted);">{{ 'general.search.no_results' | t: terms: search.terms }}</p>
+    {%- else -%}
+      <p style="text-align:center; color:var(--muted); margin-bottom:26px;">{{ 'general.search.results_with_count' | t: count: search.results_count, terms: search.terms }}</p>
+      {%- paginate search.results by 24 -%}
+        <div class="grid">
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              {% render 'product-card', product: item %}
+            {%- else -%}
+              <a class="card" href="{{ item.url }}">
+                <div class="card__title">{{ item.title }}</div>
+                <div class="card__price">{{ item.object_type | capitalize }}</div>
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination">
+            {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">‹</a>{%- endif -%}
+            {%- if paginate.next -%}<a href="{{ paginate.next.url }}">›</a>{%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{ "name": "Search", "settings": [] }
+{% endschema %}

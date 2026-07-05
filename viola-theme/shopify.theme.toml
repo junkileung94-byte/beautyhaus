@@ -1,0 +1,12 @@
+# Shopify CLI environments — sandbox-first workflow.
+#
+#   shopify theme dev -e dev        # local hot-reload preview (nothing saved to store)
+#   shopify theme push -e dev       # uploads/updates the UNPUBLISHED draft theme only
+#
+# There is intentionally NO production/publish environment here.
+# Going live is a manual, deliberate action in Shopify admin (Online Store → Themes → Publish).
+
+[environments.dev]
+store = "violahairextensions.myshopify.com"
+theme = "Viola Canada — DEV (do not publish)"
+unpublished = true

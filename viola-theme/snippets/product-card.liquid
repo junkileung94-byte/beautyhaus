@@ -1,0 +1,32 @@
+{%- comment -%}
+  Product card — UK-audit style: tinted media, uppercase tracked title,
+  "From $x" pricing, blush sale badge. Usage: {% render 'product-card', product: product %}
+{%- endcomment -%}
+<a class="card" href="{{ product.url }}">
+  <div class="card__media">
+    {%- if product.featured_image -%}
+      <img
+        src="{{ product.featured_image | image_url: width: 480 }}"
+        srcset="{{ product.featured_image | image_url: width: 480 }} 480w, {{ product.featured_image | image_url: width: 720 }} 720w"
+        sizes="(max-width: 640px) 50vw, 25vw"
+        alt="{{ product.featured_image.alt | default: product.title | escape }}"
+        loading="lazy" width="480" height="640">
+    {%- endif -%}
+    {%- if product.compare_at_price > product.price -%}
+      <span class="card__badge">Sale</span>
+    {%- elsif product.available == false -%}
+      <span class="card__badge">{{ 'products.product.sold_out' | t }}</span>
+    {%- endif -%}
+  </div>
+  <div class="card__title">{{ product.title }}</div>
+  <div class="card__price">
+    {%- if product.compare_at_price > product.price -%}
+      <s>{{ product.compare_at_price | money }}</s>
+    {%- endif -%}
+    {%- if product.price_varies -%}
+      {{ 'products.product.from' | t }} {{ product.price_min | money }}
+    {%- else -%}
+      {{ product.price | money }}
+    {%- endif -%}
+  </div>
+</a>

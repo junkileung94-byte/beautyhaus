@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+    {{- page_title -}}
+    {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif -%}
+    {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  </title>
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Nunito+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  {{ content_for_header }}
+
+  {%- style -%}
+    :root {
+      --ink: {{ settings.color_ink | default: '#1C1B1B' }};
+      --paper: {{ settings.color_paper | default: '#FFFFFF' }};
+      --blush: {{ settings.color_blush | default: '#F8E3EA' }};
+      --blush-ink: {{ settings.color_blush_ink | default: '#96435E' }};
+      --muted: {{ settings.color_muted | default: '#6A6A6A' }};
+      --tint: {{ settings.color_tint | default: '#F5F3F4' }};
+      --line: #E7E1E4;
+      --font-display: 'Montserrat', sans-serif;
+      --font-body: 'Nunito Sans', -apple-system, sans-serif;
+    }
+  {%- endstyle -%}
+  {{ 'viola.css' | asset_url | stylesheet_tag }}
+</head>
+<body class="template-{{ request.page_type | handle }}">
+  <a class="skip-link" href="#main">{{ 'general.accessibility.skip_to_content' | t }}</a>
+
+  {% sections 'header-group' %}
+
+  <main id="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  {% sections 'footer-group' %}
+
+  <script src="{{ 'viola.js' | asset_url }}" defer></script>
+</body>
+</html>

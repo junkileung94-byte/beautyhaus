@@ -1,0 +1,25 @@
+<section class="testimonial">
+  {%- if section.settings.image != blank -%}
+    <div class="testimonial__media">
+      <img src="{{ section.settings.image | image_url: width: 2000 }}" alt="" loading="lazy" width="2000" height="900">
+    </div>
+  {%- endif -%}
+  <div class="testimonial__inner">
+    <blockquote class="testimonial__quote">&ldquo;{{ section.settings.quote }}&rdquo;</blockquote>
+    {%- if section.settings.attribution != blank -%}
+      <div class="testimonial__attr">— {{ section.settings.attribution }}</div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Testimonial",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Background image" },
+    { "type": "textarea", "id": "quote", "label": "Quote", "default": "The hair is amazing quality, very thick and soft. My clients are very happy with this hair — fast delivery and very happy!" },
+    { "type": "text", "id": "attribution", "label": "Attribution" }
+  ],
+  "presets": [{ "name": "Testimonial" }]
+}
+{% endschema %}

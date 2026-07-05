@@ -1,0 +1,38 @@
+<section class="block">
+  <div class="wrap">
+    <div class="catboxes">
+      {%- for block in section.blocks -%}
+        {%- assign coll = collections[block.settings.collection] -%}
+        <a class="catbox" href="{{ coll.url | default: block.settings.link }}" {{ block.shopify_attributes }}>
+          {%- assign img = block.settings.image | default: coll.featured_image -%}
+          {%- if img -%}
+            <img src="{{ img | image_url: width: 900 }}" alt="" loading="lazy" width="900" height="1100">
+          {%- endif -%}
+          <span class="catbox__label">
+            <span class="catbox__title">{{ block.settings.title | default: coll.title }}</span>
+            <span class="btn btn--inverse" style="padding: 11px 22px; font-size: 10.5px;">View products</span>
+          </span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Category boxes",
+  "blocks": [
+    {
+      "type": "box", "name": "Box",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "url", "id": "link", "label": "Custom link (if no collection)" },
+        { "type": "text", "id": "title", "label": "Title override" },
+        { "type": "image_picker", "id": "image", "label": "Image override" }
+      ]
+    }
+  ],
+  "max_blocks": 3,
+  "presets": [{ "name": "Category boxes", "blocks": [ { "type": "box" }, { "type": "box" }, { "type": "box" } ] }]
+}
+{% endschema %}

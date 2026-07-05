@@ -1,0 +1,33 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "browse": {
+          "type": "link_list",
+          "settings": { "heading": "Browse", "menu": "main-menu" }
+        },
+        "help": {
+          "type": "link_list",
+          "settings": { "heading": "Help", "menu": "footer" }
+        },
+        "contact": {
+          "type": "text",
+          "settings": {
+            "heading": "Contact",
+            "body": "<p>Telephone: 416-712-3429<br>Email: canadasupport@violahairextensions.co</p>"
+          }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": { "heading": "Keep up to date" }
+        }
+      },
+      "block_order": ["browse", "help", "contact", "newsletter"],
+      "settings": { "legal_text": "Viola Hair Extensions Canada" }
+    }
+  },
+  "order": ["footer"]
+}

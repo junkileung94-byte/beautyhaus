@@ -1,0 +1,39 @@
+<div class="form-page" style="max-width:560px;">
+  <h1>{{ 'customer.account.addresses' | t }}</h1>
+
+  {%- form 'customer_address', customer.new_address -%}
+    <h3>Add address</h3>
+    <label for="addr-first">{{ 'customer.register.first_name' | t }}</label>
+    <input id="addr-first" type="text" name="address[first_name]" autocomplete="given-name">
+    <label for="addr-last">{{ 'customer.register.last_name' | t }}</label>
+    <input id="addr-last" type="text" name="address[last_name]" autocomplete="family-name">
+    <label for="addr-address1">Address</label>
+    <input id="addr-address1" type="text" name="address[address1]" autocomplete="address-line1">
+    <label for="addr-city">City</label>
+    <input id="addr-city" type="text" name="address[city]" autocomplete="address-level2">
+    <label for="addr-country">Country</label>
+    <select id="addr-country" name="address[country]" data-default="{{ customer.new_address.country }}"
+      style="width:100%; border:1px solid var(--ink); padding:12px 14px; font-family:var(--font-body); background:var(--paper);">
+      {{ country_option_tags }}
+    </select>
+    <label for="addr-zip">Postal code</label>
+    <input id="addr-zip" type="text" name="address[zip]" autocomplete="postal-code">
+    <label for="addr-phone">Phone</label>
+    <input id="addr-phone" type="tel" name="address[phone]" autocomplete="tel">
+    <button class="btn btn--solid btn--full">Save address</button>
+  {%- endform -%}
+
+  <h3 style="margin-top:44px;">Saved addresses</h3>
+  {%- for address in customer.addresses -%}
+    <div style="border:1px solid var(--line); padding:16px 18px; margin-bottom:12px; font-size:13px;">
+      {{ address | format_address }}
+      <form method="post" action="{{ routes.account_addresses_url }}/{{ address.id }}" style="margin-top:8px;">
+        <input type="hidden" name="_method" value="delete">
+        <button class="btn" style="padding:8px 16px; font-size:10px;">{{ 'cart.general.remove' | t }}</button>
+      </form>
+    </div>
+  {%- else -%}
+    <p style="color:var(--muted);">No saved addresses.</p>
+  {%- endfor -%}
+  <p><a href="{{ routes.account_url }}">← {{ 'customer.account.title' | t }}</a></p>
+</div>

@@ -1,0 +1,38 @@
+<div class="hero">
+  {%- if section.settings.image != blank -%}
+    <div class="hero__media">
+      <img src="{{ section.settings.image | image_url: width: 2200 }}"
+        srcset="{{ section.settings.image | image_url: width: 1100 }} 1100w, {{ section.settings.image | image_url: width: 2200 }} 2200w"
+        sizes="100vw" alt="{{ section.settings.image.alt | escape }}" width="2200" height="1100">
+    </div>
+  {%- endif -%}
+  <div class="hero__inner {% if section.settings.align == 'center' %}align-center{% endif %}">
+    {%- if section.settings.eyebrow != blank -%}
+      <span class="eyebrow" style="color: var(--paper); opacity:.85;">{{ section.settings.eyebrow }}</span>
+    {%- endif -%}
+    <h1 class="hero__heading disp">{{ section.settings.heading }}</h1>
+    {%- if section.settings.subheading != blank -%}
+      <p class="hero__sub">{{ section.settings.subheading }}</p>
+    {%- endif -%}
+    {%- if section.settings.cta_label != blank -%}
+      <a class="btn btn--inverse" href="{{ section.settings.cta_link }}">{{ section.settings.cta_label }}</a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Background image" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "100% Human Hair Extensions" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Luxurious Remy Russian Slavic hair — now in Canada." },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Shop now" },
+    { "type": "url", "id": "cta_link", "label": "Button link" },
+    { "type": "select", "id": "align", "label": "Alignment", "default": "left",
+      "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" } ] }
+  ],
+  "presets": [{ "name": "Hero" }]
+}
+{% endschema %}

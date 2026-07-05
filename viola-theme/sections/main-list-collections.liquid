@@ -1,0 +1,19 @@
+<div class="wrap page-body">
+  <header class="coll-head"><h1>{{ 'templates.list_collections.title' | t }}</h1></header>
+  <div class="grid" style="grid-template-columns: repeat(3, 1fr);">
+    {%- for coll in collections -%}
+      <a class="card" href="{{ coll.url }}">
+        <div class="card__media" style="aspect-ratio: 4/3;">
+          {%- if coll.featured_image -%}
+            <img src="{{ coll.featured_image | image_url: width: 600 }}" alt="" loading="lazy" width="600" height="450">
+          {%- endif -%}
+        </div>
+        <div class="card__title">{{ coll.title }}</div>
+      </a>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{ "name": "Collections list", "settings": [] }
+{% endschema %}

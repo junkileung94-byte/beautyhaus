@@ -1,0 +1,48 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "heading": "100% Human Hair Extensions",
+        "subheading": "Luxurious Remy Russian Slavic hair — now in Canada.",
+        "cta_label": "Shop now",
+        "align": "left"
+      }
+    },
+    "welcome": {
+      "type": "rich-welcome",
+      "settings": {
+        "eyebrow": "100% Human Hair Extension",
+        "heading": "Welcome to Viola Canada"
+      }
+    },
+    "catboxes": {
+      "type": "category-boxes",
+      "blocks": {
+        "b1": { "type": "box", "settings": { "title": "Professional Hair Extensions" } },
+        "b2": { "type": "box", "settings": { "title": "Hair Care" } },
+        "b3": { "type": "box", "settings": { "title": "Equipment" } }
+      },
+      "block_order": ["b1", "b2", "b3"]
+    },
+    "pills": {
+      "type": "category-pills",
+      "blocks": {
+        "p1": { "type": "pill", "settings": { "title": "Nano Tip Hair Extensions" } },
+        "p2": { "type": "pill", "settings": { "title": "Tape In Hair Extensions" } },
+        "p3": { "type": "pill", "settings": { "title": "Hair Weave Extensions" } },
+        "p4": { "type": "pill", "settings": { "title": "Beads & Fittings" } },
+        "p5": { "type": "pill", "settings": { "title": "Pliers" } },
+        "p6": { "type": "pill", "settings": { "title": "Application Tools" } }
+      },
+      "block_order": ["p1", "p2", "p3", "p4", "p5", "p6"]
+    },
+    "bestsellers": {
+      "type": "featured-collection",
+      "settings": { "heading": "Our best sellers", "limit": 4, "cta_label": "View all products" }
+    },
+    "testimonial": { "type": "testimonial" },
+    "newsletter": { "type": "newsletter" }
+  },
+  "order": ["hero", "welcome", "catboxes", "pills", "bestsellers", "testimonial", "newsletter"]
+}

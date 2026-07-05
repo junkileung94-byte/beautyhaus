@@ -1,0 +1,36 @@
+<section class="block" style="padding-top: 0;">
+  <div class="wrap">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="section-heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    <div class="pills">
+      {%- for block in section.blocks -%}
+        {%- assign coll = collections[block.settings.collection] -%}
+        <a class="pill" href="{{ coll.url | default: block.settings.link }}" {{ block.shopify_attributes }}>
+          {{- block.settings.title | default: coll.title -}}
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Category pills",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Featured categories" }
+  ],
+  "blocks": [
+    {
+      "type": "pill", "name": "Pill",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "url", "id": "link", "label": "Custom link (if no collection)" },
+        { "type": "text", "id": "title", "label": "Title override" }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "presets": [{ "name": "Category pills", "blocks": [ { "type": "pill" }, { "type": "pill" }, { "type": "pill" }, { "type": "pill" } ] }]
+}
+{% endschema %}

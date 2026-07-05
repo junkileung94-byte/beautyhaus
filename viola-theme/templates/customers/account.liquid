@@ -1,0 +1,26 @@
+<div class="wrap page-body">
+  <header class="coll-head"><h1>{{ 'customer.account.title' | t }}</h1></header>
+  <p style="text-align:center;">
+    {{ customer.name }} · <a href="{{ routes.account_logout_url }}">{{ 'customer.account.logout' | t }}</a>
+    · <a href="{{ routes.account_addresses_url }}">{{ 'customer.account.addresses' | t }}</a>
+  </p>
+
+  <h3 style="text-align:center;">{{ 'customer.account.orders' | t }}</h3>
+  {%- if customer.orders.size == 0 -%}
+    <p style="text-align:center; color:var(--muted);">{{ 'customer.account.no_orders' | t }}</p>
+  {%- else -%}
+    <table class="cart-table" style="max-width:760px; margin:0 auto;">
+      <thead><tr><th>Order</th><th>Date</th><th>Status</th><th style="text-align:right;">Total</th></tr></thead>
+      <tbody>
+        {%- for order in customer.orders -%}
+          <tr>
+            <td><a href="{{ order.customer_url }}">{{ order.name }}</a></td>
+            <td>{{ order.created_at | date: '%B %d, %Y' }}</td>
+            <td>{{ order.financial_status_label }} / {{ order.fulfillment_status_label }}</td>
+            <td style="text-align:right;">{{ order.total_price | money }}</td>
+          </tr>
+        {%- endfor -%}
+      </tbody>
+    </table>
+  {%- endif -%}
+</div>

@@ -1,0 +1,56 @@
+<div class="wrap page-body">
+  <header class="coll-head"><h1>{{ 'cart.general.title' | t }}</h1></header>
+
+  {%- if cart.item_count == 0 -%}
+    <p style="text-align:center; color:var(--muted);">{{ 'cart.general.empty' | t }}</p>
+    <p style="text-align:center;"><a class="btn" href="{{ routes.all_products_collection_url }}">{{ 'cart.general.continue' | t }}</a></p>
+  {%- else -%}
+    <form action="{{ routes.cart_url }}" method="post">
+      <table class="cart-table">
+        <thead>
+          <tr><th colspan="2">Product</th><th>{{ 'products.product.quantity' | t }}</th><th style="text-align:right">Total</th></tr>
+        </thead>
+        <tbody>
+          {%- for item in cart.items -%}
+            <tr>
+              <td style="width:88px;">
+                {%- if item.image -%}
+                  <a href="{{ item.url }}"><img src="{{ item.image | image_url: width: 144 }}" alt="" width="72" height="96"></a>
+                {%- endif -%}
+              </td>
+              <td>
+                <a href="{{ item.url }}" style="text-decoration:none;"><b>{{ item.product.title }}</b></a><br>
+                {%- unless item.product.has_only_default_variant -%}<span style="color:var(--muted);">{{ item.variant.title }}</span><br>{%- endunless -%}
+                <span style="color:var(--muted);">{{ item.final_price | money }}</span><br>
+                <a href="{{ item.url_to_remove }}" style="font-size:11.5px; color:var(--muted);">{{ 'cart.general.remove' | t }}</a>
+              </td>
+              <td>
+                <label class="visually-hidden" for="updates_{{ item.key }}">{{ 'products.product.quantity' | t }}</label>
+                <input id="updates_{{ item.key }}" type="number" name="updates[]" value="{{ item.quantity }}" min="0"
+                  style="width:64px; border:1px solid var(--ink); padding:9px; text-align:center; font-family:var(--font-body);">
+              </td>
+              <td style="text-align:right;">{{ item.final_line_price | money }}</td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+      </table>
+
+      <div class="cart-footer">
+        {%- if settings.cart_notes -%}
+          <label for="cart-note" class="eyebrow">Order notes</label>
+          <textarea id="cart-note" name="note" style="width:100%; max-width:420px; border:1px solid var(--ink); padding:10px; font-family:var(--font-body);">{{ cart.note }}</textarea>
+        {%- endif -%}
+        <div class="cart-subtotal">{{ 'cart.general.subtotal' | t }}: {{ cart.total_price | money }}</div>
+        <div style="color:var(--muted); font-size:12px;">{{ 'cart.general.taxes_shipping' | t }}</div>
+        <div style="display:flex; gap:12px;">
+          <button type="submit" name="update" class="btn">{{ 'cart.general.update' | t }}</button>
+          <button type="submit" name="checkout" class="btn btn--solid">{{ 'cart.general.checkout' | t }}</button>
+        </div>
+      </div>
+    </form>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{ "name": "Cart", "settings": [] }
+{% endschema %}

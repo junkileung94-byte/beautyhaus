@@ -1,0 +1,98 @@
+<header class="hdr">
+  <div class="hdr__utility">
+    {%- for link in linklists[section.settings.utility_menu].links -%}
+      <a href="{{ link.url }}">{{ link.title }}</a>
+    {%- endfor -%}
+    {%- if shop.customer_accounts_enabled -%}
+      <a href="{{ routes.account_url }}">{{ 'sections.header.account' | t }}</a>
+    {%- endif -%}
+  </div>
+
+  <div class="hdr__bar">
+    <button class="hdr__burger" data-drawer-open aria-expanded="false" aria-label="{{ 'general.accessibility.menu' | t }}">
+      <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+
+    <a class="hdr__logo" href="{{ routes.root_url }}">
+      {%- if section.settings.logo != blank -%}
+        <img src="{{ section.settings.logo | image_url: width: 300 }}" alt="{{ shop.name | escape }}" width="150" height="54">
+      {%- else -%}
+        <span class="hdr__wordmark">Viola</span><br>
+        <span class="hdr__tagline">{{ section.settings.tagline }}</span>
+      {%- endif -%}
+    </a>
+
+    <div class="hdr__icons">
+      <a href="{{ routes.search_url }}" aria-label="{{ 'sections.header.search' | t }}">
+        <svg viewBox="0 0 24 24" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </a>
+      <a href="{{ routes.cart_url }}" aria-label="{{ 'sections.header.cart' | t }}">
+        <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M6 7h12l-1 13H7L6 7zM9 7a3 3 0 0 1 6 0"/></svg>
+        {%- if cart.item_count > 0 -%}<span class="cart-count">{{ cart.item_count }}</span>{%- endif -%}
+      </a>
+    </div>
+  </div>
+
+  <nav class="nav" aria-label="Main navigation">
+    <ul class="nav__list">
+      {%- for link in linklists[section.settings.menu].links -%}
+        <li class="nav__item">
+          <a class="nav__link" href="{{ link.url }}">{{ link.title }}</a>
+          {%- if link.links.size > 0 -%}
+            <div class="dropdown">
+              {%- for child in link.links -%}
+                {%- if child.links.size > 0 -%}
+                  <div class="dd-group">{{ child.title }}</div>
+                  {%- for grandchild in child.links -%}
+                    <a href="{{ grandchild.url }}">{{ grandchild.title }}</a>
+                  {%- endfor -%}
+                {%- else -%}
+                  <a href="{{ child.url }}">{{ child.title }}</a>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </nav>
+</header>
+
+{%- comment -%} Mobile drawer {%- endcomment -%}
+<div class="drawer__overlay" data-drawer-overlay></div>
+<nav class="drawer" data-drawer aria-label="Mobile navigation">
+  <button class="drawer__close" data-drawer-close aria-label="{{ 'general.accessibility.close' | t }}">
+    <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  {%- for link in linklists[section.settings.menu].links -%}
+    {%- if link.links.size > 0 -%}
+      <details>
+        <summary>{{ link.title }}</summary>
+        <a href="{{ link.url }}">{{ 'collections.general.all_products' | t }}</a>
+        {%- for child in link.links -%}
+          <a href="{{ child.url }}">{{ child.title }}</a>
+          {%- for grandchild in child.links -%}
+            <a href="{{ grandchild.url }}" style="padding-left: 28px;">{{ grandchild.title }}</a>
+          {%- endfor -%}
+        {%- endfor -%}
+      </details>
+    {%- else -%}
+      <a href="{{ link.url }}">{{ link.title }}</a>
+    {%- endif -%}
+  {%- endfor -%}
+  {%- for link in linklists[section.settings.utility_menu].links -%}
+    <a href="{{ link.url }}">{{ link.title }}</a>
+  {%- endfor -%}
+</nav>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo (leave empty for VIOLA wordmark)" },
+    { "type": "text", "id": "tagline", "label": "Tagline under wordmark", "default": "Long may it last" },
+    { "type": "link_list", "id": "menu", "label": "Main menu", "default": "main-menu" },
+    { "type": "link_list", "id": "utility_menu", "label": "Utility menu (top right)" }
+  ]
+}
+{% endschema %}

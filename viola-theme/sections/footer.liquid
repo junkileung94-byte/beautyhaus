@@ -1,0 +1,75 @@
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr__cols">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'link_list' -%}
+            <div {{ block.shopify_attributes }}>
+              <h3>{{ block.settings.heading }}</h3>
+              <ul>
+                {%- for link in linklists[block.settings.menu].links -%}
+                  <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- when 'text' -%}
+            <div {{ block.shopify_attributes }}>
+              <h3>{{ block.settings.heading }}</h3>
+              <div>{{ block.settings.body }}</div>
+            </div>
+          {%- when 'newsletter' -%}
+            <div {{ block.shopify_attributes }}>
+              <h3>{{ block.settings.heading }}</h3>
+              {%- form 'customer' -%}
+                <input type="hidden" name="contact[tags]" value="newsletter">
+                {%- if form.posted_successfully? -%}
+                  <p>{{ 'general.newsletter.success' | t }}</p>
+                {%- else -%}
+                  <div style="display:flex; margin-top:10px;">
+                    <input type="email" name="contact[email]" placeholder="{{ 'general.newsletter.label' | t }}" required
+                      style="flex:1; border:1px solid var(--ink); border-right:0; padding:11px 13px; font-family:var(--font-body); font-size:13px;">
+                    <button class="btn btn--solid" style="padding:11px 18px;">{{ 'general.newsletter.button' | t }}</button>
+                  </div>
+                {%- endif -%}
+              {%- endform -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+    <div class="ftr__legal">
+      &copy; {{ 'now' | date: '%Y' }} {{ shop.name | link_to: routes.root_url }} · {{ section.settings.legal_text }}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "text", "id": "legal_text", "label": "Legal line", "default": "Viola Hair Extensions Canada" }
+  ],
+  "blocks": [
+    {
+      "type": "link_list", "name": "Link column",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Browse" },
+        { "type": "link_list", "id": "menu", "label": "Menu" }
+      ]
+    },
+    {
+      "type": "text", "name": "Text column",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Contact" },
+        { "type": "richtext", "id": "body", "label": "Text", "default": "<p>Telephone: 416-712-3429<br>Email: canadasupport@violahairextensions.co</p>" }
+      ]
+    },
+    {
+      "type": "newsletter", "name": "Newsletter",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Keep up to date" }
+      ]
+    }
+  ],
+  "max_blocks": 6
+}
+{% endschema %}

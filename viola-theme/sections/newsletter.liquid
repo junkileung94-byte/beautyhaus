@@ -1,0 +1,29 @@
+<section class="block newsletter">
+  <div class="wrap wrap--narrow">
+    <h2 class="section-heading" style="margin-bottom: 8px;">{{ section.settings.heading }}</h2>
+    {%- if section.settings.subtext != blank -%}
+      <p style="color: var(--muted); margin: 0;">{{ section.settings.subtext }}</p>
+    {%- endif -%}
+    {%- form 'customer' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      {%- if form.posted_successfully? -%}
+        <p>{{ 'general.newsletter.success' | t }}</p>
+      {%- else -%}
+        <label class="visually-hidden" for="newsletter-email">{{ 'general.newsletter.label' | t }}</label>
+        <input id="newsletter-email" type="email" name="contact[email]" placeholder="{{ 'general.newsletter.label' | t }}" required>
+        <button class="btn btn--solid">{{ 'general.newsletter.button' | t }}</button>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Keep up to date" },
+    { "type": "text", "id": "subtext", "label": "Subtext", "default": "Exclusive deals and early access to new products." }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}

@@ -1,0 +1,27 @@
+<div class="form-page">
+  <h1>{{ 'customer.login.title' | t }}</h1>
+  {%- form 'customer_login' -%}
+    {%- if form.errors -%}<div class="form-errors">{{ form.errors | default_errors }}</div>{%- endif -%}
+    <label for="login-email">{{ 'customer.login.email' | t }}</label>
+    <input id="login-email" type="email" name="customer[email]" autocomplete="email" required>
+    <label for="login-password">{{ 'customer.login.password' | t }}</label>
+    <input id="login-password" type="password" name="customer[password]" autocomplete="current-password" required>
+    <button class="btn btn--solid btn--full">{{ 'customer.login.sign_in' | t }}</button>
+    <p style="text-align:center; font-size:12.5px;">
+      <a href="#recover" onclick="document.getElementById('recover').style.display='block'; this.closest('p').style.display='none'; return false;">{{ 'customer.login.forgot' | t }}</a>
+      · <a href="{{ routes.account_register_url }}">{{ 'customer.login.create' | t }}</a>
+    </p>
+  {%- endform -%}
+
+  <div id="recover" style="display:none;">
+    <h1 style="font-size:15px;">{{ 'customer.recover.title' | t }}</h1>
+    {%- form 'recover_customer_password' -%}
+      {%- if form.posted_successfully? -%}
+        <p>We've sent you an email with a link to update your password.</p>
+      {%- endif -%}
+      <label for="recover-email">{{ 'customer.login.email' | t }}</label>
+      <input id="recover-email" type="email" name="email" autocomplete="email" required>
+      <button class="btn btn--full">{{ 'customer.recover.submit' | t }}</button>
+    {%- endform -%}
+  </div>
+</div>
