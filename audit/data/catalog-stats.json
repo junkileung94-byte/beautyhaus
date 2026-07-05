@@ -1,0 +1,415 @@
+{
+ "total_products": 768,
+ "by_product_type": {
+  "(none)": 767,
+  "Gift Cards": 1
+ },
+ "by_vendor": {
+  "Viola Hair Extensions": 233,
+  "Viola": 535
+ },
+ "option_names": {
+  "Length | Weight": 343,
+  "Length | Weight | Type": 260,
+  "Title": 104,
+  "Colour": 32,
+  "Size": 10,
+  "Pieces": 9,
+  "Volume": 6,
+  "Length/Weight/Colour": 5,
+  "Color": 5,
+  "Type": 5,
+  "Length | Weight ": 1,
+  "Denominations": 1,
+  "Model": 1,
+  "Length/Colour": 1,
+  "Length": 1
+ },
+ "price_range": {
+  "min": 0.36,
+  "max": 720
+ },
+ "avg_body_html_length": 4785,
+ "products_with_multiple_images": 486,
+ "tags_top": {
+  "LUXE": 143,
+  "NANO TIP": 79,
+  "TAPE IN": 67,
+  "FLAT TIP": 65,
+  "LUXE NANO": 59,
+  "LUXE TAPE": 58,
+  "I-TIP": 54,
+  "WEAVE / WEFT": 47,
+  "genius weave": 39,
+  "secret tape": 34,
+  "TAPE WEFT": 31,
+  "Seamless clip-in": 29,
+  "LUXE GENIUS": 26,
+  "BEADS & FITTINGS": 23,
+  "HAIRDRESSING ACCESSORIES": 22,
+  "flat weft": 16,
+  "aftercare": 15,
+  "#P18/22": 13,
+  "#16V": 13,
+  "#60B": 13,
+  "#7": 13,
+  "#2": 13,
+  "#1C": 13,
+  "#1": 13,
+  "#1B": 13,
+  "#60V": 13,
+  "APPLICATION TOOLS": 13,
+  "Malibu C": 13,
+  "PLIERS": 13,
+  "#8": 12,
+  "#4": 12,
+  "#M18/60B": 12,
+  "#3": 12,
+  "#16": 12,
+  "#60": 12,
+  "BRUSHES & COMBS": 12,
+  "T7P18/22": 11,
+  "#T7P7/16": 11,
+  "#14": 11,
+  "#M8/60B": 11
+ },
+ "collections": [
+  {
+   "handle": "18-inch-hair-extensions",
+   "products": 445
+  },
+  {
+   "handle": "professional-hair-extensions",
+   "products": 436
+  },
+  {
+   "handle": "shop-by-colour",
+   "products": 432
+  },
+  {
+   "handle": "shop-by-length",
+   "products": 432
+  },
+  {
+   "handle": "20-inch-hair-extensions",
+   "products": 422
+  },
+  {
+   "handle": "22-inch-hair-extensions",
+   "products": 286
+  },
+  {
+   "handle": "luxe-hair",
+   "products": 143
+  },
+  {
+   "handle": "16-inch-hair-extensions",
+   "products": 124
+  },
+  {
+   "handle": "blonde-hair-extensions",
+   "products": 101
+  },
+  {
+   "handle": "highlighted-hair-extensions",
+   "products": 89
+  },
+  {
+   "handle": "equipment",
+   "products": 79
+  },
+  {
+   "handle": "nano-tip-hair-extensions",
+   "products": 79
+  },
+  {
+   "handle": "brunette-hair-extensions",
+   "products": 75
+  },
+  {
+   "handle": "balayage-hair-extensions",
+   "products": 73
+  },
+  {
+   "handle": "14-inch-hair-extensions",
+   "products": 69
+  },
+  {
+   "handle": "tape-in-hair-extensions",
+   "products": 67
+  },
+  {
+   "handle": "pre-bonded-hair-extensions",
+   "products": 65
+  },
+  {
+   "handle": "luxe-nano-tip-hair",
+   "products": 59
+  },
+  {
+   "handle": "luxe-tape-in-hair-extensions",
+   "products": 58
+  },
+  {
+   "handle": "12-inch-hair-extensions",
+   "products": 57
+  },
+  {
+   "handle": "24-inch-hair-extensions",
+   "products": 57
+  },
+  {
+   "handle": "i-tip-hair-extensions",
+   "products": 54
+  },
+  {
+   "handle": "weft",
+   "products": 47
+  },
+  {
+   "handle": "root-stretch-hair-extensions",
+   "products": 43
+  },
+  {
+   "handle": "genius-hair-weave-extensions",
+   "products": 39
+  },
+  {
+   "handle": "secret-tape-in-hair-extensions",
+   "products": 34
+  },
+  {
+   "handle": "tape-weft-hair-extensions",
+   "products": 31
+  },
+  {
+   "handle": "hair-pieces",
+   "products": 29
+  },
+  {
+   "handle": "hair-care",
+   "products": 28
+  },
+  {
+   "handle": "red-hair-extensions",
+   "products": 27
+  },
+  {
+   "handle": "luxe-genius-hair-weave-extensions",
+   "products": 26
+  },
+  {
+   "handle": "sale",
+   "products": 25
+  },
+  {
+   "handle": "beads-fittings",
+   "products": 23
+  },
+  {
+   "handle": "hairdressing-accessories",
+   "products": 21
+  },
+  {
+   "handle": "micro-ring-accessories",
+   "products": 20
+  },
+  {
+   "handle": "pre-bonded-accessories",
+   "products": 20
+  },
+  {
+   "handle": "black-hair-extensions",
+   "products": 18
+  },
+  {
+   "handle": "hair-weave-accessories",
+   "products": 18
+  },
+  {
+   "handle": "flat-weft-hair-extensions",
+   "products": 16
+  },
+  {
+   "handle": "nano-ring-accessories",
+   "products": 15
+  },
+  {
+   "handle": "wigs",
+   "products": 13
+  },
+  {
+   "handle": "application-tools",
+   "products": 13
+  },
+  {
+   "handle": "pliers",
+   "products": 13
+  },
+  {
+   "handle": "viola-hair-extensions-products",
+   "products": 13
+  },
+  {
+   "handle": "malibu-c-products",
+   "products": 13
+  },
+  {
+   "handle": "conditioners",
+   "products": 13
+  },
+  {
+   "handle": "brushes-combs",
+   "products": 12
+  },
+  {
+   "handle": "shampoos",
+   "products": 12
+  },
+  {
+   "handle": "tape-in-accessories",
+   "products": 12
+  },
+  {
+   "handle": "26-inch-hair-extensions",
+   "products": 10
+  },
+  {
+   "handle": "styling",
+   "products": 9
+  },
+  {
+   "handle": "dry-damaged-hair",
+   "products": 9
+  },
+  {
+   "handle": "marketing-material",
+   "products": 8
+  },
+  {
+   "handle": "keratin-rebonds-and-glue-sticks",
+   "products": 8
+  },
+  {
+   "handle": "hair-extensions-brushes",
+   "products": 8
+  },
+  {
+   "handle": "hairdressing-clips-grips",
+   "products": 8
+  },
+  {
+   "handle": "hair-extensions-brushes-1",
+   "products": 8
+  },
+  {
+   "handle": "training-essentials",
+   "products": 7
+  },
+  {
+   "handle": "hair-masks-and-treatments",
+   "products": 7
+  },
+  {
+   "handle": "dull-hair",
+   "products": 7
+  },
+  {
+   "handle": "hair-extensions-copper-tubes",
+   "products": 6
+  },
+  {
+   "handle": "online-courses",
+   "products": 6
+  },
+  {
+   "handle": "vibrant-hair-extensions",
+   "products": 6
+  },
+  {
+   "handle": "discoloured-hair",
+   "products": 6
+  },
+  {
+   "handle": "electrical",
+   "products": 5
+  },
+  {
+   "handle": "colour-ring",
+   "products": 4
+  },
+  {
+   "handle": "hair-extensions-tape-tabs",
+   "products": 4
+  },
+  {
+   "handle": "hairdressing-combs",
+   "products": 4
+  },
+  {
+   "handle": "hairdressing-scissors-razors",
+   "products": 4
+  },
+  {
+   "handle": "sundries",
+   "products": 4
+  },
+  {
+   "handle": "our-best-sellers",
+   "products": 3
+  },
+  {
+   "handle": "hair-extensions-nano-rings",
+   "products": 3
+  },
+  {
+   "handle": "hair-extensions-thread",
+   "products": 3
+  },
+  {
+   "handle": "hairdressing-trolleys-cases",
+   "products": 3
+  },
+  {
+   "handle": "hairdressing-gowns",
+   "products": 2
+  },
+  {
+   "handle": "keratin-bond-removers",
+   "products": 2
+  },
+  {
+   "handle": "gift-cards",
+   "products": 1
+  },
+  {
+   "handle": "frontpage",
+   "products": 0
+  },
+  {
+   "handle": "slavic-loose-hair",
+   "products": 0
+  },
+  {
+   "handle": "sort-by-type",
+   "products": 0
+  }
+ ],
+ "sample_product": {
+  "handle": "luxe-genius-weave-8-wild-truffle",
+  "title": "Luxe Genius Weave #8 Wild Truffle",
+  "options": [
+   {
+    "name": "Length | Weight",
+    "position": 1,
+    "values": [
+     "18\" | 55g",
+     "20\" | 60g",
+     "22\" | 65g"
+    ]
+   }
+  ],
+  "variants": 3,
+  "body_html": "<h5><b>Description</b></h5>\n<h2><b>#8 Wild Truffle – What Makes This Colour Special?</b></h2>\n<p>#8 Wild Truffle is a beautifully balanced medium brunette shade that combines soft chocolate richness with subtle earthy warmth. Inspired by the depth and elegance of natural truffles, this colour offers a sophisticated brunette finish that feels luxurious, versatile and effortlessly wearable.</p>\n<p>Neither too dark nor too light, Wild Truffle delivers natural-looking depth and dimension, making it a perfect choice for clients who love rich brunette tones with a softer, more modern appearance. The result is polished, refined and full of healthy-looking shine.</p>\n<p>Explore more shades in our brunette hair extensions collection.</p>\n<h2><b>Why Choose #8 Wild Truffle Genius Weave Hair Extensions?</b></h2>\n<p>Crafted from <b>double-drawn Remy European human hair</b>, Viola Genius Weave extensions deliver exceptional fullness, softness and movement while maintaining a discreet, lightweight feel.</p>\n<p>The innovative Genius Weave construction sits flatter against the scalp than traditional wefts, creating a seamless blend that feels comfortable throughout the day. The ultra-thin design allows for flexible placement and natural-looking results without unnecessary bulk.</p>\n<p>#8 Wild Truffle is ideal for adding volume, length and rich brunette dimension while maintaining a natural, salon-quality finish. Its versatile tone complements a wide range of skin tones and works beautifully as both a full-colour match and a dimensional blending shade.</p>\n<h2><b>#8 Wild Truffle – Wear, Styling &amp; Performance</b></h2>\n<p>Designed for everyday luxury, #8 Wild Truffle styles beautifully in sleek, straight looks, soft waves and glamorous curls. The warm brunette tones catch the light naturally, creating movement and depth without appearing overly dark or flat.</p>\n<p>Thanks to the premium Remy hair quality, these extensions remain smooth, manageable and beautifully blended with natural hair when cared for correctly. Whether creating subtle enhancement or a complete transformation, Wild Truffle delivers timeless elegance with a modern edge.</p>\n<p>Rich, sophisticated and endlessly wearable, #8 Wild Truffle is a brunette shade that never goes out of style.</p>\n<p>Maintain optimal condition with Viola professional <meta charset=\"utf-8\"><strong><span style=\"color: rgb(43, 0, 255);\" class=\"s1\"><a style=\"color: rgb(43, 0, 255);\" href=\"https://www.violahairextensions.co.uk/collections/hair-care\">Aftercare products</a></span></strong>.</p>\n<h4><b>#8 Wild Truffle Genius Weave Hair Extensions – Details</b></h4>\n<ul class=\"ul1\">\n<li class=\"li2\">\n<b>WEIGHTS:</b> 55g, 60g, 65g</li>\n<li class=\"li2\">\n<b>MATERIAL:</b> 100% human hair, Remy, cuticle-correct</li>\n<li class=\"li2\">\n<b>STYLE:</b> Straight</li>\n<li class=\"li2\">\n<b>Warranty:</b> Optional 190 Days Quality Guarantee available with Viola Warranty Set.</li>\n</ul>"
+ }
+}

@@ -1,0 +1,250 @@
+{
+ "https://www.violahairextensions.co.uk/products/polystyrene-head": {
+  "url": "https://www.violahairextensions.co.uk/products/polystyrene-head",
+  "body": {
+   "font-family": "\"Nunito Sans\", sans-serif",
+   "font-size": "14px",
+   "line-height": "23.1px",
+   "color": "rgb(28, 27, 27)",
+   "background-color": "rgb(255, 255, 255)"
+  },
+  "h1": {
+   "font-family": "Montserrat, sans-serif",
+   "font-size": "18px",
+   "font-weight": "500",
+   "letter-spacing": "3.6px",
+   "color": "rgb(28, 27, 27)",
+   "text-transform": "uppercase"
+  },
+  "h2": null,
+  "h3": null,
+  "link": {
+   "color": "rgb(28, 27, 27)",
+   "text-decoration-line": "none"
+  },
+  "button": {
+   "font-family": "Montserrat, sans-serif",
+   "font-size": "12px",
+   "font-weight": "500",
+   "color": "rgb(255, 255, 255)",
+   "background-color": "rgba(0, 0, 0, 0)",
+   "border-radius": "0px",
+   "padding": "14px 28px",
+   "border": "1px solid rgb(28, 27, 27)",
+   "text-transform": "uppercase",
+   "letter-spacing": "2.4px"
+  },
+  "header": {
+   "background-color": "rgb(28, 27, 27)",
+   "color": "rgb(255, 255, 255)",
+   "position": "relative"
+  },
+  "announcement": null,
+  "footer": {
+   "background-color": "rgb(255, 255, 255)",
+   "color": "rgb(106, 106, 106)"
+  },
+  "badge": null,
+  "card": null,
+  "cssVars": {
+   "--use-sticky-header": "1",
+   "--use-unsticky-header": "0",
+   "--header-is-not-transparent": "1",
+   "--header-is-transparent": "0"
+  },
+  "fontsLoaded": [
+   "FontAwesome normal normal",
+   "Montserrat 500 normal",
+   "Nunito Sans 400 normal",
+   "Nunito Sans 700 normal",
+   "Nunito Sans 400 italic",
+   "Nunito Sans 700 italic"
+  ]
+ },
+ "https://www.violahairextensions.co.uk/": {
+  "url": "https://www.violahairextensions.co.uk/",
+  "body": {
+   "font-family": "Arial, sans-serif",
+   "font-size": "14px",
+   "line-height": "23.1px",
+   "color": "rgb(28, 27, 27)",
+   "background-color": "rgb(240, 240, 240)"
+  },
+  "h1": {
+   "font-family": "Arial, sans-serif",
+   "font-size": "20px",
+   "font-weight": "400",
+   "letter-spacing": "normal",
+   "color": "rgb(28, 27, 27)",
+   "text-transform": "none"
+  },
+  "h2": {
+   "font-family": "Montserrat, sans-serif",
+   "font-size": "22px",
+   "font-weight": "500",
+   "color": "rgb(255, 255, 255)",
+   "text-transform": "uppercase"
+  },
+  "h3": null,
+  "link": {
+   "color": "rgb(28, 27, 27)",
+   "text-decoration-line": "none"
+  },
+  "button": {
+   "font-family": "Montserrat, sans-serif",
+   "font-size": "12px",
+   "font-weight": "500",
+   "color": "rgb(0, 0, 0)",
+   "background-color": "rgba(0, 0, 0, 0)",
+   "border-radius": "0px",
+   "padding": "14px 28px",
+   "border": "1px solid rgb(255, 255, 255)",
+   "text-transform": "uppercase",
+   "letter-spacing": "2.4px"
+  },
+  "header": {
+   "background-color": "rgb(28, 27, 27)",
+   "color": "rgb(255, 255, 255)",
+   "position": "relative"
+  },
+  "announcement": null,
+  "footer": {
+   "background-color": "rgb(255, 255, 255)",
+   "color": "rgb(106, 106, 106)"
+  },
+  "badge": null,
+  "card": null,
+  "cssVars": {
+   "--use-sticky-header": "1",
+   "--use-unsticky-header": "0",
+   "--header-is-not-transparent": "0",
+   "--header-is-transparent": "1"
+  },
+  "fontsLoaded": [
+   "Google Sans 400 normal",
+   "Google Sans 500 normal",
+   "Google Sans 700 normal",
+   "Google Sans Text 400 normal",
+   "Google Sans Text 500 normal",
+   "Google Sans Text 700 normal",
+   "Roboto 300 normal",
+   "Roboto 400 normal",
+   "Roboto 500 normal",
+   "Roboto 700 normal",
+   "FontAwesome normal normal",
+   "Montserrat 500 normal",
+   "Nunito Sans 400 normal",
+   "Nunito Sans 700 normal",
+   "Nunito Sans 400 italic",
+   "Nunito Sans 700 italic"
+  ]
+ },
+ "https://www.violahairextensions.co.uk/pages/faqs": {
+  "url": "https://www.violahairextensions.co.uk/pages/faqs",
+  "body": {
+   "font-family": "\"Nunito Sans\", sans-serif",
+   "font-size": "14px",
+   "line-height": "23.1px",
+   "color": "rgb(28, 27, 27)",
+   "background-color": "rgb(255, 255, 255)"
+  },
+  "h1": {
+   "font-family": "Montserrat, sans-serif",
+   "font-size": "20px",
+   "font-weight": "500",
+   "letter-spacing": "4px",
+   "color": "rgb(28, 27, 27)",
+   "text-transform": "uppercase"
+  },
+  "h2": null,
+  "h3": null,
+  "link": {
+   "color": "rgb(28, 27, 27)",
+   "text-decoration-line": "none"
+  },
+  "button": null,
+  "header": {
+   "background-color": "rgb(28, 27, 27)",
+   "color": "rgb(255, 255, 255)",
+   "position": "relative"
+  },
+  "announcement": null,
+  "footer": {
+   "background-color": "rgb(255, 255, 255)",
+   "color": "rgb(106, 106, 106)"
+  },
+  "badge": null,
+  "card": null,
+  "cssVars": {
+   "--use-sticky-header": "1",
+   "--use-unsticky-header": "0",
+   "--header-is-not-transparent": "1",
+   "--header-is-transparent": "0"
+  },
+  "fontsLoaded": [
+   "FontAwesome normal normal",
+   "Montserrat 500 normal",
+   "Nunito Sans 400 normal",
+   "Nunito Sans 700 normal",
+   "Nunito Sans 400 italic",
+   "Nunito Sans 700 italic"
+  ]
+ },
+ "https://www.violahairextensions.co.uk/collections/nano-tip-hair-extensions": {
+  "url": "https://www.violahairextensions.co.uk/collections/nano-tip-hair-extensions",
+  "body": {
+   "font-family": "\"Nunito Sans\", sans-serif",
+   "font-size": "14px",
+   "line-height": "23.1px",
+   "color": "rgb(28, 27, 27)",
+   "background-color": "rgb(255, 255, 255)"
+  },
+  "h1": {
+   "font-family": "Montserrat, sans-serif",
+   "font-size": "20px",
+   "font-weight": "500",
+   "letter-spacing": "4px",
+   "color": "rgb(28, 27, 27)",
+   "text-transform": "uppercase"
+  },
+  "h2": {
+   "font-family": "Montserrat, sans-serif",
+   "font-size": "18px",
+   "font-weight": "500",
+   "color": "rgb(28, 27, 27)",
+   "text-transform": "uppercase"
+  },
+  "h3": null,
+  "link": {
+   "color": "rgb(28, 27, 27)",
+   "text-decoration-line": "none"
+  },
+  "button": null,
+  "header": {
+   "background-color": "rgb(28, 27, 27)",
+   "color": "rgb(255, 255, 255)",
+   "position": "relative"
+  },
+  "announcement": null,
+  "footer": {
+   "background-color": "rgb(255, 255, 255)",
+   "color": "rgb(106, 106, 106)"
+  },
+  "badge": null,
+  "card": null,
+  "cssVars": {
+   "--use-sticky-header": "1",
+   "--use-unsticky-header": "0",
+   "--header-is-not-transparent": "1",
+   "--header-is-transparent": "0"
+  },
+  "fontsLoaded": [
+   "FontAwesome normal normal",
+   "Montserrat 500 normal",
+   "Nunito Sans 400 normal",
+   "Nunito Sans 700 normal",
+   "Nunito Sans 400 italic",
+   "Nunito Sans 700 italic"
+  ]
+ }
+}
