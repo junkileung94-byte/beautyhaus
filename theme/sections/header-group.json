@@ -1,0 +1,21 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "header": {
+      "type": "header",
+      "blocks": {
+        "link-1": { "type": "link", "settings": { "label": "HOME", "url": "/", "active": true } },
+        "link-2": { "type": "link", "settings": { "label": "SERVICES", "url": "#services" } },
+        "link-3": { "type": "link", "settings": { "label": "SHOP", "url": "#shop" } }
+      },
+      "block_order": ["link-1", "link-2", "link-3"],
+      "settings": {
+        "book_label": "BOOK",
+        "book_label_ext": "NOW",
+        "book_url": "#book"
+      }
+    }
+  },
+  "order": ["header"]
+}

@@ -1,0 +1,64 @@
+{%- assign s = section.settings -%}
+<div class="bh-hero-wrap bh-content">
+  <div class="bh-hero-head">
+    <div class="bh-eyebrow">
+      <span class="rule"></span>
+      <span class="label">{{ s.eyebrow | escape }}</span>
+      <span class="rule"></span>
+    </div>
+    <h1 class="bh-hero-title">{{ s.title | escape }}</h1>
+    <div class="bh-hero-script">{{ s.script_word | escape }}</div>
+    <p class="bh-hero-sub">{{ s.subtext | escape }}</p>
+  </div>
+
+  <div class="bh-arch">
+    <div class="bh-arch-frame"></div>
+    <div class="bh-arch-img"{% if s.image != blank %} style="background-image:url({{ s.image | image_url: width: 900 }})"{% endif %}>
+      {%- if s.image == blank -%}<span class="ph">[ hero photo ]</span>{%- endif -%}
+    </div>
+    {%- if s.badge_title != blank -%}
+    <div class="bh-arch-badge">
+      <span class="star">&#10022;</span>
+      <div>
+        <div class="t1">{{ s.badge_title | escape }}</div>
+        <div class="t2">{{ s.badge_subtitle | escape }}</div>
+      </div>
+    </div>
+    {%- endif -%}
+  </div>
+
+  <div class="bh-ctas">
+    <a class="bh-btn bh-btn--primary" href="{{ s.cta1_url | default: '#' }}">
+      {{ s.cta1_label | escape }}
+      <span class="shine" aria-hidden="true"></span>
+    </a>
+    <a class="bh-btn bh-btn--ghost" href="{{ s.cta2_url | default: '#' }}">{{ s.cta2_label | escape }}</a>
+  </div>
+</div>
+
+<div class="bh-divider bh-content" aria-hidden="true">
+  <span class="l left"></span>
+  <span class="mark">&#10070;</span>
+  <span class="l right"></span>
+</div>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "THE HAUS OF BEAUTIFUL HAIR · BARRIE, ON" },
+    { "type": "text", "id": "title", "label": "Headline", "default": "Your hair goals," },
+    { "type": "text", "id": "script_word", "label": "Script accent word", "default": "handled." },
+    { "type": "textarea", "id": "subtext", "label": "Subtext", "default": "The gentlest extension methods on the market, fitted in an award-winning private studio. Victorian craft, modern technique." },
+    { "type": "image_picker", "id": "image", "label": "Hero photo" },
+    { "type": "text", "id": "badge_title", "label": "Badge title", "default": "Barrie's Best" },
+    { "type": "text", "id": "badge_subtitle", "label": "Badge subtitle", "default": "AWARD-WINNING STUDIO" },
+    { "type": "header", "content": "Call to action" },
+    { "type": "text", "id": "cta1_label", "label": "Primary button label", "default": "BOOK A FREE CONSULT" },
+    { "type": "url", "id": "cta1_url", "label": "Primary button link" },
+    { "type": "text", "id": "cta2_label", "label": "Secondary button label", "default": "SERVICE MENU" },
+    { "type": "url", "id": "cta2_url", "label": "Secondary button link" }
+  ],
+  "presets": [{ "name": "Hero" }]
+}
+{% endschema %}

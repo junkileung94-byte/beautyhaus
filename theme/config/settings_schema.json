@@ -1,0 +1,19 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Beauty Extension Haus",
+    "theme_version": "1.0.0",
+    "theme_author": "Beauty Extension Haus",
+    "theme_documentation_url": "https://shopify.dev",
+    "theme_support_url": "https://shopify.dev"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      { "type": "color", "id": "color_bg", "label": "Page background", "default": "#EDE6F4" },
+      { "type": "color", "id": "color_ink", "label": "Ink", "default": "#33243F" },
+      { "type": "color", "id": "color_gold", "label": "Gold accent", "default": "#C9A96A" },
+      { "type": "color", "id": "color_purple", "label": "Purple accent", "default": "#8A6FA8" }
+    ]
+  }
+]

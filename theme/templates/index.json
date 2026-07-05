@@ -1,0 +1,51 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "eyebrow": "THE HAUS OF BEAUTIFUL HAIR · BARRIE, ON",
+        "title": "Your hair goals,",
+        "script_word": "handled.",
+        "subtext": "The gentlest extension methods on the market, fitted in an award-winning private studio. Victorian craft, modern technique.",
+        "badge_title": "Barrie's Best",
+        "badge_subtitle": "AWARD-WINNING STUDIO",
+        "cta1_label": "BOOK A FREE CONSULT",
+        "cta1_url": "#book",
+        "cta2_label": "SERVICE MENU",
+        "cta2_url": "#services"
+      }
+    },
+    "service-menu": {
+      "type": "service-menu",
+      "blocks": {
+        "s1": { "type": "service", "settings": { "number": "Nº 01", "title": "Nanolink Extensions", "description": "Featherlight beads, invisible at the root. The gentlest method we offer.", "price": "from $95", "url": "#book" } },
+        "s2": { "type": "service", "settings": { "number": "Nº 02 · SIGNATURE", "title": "Weft Install & Move-Up", "description": "Seamless hand-tied wefts, custom-blended and maintained on schedule.", "price": "price on consult", "url": "#book", "highlight": true } },
+        "s3": { "type": "service", "settings": { "number": "Nº 03", "title": "Wash & Blow Out", "description": "A proper hour of care — extension-safe cleanse, condition, and style.", "price": "1 hour", "url": "#book" } }
+      },
+      "block_order": ["s1", "s2", "s3"],
+      "settings": {
+        "script_line": "the",
+        "heading": "Service Menu",
+        "view_all_label": "VIEW THE FULL MENU",
+        "view_all_url": "#services"
+      }
+    },
+    "shop-band": {
+      "type": "shop-band",
+      "blocks": {
+        "p1": { "type": "product", "settings": {} },
+        "p2": { "type": "product", "settings": {} }
+      },
+      "block_order": ["p1", "p2"],
+      "settings": {
+        "eyebrow": "FOR TECHNICIANS & STYLISTS",
+        "title_line1": "Shop nanobead",
+        "title_line2": "hair extensions",
+        "description": "The same premium hair we fit in-studio — silicone-lined nanobeads, remy strands, salon-grade tools.",
+        "button_label": "VIEW PRODUCTS",
+        "button_url": "#shop"
+      }
+    }
+  },
+  "order": ["hero", "service-menu", "shop-band"]
+}

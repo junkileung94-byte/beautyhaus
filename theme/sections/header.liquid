@@ -1,0 +1,50 @@
+<div class="bh-nav-wrap bh-content">
+  <div class="bh-nav">
+    <button class="bh-burger" type="button" aria-label="Open menu">
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="bh-nav-links">
+      {%- for block in section.blocks -%}
+        <a href="{{ block.settings.url | default: '#' }}"{% if block.settings.active %} class="active"{% endif %} {{ block.shopify_attributes }}>{{ block.settings.label | escape }}</a>
+      {%- endfor -%}
+    </nav>
+
+    <a href="{{ routes.root_url }}" class="bh-logo-link" aria-label="{{ shop.name }}">
+      {%- if section.settings.logo != blank -%}
+        <img class="bh-logo" src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" width="{{ section.settings.logo.width }}" height="{{ section.settings.logo.height }}">
+      {%- else -%}
+        <img class="bh-logo" src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}">
+      {%- endif -%}
+    </a>
+
+    <div class="bh-nav-right">
+      <a class="bh-book" href="{{ section.settings.book_url | default: '#' }}">{{ section.settings.book_label | default: 'BOOK' }}<span class="bh-book-ext"> {{ section.settings.book_label_ext | default: 'NOW' }}</span></a>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo" },
+    { "type": "text", "id": "book_label", "label": "Book button label", "default": "BOOK" },
+    { "type": "text", "id": "book_label_ext", "label": "Book label — desktop suffix", "default": "NOW" },
+    { "type": "url", "id": "book_url", "label": "Book button link" }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Nav link",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "HOME" },
+        { "type": "url", "id": "url", "label": "Link" },
+        { "type": "checkbox", "id": "active", "label": "Current page (gold underline)", "default": false }
+      ]
+    }
+  ]
+}
+{% endschema %}

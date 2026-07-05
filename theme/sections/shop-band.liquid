@@ -1,0 +1,52 @@
+{%- assign s = section.settings -%}
+<section class="bh-shop bh-content">
+  <div class="bh-shop-orb" aria-hidden="true"></div>
+  <div class="bh-shop-inner">
+    <div class="bh-shop-head">
+      <div class="bh-shop-eyebrow">{{ s.eyebrow | escape }}</div>
+      <div class="bh-shop-title">{{ s.title_line1 | escape }}<br><em>{{ s.title_line2 | escape }}</em></div>
+      {%- if s.description != blank -%}<p class="bh-shop-desc">{{ s.description | escape }}</p>{%- endif -%}
+    </div>
+
+    <div class="bh-shop-products">
+      {%- for block in section.blocks -%}
+        {%- assign bs = block.settings -%}
+        <div class="bh-product"{% if bs.image != blank %} style="background-image:url({{ bs.image | image_url: width: 400 }})"{% endif %} {{ block.shopify_attributes }}>
+          {%- if bs.image == blank -%}<span class="ph">[ product ]</span>{%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <a class="bh-shop-btn" href="{{ s.button_url | default: '#' }}">{{ s.button_label | escape }}</a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Shop band",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "FOR TECHNICIANS & STYLISTS" },
+    { "type": "text", "id": "title_line1", "label": "Title line 1", "default": "Shop nanobead" },
+    { "type": "text", "id": "title_line2", "label": "Title line 2 (emphasis)", "default": "hair extensions" },
+    { "type": "textarea", "id": "description", "label": "Description (shown on desktop)", "default": "The same premium hair we fit in-studio — silicone-lined nanobeads, remy strands, salon-grade tools." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "VIEW PRODUCTS" },
+    { "type": "url", "id": "button_url", "label": "Button link" }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product card",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Product image" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop band",
+      "blocks": [ { "type": "product" }, { "type": "product" } ]
+    }
+  ]
+}
+{% endschema %}

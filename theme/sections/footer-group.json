@@ -1,0 +1,20 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "link-1": { "type": "link", "settings": { "label": "HOME", "url": "/" } },
+        "link-2": { "type": "link", "settings": { "label": "SERVICES", "url": "#services" } },
+        "link-3": { "type": "link", "settings": { "label": "SHOP", "url": "#shop" } },
+        "link-4": { "type": "link", "settings": { "label": "BOOK", "url": "#book", "accent": true } }
+      },
+      "block_order": ["link-1", "link-2", "link-3", "link-4"],
+      "settings": {
+        "address": "480 MAPLETON AVE · BARRIE ON · BEAUTYEXTENSIONHAUS.COM"
+      }
+    }
+  },
+  "order": ["footer"]
+}

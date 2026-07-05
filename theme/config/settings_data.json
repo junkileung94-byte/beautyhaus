@@ -1,0 +1,16 @@
+{
+  "current": {
+    "color_bg": "#EDE6F4",
+    "color_ink": "#33243F",
+    "color_gold": "#C9A96A",
+    "color_purple": "#8A6FA8"
+  },
+  "presets": {
+    "Default": {
+      "color_bg": "#EDE6F4",
+      "color_ink": "#33243F",
+      "color_gold": "#C9A96A",
+      "color_purple": "#8A6FA8"
+    }
+  }
+}

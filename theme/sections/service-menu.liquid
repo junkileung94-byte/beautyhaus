@@ -1,0 +1,65 @@
+{%- assign s = section.settings -%}
+<section class="bh-services bh-content">
+  <div class="bh-services-head">
+    <div class="bh-script-sm">{{ s.script_line | escape }}</div>
+    <div class="bh-serif-lg">{{ s.heading | escape }}</div>
+  </div>
+
+  <div class="bh-service-list">
+    {%- for block in section.blocks -%}
+      {%- assign bs = block.settings -%}
+      <div class="bh-card{% if bs.highlight %} bh-card--dark{% endif %}" {{ block.shopify_attributes }}>
+        <div class="bh-card-num">{{ bs.number | escape }}</div>
+        <div class="bh-card-title">{{ bs.title | escape }}</div>
+        {%- if bs.description != blank -%}<div class="bh-card-desc">{{ bs.description | escape }}</div>{%- endif -%}
+        <div class="bh-card-foot">
+          <span class="bh-card-price">{{ bs.price | escape }}</span>
+          <a class="bh-card-book" href="{{ bs.url | default: '#' }}">BOOK &rarr;</a>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if s.view_all_label != blank -%}
+  <div class="bh-view-all">
+    <a href="{{ s.view_all_url | default: '#' }}"><span>{{ s.view_all_label | escape }}</span></a>
+  </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Service menu",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "script_line", "label": "Script line", "default": "the" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Service Menu" },
+    { "type": "text", "id": "view_all_label", "label": "View-all label", "default": "VIEW THE FULL MENU" },
+    { "type": "url", "id": "view_all_url", "label": "View-all link" }
+  ],
+  "blocks": [
+    {
+      "type": "service",
+      "name": "Service",
+      "settings": [
+        { "type": "text", "id": "number", "label": "Number label", "default": "Nº 01" },
+        { "type": "text", "id": "title", "label": "Service name", "default": "Nanolink Extensions" },
+        { "type": "textarea", "id": "description", "label": "Description (shown on desktop)", "default": "" },
+        { "type": "text", "id": "price", "label": "Price / meta", "default": "from $95" },
+        { "type": "url", "id": "url", "label": "Booking link" },
+        { "type": "checkbox", "id": "highlight", "label": "Highlight (dark card)", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Service menu",
+      "blocks": [
+        { "type": "service", "settings": { "number": "Nº 01", "title": "Nanolink Extensions", "price": "from $95" } },
+        { "type": "service", "settings": { "number": "Nº 02 · SIGNATURE", "title": "Weft Install & Move-Up", "price": "price on consult", "highlight": true } },
+        { "type": "service", "settings": { "number": "Nº 03", "title": "Wash & Blow Out", "price": "1 hour" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

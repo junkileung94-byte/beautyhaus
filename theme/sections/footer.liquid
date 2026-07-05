@@ -1,0 +1,50 @@
+{%- assign s = section.settings -%}
+<footer class="bh-footer bh-content">
+  {%- if s.logo != blank -%}
+    <img class="bh-footer-logo" src="{{ s.logo | image_url: width: 200 }}" alt="{{ shop.name }}">
+  {%- else -%}
+    <img class="bh-footer-logo" src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}">
+  {%- endif -%}
+
+  <nav class="bh-footer-nav">
+    {%- for block in section.blocks -%}
+      {%- assign bs = block.settings -%}
+      <a href="{{ bs.url | default: '#' }}"{% if bs.accent %} class="book"{% endif %} {{ block.shopify_attributes }}>{{ bs.label | escape }}</a>
+    {%- endfor -%}
+  </nav>
+
+  <div class="bh-footer-addr">{{ s.address | escape }}</div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo" },
+    { "type": "text", "id": "address", "label": "Address line", "default": "480 MAPLETON AVE · BARRIE ON · BEAUTYEXTENSIONHAUS.COM" }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Nav link",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "HOME" },
+        { "type": "url", "id": "url", "label": "Link" },
+        { "type": "checkbox", "id": "accent", "label": "Gold accent", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        { "type": "link", "settings": { "label": "HOME" } },
+        { "type": "link", "settings": { "label": "SERVICES" } },
+        { "type": "link", "settings": { "label": "SHOP" } },
+        { "type": "link", "settings": { "label": "BOOK", "accent": true } }
+      ]
+    }
+  ]
+}
+{% endschema %}
