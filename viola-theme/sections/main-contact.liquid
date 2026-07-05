@@ -1,0 +1,36 @@
+<div class="wrap page-body">
+  <header class="coll-head"><h1>{{ page.title }}</h1></header>
+
+  {%- if page.content != blank -%}
+    <div class="rte" style="max-width:62ch; margin:0 auto 34px; text-align:center;">{{ page.content }}</div>
+  {%- endif -%}
+
+  <div class="form-page" style="padding-top:0;">
+    {%- form 'contact' -%}
+      {%- if form.posted_successfully? -%}
+        <p style="text-align:center;">Thanks for getting in touch — we'll reply as soon as we can.</p>
+      {%- endif -%}
+      {%- if form.errors -%}<div class="form-errors">{{ form.errors | default_errors }}</div>{%- endif -%}
+      <label for="contact-name">Name</label>
+      <input id="contact-name" type="text" name="contact[name]" autocomplete="name">
+      <label for="contact-email">Email</label>
+      <input id="contact-email" type="email" name="contact[email]" autocomplete="email" required>
+      <label for="contact-phone">Phone (optional)</label>
+      <input id="contact-phone" type="tel" name="contact[phone]" autocomplete="tel">
+      <label for="contact-body">Message</label>
+      <textarea id="contact-body" name="contact[body]" rows="6" required
+        style="width:100%; border:1px solid var(--ink); padding:12px 14px; font-family:var(--font-body); font-size:13.5px;"></textarea>
+      <button class="btn btn--solid btn--full">Send message</button>
+    {%- endform -%}
+
+    <div style="text-align:center; margin-top:34px; color:var(--muted); font-size:13px;">
+      <p class="eyebrow" style="margin-bottom:8px;">Or reach us directly</p>
+      <p>Telephone: <a href="tel:+14167123429">416-712-3429</a><br>
+      Email: <a href="mailto:canadasupport@violahairextensions.co">canadasupport@violahairextensions.co</a></p>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{ "name": "Contact page", "settings": [] }
+{% endschema %}
