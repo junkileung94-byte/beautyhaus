@@ -1,0 +1,73 @@
+# Beauty Extension Haus — self-contained public tunnel for beautyextensionhaus.com
+#
+# Locally-managed tunnel (distribudo-style, NO token). Fully isolated:
+#   - own compose project (name: beautyhaus-live) => own private network
+#   - NO host ports published => host port space untouched
+#   - cloudflared is OUTBOUND-only; reaches ONLY the `web` service. Nothing else
+#     on the machine is reachable through it.
+#   - beautyextensionhaus.com lives in its OWN Cloudflare account; this stack
+#     carries that account's tunnel creds only (cloudflared/creds.json), fully
+#     separate from the fps-genie/battlefriends/bible/hauscollection tunnels.
+#   - admin server (tools/haus_admin_server.py) is NOT in this stack and stays
+#     tailnet/localhost-only.
+name: beautyhaus-live
+
+services:
+  # Read-only static host for the built site (preview/haus).
+  web:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ../preview/haus:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./web/.htpasswd:/etc/nginx/.htpasswd:ro
+    depends_on:
+      - contact
+      - admin
+    # No `ports:` on purpose — only cloudflared (same network) talks to it.
+
+  # Contact-form receiver (replaces the old Square contact iframe). nginx proxies
+  # /api/message here; it appends submissions to ./data/messages.jsonl. No host
+  # ports — reachable only over this stack's network via `web`. Stdlib-only image.
+  # SMTP notifications are optional: set SMTP_HOST/SMTP_TO (+ SMTP_USER/SMTP_PASS)
+  # via ./contact.env to also email the studio; without it, messages are stored
+  # only and read in the admin "Messages" tab.
+  contact:
+    build: ./contact
+    restart: unless-stopped
+    env_file:
+      - path: ./contact.env
+        required: false
+    volumes:
+      - ./data:/data
+
+  # Admin (haus_admin_server.py) — site + /admin + write APIs, no auth of its own.
+  # Reachable ONLY two ways, both gated:
+  #   - public: admin.beautyextensionhaus.com via cloudflared, behind Cloudflare Access (passkey)
+  #   - tailnet: 127.0.0.1:8790 (loopback publish) proxied by `tailscale serve`
+  # No LAN/0.0.0.0 host exposure. Writes go to the same preview/haus that `web` serves.
+  admin:
+    build: ./admin
+    restart: unless-stopped
+    environment:
+      HAUS_MESSAGES: /data/messages.jsonl   # contact submissions, read-only view
+    volumes:
+      - ../preview/haus:/home/mj/beautyhaus/preview/haus
+      - ../haus-media-library:/home/mj/beautyhaus/haus-media-library
+      - ../tools:/home/mj/beautyhaus/tools:ro
+      - ./data:/data:ro                     # written by `contact`, shown in Messages tab
+    ports:
+      - "127.0.0.1:8790:8790"   # loopback only — tailnet reach via tailscale serve
+
+  # Cloudflare Tunnel connector. Ingress + tunnel id in cloudflared/config.yml,
+  # credentials in cloudflared/creds.json (gitignored). Serves edge TLS for
+  # beautyextensionhaus.com and proxies to http://web:80 over this network.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate --config /etc/cloudflared/config.yml run
+    volumes:
+      - ./cloudflared:/etc/cloudflared:ro
+    restart: unless-stopped
+    depends_on:
+      - web
+      - admin
