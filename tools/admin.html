@@ -272,14 +272,20 @@
       <button class="chip" data-loc="ca">🇨🇦 Canada</button>
       <button class="chip" data-loc="us">🇺🇸 USA</button>
     </div>
+    <button class="chip" id="viewsite" title="Open the live site for the locale you're editing, in a new tab">↗ Preview site</button>
   </div>
   <span class="hint" style="opacity:.6">Sync drives in Settings ↓</span>
+  <span id="pkwrap" style="display:flex; gap:.4rem; align-items:center;">
+    <button class="chip" id="pk-add" style="display:none">🔑 Add a passkey</button>
+    <button class="chip" id="pk-clear" style="display:none">Remove passkeys</button>
+  </span>
 </header>
 <nav class="tabs">
   <button class="tab" data-view="images">🖼 Images</button>
   <button class="tab" data-view="text">✏️ Text</button>
   <button class="tab" data-view="layout">🧩 Sections</button>
   <button class="tab" data-view="documents">📄 Documents</button>
+  <button class="tab" data-view="linkinbio">🔗 Link in bio</button>
   <button class="tab" data-view="messages">💬 Messages</button>
 </nav>
 <div id="usbanner">Editing the <b>US · Sarasota</b> site — changes here don't touch the Canada site.</div>
@@ -418,6 +424,79 @@
     <button class="btn" id="msg-refresh">↻ Refresh</button>
   </div>
   <div id="msglist" class="msglist"></div>
+</section>
+
+<section id="view-linkinbio" style="display:none;">
+  <style>
+    #view-linkinbio{ flex-direction:column; gap:1rem; max-width:640px; }
+    #view-linkinbio .lib-head{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; flex-wrap:wrap; }
+    #view-linkinbio .lib-head h2{ font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; color:var(--color-muted); margin:0; }
+    #view-linkinbio .lib-actions{ display:flex; gap:.5rem; align-items:center; }
+    #view-linkinbio .lib-card{ border:1px solid var(--color-rule); border-radius:14px; padding:.85rem; background:var(--color-paper); }
+    #view-linkinbio .lib-profile{ display:grid; grid-template-columns:auto 1fr; gap:.8rem; align-items:start; }
+    #view-linkinbio .lib-avatar{ width:64px; height:64px; border-radius:50%; object-fit:cover; background:var(--color-lilac-2); box-shadow:0 0 0 1px var(--color-rule); cursor:pointer; }
+    #view-linkinbio .lib-field{ display:flex; flex-direction:column; gap:.25rem; margin-bottom:.5rem; }
+    #view-linkinbio .lib-field label{ font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--color-muted); }
+    #view-linkinbio input[type=text], #view-linkinbio textarea{ font:inherit; font-size:.9rem; padding:.5rem .6rem; border:1px solid var(--color-rule); border-radius:9px; background:#fff; color:var(--color-ink); width:100%; }
+    #view-linkinbio textarea{ resize:vertical; min-height:3rem; }
+    #view-linkinbio .lib-links{ display:flex; flex-direction:column; gap:.55rem; }
+    #view-linkinbio .lib-row{ display:grid; grid-template-columns:auto auto 1fr auto; gap:.6rem; align-items:center; border:1px solid var(--color-rule); border-radius:12px; padding:.55rem .65rem; background:var(--color-paper); }
+    #view-linkinbio .lib-row.off{ opacity:.5; }
+    #view-linkinbio .lib-move{ display:flex; flex-direction:column; gap:2px; }
+    #view-linkinbio .lib-move button{ border:1px solid var(--color-rule); background:#fff; border-radius:6px; width:1.5rem; height:1.1rem; cursor:pointer; font-size:.6rem; line-height:1; padding:0; color:var(--color-ink-2); }
+    #view-linkinbio .lib-thumb{ width:44px; height:44px; border-radius:10px; object-fit:cover; background:var(--color-lilac-2); box-shadow:0 0 0 1px var(--color-rule); cursor:pointer; display:grid; place-items:center; color:var(--color-accent); font-size:1rem; }
+    #view-linkinbio .lib-fields{ display:flex; flex-direction:column; gap:.35rem; min-width:0; }
+    #view-linkinbio .lib-ctl{ display:flex; flex-direction:column; align-items:center; gap:.35rem; }
+    #view-linkinbio .lib-del{ border:1px solid var(--color-rule); background:#fff; color:#9a2b3a; border-radius:8px; width:1.7rem; height:1.7rem; cursor:pointer; }
+    #view-linkinbio .lib-tgl{ font-size:.6rem; color:var(--color-muted); display:flex; align-items:center; gap:.2rem; }
+    #view-linkinbio .lib-social{ display:grid; grid-template-columns:auto 1fr auto; gap:.5rem; align-items:center; margin-bottom:.5rem; }
+    #view-linkinbio .lib-social select{ font:inherit; font-size:.85rem; padding:.45rem; border:1px solid var(--color-rule); border-radius:8px; background:#fff; }
+    #view-linkinbio .lib-add{ border:1px dashed var(--color-rule); background:transparent; border-radius:10px; padding:.55rem; cursor:pointer; color:var(--color-ink-2); font:inherit; font-size:.85rem; width:100%; }
+    #view-linkinbio .lib-save{ background:var(--color-accent); color:#fff; border:0; border-radius:999px; padding:.55rem 1.1rem; font:inherit; font-weight:500; cursor:pointer; }
+    #view-linkinbio .lib-save:disabled{ opacity:.5; cursor:default; }
+    #view-linkinbio .lib-open{ border:1px solid var(--color-rule); background:#fff; border-radius:999px; padding:.5rem 1rem; text-decoration:none; color:var(--color-ink); font-size:.85rem; }
+    #view-linkinbio .lib-note{ font-size:.78rem; line-height:1.5; color:var(--color-ink-2); margin:.1rem 0 .7rem; }
+    #view-linkinbio .lib-utm-row{ display:grid; grid-template-columns:1fr auto; gap:.5rem; align-items:center; padding:.45rem 0; border-top:1px solid var(--color-rule); }
+    #view-linkinbio .lib-utm-row:first-child{ border-top:0; }
+    #view-linkinbio .lib-utm-where{ font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--color-muted); }
+    #view-linkinbio .lib-utm-url{ font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.74rem; color:var(--color-ink); overflow-wrap:anywhere; margin-top:.15rem; }
+    #view-linkinbio .lib-copy{ border:1px solid var(--color-rule); background:#fff; border-radius:999px; padding:.35rem .8rem; cursor:pointer; font:inherit; font-size:.78rem; color:var(--color-ink); white-space:nowrap; }
+    #view-linkinbio .lib-copy:hover{ border-color:var(--color-accent); color:var(--color-accent); }
+  </style>
+  <div class="lib-head">
+    <h2>\U0001F517 Link in bio &middot; <span style="text-transform:none; letter-spacing:0; color:var(--color-ink-2)">beautyextensionhaus.com/linkinbio</span></h2>
+    <div class="lib-actions">
+      <a class="lib-open" id="lib-preview" href="/linkinbio" target="_blank" rel="noopener">Open &#8599;</a>
+      <button class="lib-save" id="lib-save" disabled>Saved &#10003;</button>
+    </div>
+  </div>
+  <div class="lib-card">
+    <div class="lib-profile">
+      <div>
+        <img class="lib-avatar" id="lib-avatar" alt="avatar" title="Click to change photo">
+        <input type="file" id="lib-avatar-file" accept="image/*" style="display:none">
+      </div>
+      <div>
+        <div class="lib-field"><label>Display name</label><input type="text" id="lib-name"></div>
+        <div class="lib-field"><label>Tagline</label><textarea id="lib-tagline"></textarea></div>
+      </div>
+    </div>
+  </div>
+  <div class="lib-card">
+    <div class="lib-field"><label>Social icons</label></div>
+    <div id="lib-socials"></div>
+    <button class="lib-add" id="lib-add-social">+ Add social</button>
+  </div>
+  <div class="lib-field"><label>Links &middot; top to bottom is the order shown</label></div>
+  <div class="lib-links" id="lib-links"></div>
+  <button class="lib-add" id="lib-add-link">+ Add link</button>
+  <input type="file" id="lib-thumb-file" accept="image/*" style="display:none">
+
+  <div class="lib-card">
+    <div class="lib-field"><label>Where to publish this link</label></div>
+    <p class="lib-note">Use the matching URL in each profile &mdash; the tag on the end is what lets the stats tell Instagram from TikTok from Google. Instagram&rsquo;s in-app browser strips the referrer, so an untagged link just shows up as &ldquo;direct&rdquo; and the bio gets no credit.</p>
+    <div id="lib-utm"></div>
+  </div>
 </section>
 
 <dialog id="cropdlg">
@@ -666,6 +745,8 @@
   function drawLocale(){
     document.querySelectorAll('#localeswitch .chip').forEach(function(b){ b.classList.toggle('on', b.dataset.loc===locale); });
     document.body.classList.toggle('us', locale==='us');
+    var vs=document.getElementById('viewsite');
+    if(vs) vs.textContent='↗ Preview '+(locale==='us'?'US':'Canada')+' site';
   }
   document.querySelectorAll('#localeswitch .chip').forEach(function(b){
     b.onclick=function(){
@@ -675,6 +756,37 @@
       toast('Now editing the '+(locale==='us'?'US · Sarasota':'Canada')+' site');
     };
   });
+  (function(){ var vs=document.getElementById('viewsite');
+    if(vs) vs.onclick=function(){ window.open('/?haus='+locale+'&_='+Date.now(), '_blank', 'noopener'); };
+    drawLocale(); })();
+
+  /* ---- passkeys (one-tap sign-in enrollment; public HTTPS origin only) ---- */
+  function pkB64uToBuf(s){ s=s.replace(/-/g,'+').replace(/_/g,'/'); var pad='='.repeat((4-s.length%4)%4); var bin=atob(s+pad),b=new Uint8Array(bin.length); for(var i=0;i<bin.length;i++)b[i]=bin.charCodeAt(i); return b.buffer; }
+  function pkBufToB64u(buf){ var b=new Uint8Array(buf),s=''; for(var i=0;i<b.length;i++)s+=String.fromCharCode(b[i]); return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+  function pkPrepCreate(json){ var o=JSON.parse(json); o.challenge=pkB64uToBuf(o.challenge); o.user.id=pkB64uToBuf(o.user.id); (o.excludeCredentials||[]).forEach(function(c){ c.id=pkB64uToBuf(c.id); }); return o; }
+  function pkCredJSON(cred){ var r=cred.response; var out={id:cred.id,rawId:pkBufToB64u(cred.rawId),type:cred.type,response:{attestationObject:pkBufToB64u(r.attestationObject),clientDataJSON:pkBufToB64u(r.clientDataJSON)}}; out.clientExtensionResults=cred.getClientExtensionResults?cred.getClientExtensionResults():{}; return out; }
+  function pkApi(path,body){ return fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body||{})}).then(function(r){return r.json();}); }
+  function pkRefresh(){ fetch('/api/auth/status').then(function(r){return r.json();}).then(function(s){
+    var add=$('pk-add'), clr=$('pk-clear');
+    if(!s.webauthn || !s.public){ if(add) add.style.display='none'; if(clr) clr.style.display='none'; return; }
+    if(add){ add.style.display=''; add.textContent = s.passkeys>0 ? '\U0001F511 Add another passkey' : '\U0001F511 Add a passkey'; }
+    if(clr){ clr.style.display = s.passkeys>0 ? '' : 'none'; clr.textContent = 'Remove passkeys ('+s.passkeys+')'; }
+  }).catch(function(){}); }
+  function pkAdd(){
+    if(!window.PublicKeyCredential){ toast('This browser has no passkey support'); return; }
+    var b=$('pk-add'); b.disabled=true; toast('Follow your device prompt…');
+    pkApi('/api/auth/passkey/register-begin').then(function(r){
+      if(!r.ok) throw new Error(r.error||'could not start');
+      return navigator.credentials.create({publicKey:pkPrepCreate(r.options)}).then(function(cred){
+        return pkApi('/api/auth/passkey/register-finish',{token:r.token,credential:pkCredJSON(cred)}); });
+    }).then(function(r){ b.disabled=false; if(r&&r.ok){ toast('Passkey added ✓ — tap it to sign in next time'); pkRefresh(); } else toast('Error: '+((r&&r.error)||'failed')); })
+      .catch(function(e){ b.disabled=false; toast('Passkey setup cancelled: '+(e.message||e)); });
+  }
+  function pkClear(){
+    if(!confirm('Remove all passkeys? You will sign in with your password until you add a new one.')) return;
+    pkApi('/api/auth/passkey/remove').then(function(r){ if(r&&r.ok){ toast('Passkeys removed'); pkRefresh(); } });
+  }
+  (function(){ var a=$('pk-add'); if(a) a.onclick=pkAdd; var c=$('pk-clear'); if(c) c.onclick=pkClear; pkRefresh(); })();
 
   var curView='images';
   function showView(v){
@@ -684,20 +796,155 @@
     $('view-layout').style.display = v==='layout'?'flex':'none';
     $('view-documents').style.display = v==='documents'?'flex':'none';
     $('view-messages').style.display = v==='messages'?'flex':'none';
+    $('view-linkinbio').style.display = v==='linkinbio'?'flex':'none';
     document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('on', t.dataset.view===v); });
     if(v==='text') loadTexts();
     if(v==='layout') loadLayout();
     if(v==='documents') loadDocs();
     if(v==='messages') loadMessages();
+    if(v==='linkinbio') loadLinkinbio();
   }
   document.querySelectorAll('.tab').forEach(function(t){ t.onclick=function(){ showView(t.dataset.view); }; });
 
+  /* ---- link-in-bio editor (assets/linkinbio.json, live at /linkinbio) ---- */
+  var LIB=null, libThumbTarget=null;
+  var SOC_TYPES=['instagram','tiktok','facebook','website','email'];
+  function libDirty(){ var b=$('lib-save'); if(b){ b.disabled=false; b.textContent='Save changes'; } }
+  function loadLinkinbio(){
+    fetch('/api/linkinbio?v='+Date.now()).then(function(r){return r.json();}).then(function(d){
+      LIB=(d&&d.links)?d:{profile:{name:'',tagline:'',avatar:''},socials:[],links:[]};
+      if(!LIB.profile) LIB.profile={name:'',tagline:'',avatar:''};
+      if(!LIB.socials) LIB.socials=[];
+      if(!LIB.links) LIB.links=[];
+      renderLib(); var b=$('lib-save'); if(b){ b.disabled=true; b.textContent='Saved \u2713'; }
+    }).catch(function(){ toast('Could not load link-in-bio'); });
+  }
+  function libThumbEl(src){
+    if(src){ var i=document.createElement('img'); i.className='lib-thumb'; i.src=src; i.alt=''; return i; }
+    var s=document.createElement('div'); s.className='lib-thumb'; s.textContent='\u2726'; return s;
+  }
+  function renderLib(){
+    if(!LIB) return;
+    $('lib-name').value=LIB.profile.name||'';
+    $('lib-tagline').value=LIB.profile.tagline||'';
+    $('lib-avatar').src=LIB.profile.avatar||'/assets/logo.png';
+    var sw=$('lib-socials'); sw.textContent='';
+    LIB.socials.forEach(function(s,idx){
+      var row=document.createElement('div'); row.className='lib-social';
+      var sel=document.createElement('select');
+      SOC_TYPES.forEach(function(t){ var o=document.createElement('option'); o.value=t; o.textContent=t; if(t===s.type)o.selected=true; sel.appendChild(o); });
+      sel.onchange=function(){ s.type=sel.value; libDirty(); };
+      var inp=document.createElement('input'); inp.type='text'; inp.value=s.href||''; inp.placeholder='https://\u2026';
+      inp.oninput=function(){ s.href=inp.value; libDirty(); };
+      var del=document.createElement('button'); del.className='lib-del'; del.textContent='\u2715';
+      del.onclick=function(){ LIB.socials.splice(idx,1); renderLib(); libDirty(); };
+      row.appendChild(sel); row.appendChild(inp); row.appendChild(del); sw.appendChild(row);
+    });
+    var lw=$('lib-links'); lw.textContent='';
+    LIB.links.forEach(function(l,idx){
+      var row=document.createElement('div'); row.className='lib-row'+(l.active===false?' off':'');
+      var mv=document.createElement('div'); mv.className='lib-move';
+      var up=document.createElement('button'); up.textContent='\u25B2'; up.title='Move up';
+      up.onclick=function(){ if(idx>0){ LIB.links.splice(idx-1,0,LIB.links.splice(idx,1)[0]); renderLib(); libDirty(); } };
+      var dn=document.createElement('button'); dn.textContent='\u25BC'; dn.title='Move down';
+      dn.onclick=function(){ if(idx<LIB.links.length-1){ LIB.links.splice(idx+1,0,LIB.links.splice(idx,1)[0]); renderLib(); libDirty(); } };
+      mv.appendChild(up); mv.appendChild(dn);
+      var th=libThumbEl(l.thumb); th.title='Click to upload a thumbnail';
+      th.onclick=function(){ libThumbTarget=l; $('lib-thumb-file').click(); };
+      var f=document.createElement('div'); f.className='lib-fields';
+      var t=document.createElement('input'); t.type='text'; t.value=l.title||''; t.placeholder='Link title';
+      t.oninput=function(){ l.title=t.value; libDirty(); };
+      var u=document.createElement('input'); u.type='text'; u.value=l.href||''; u.placeholder='https://\u2026';
+      u.oninput=function(){ l.href=u.value; libDirty(); };
+      f.appendChild(t); f.appendChild(u);
+      var ctl=document.createElement('div'); ctl.className='lib-ctl';
+      var del=document.createElement('button'); del.className='lib-del'; del.textContent='\u2715'; del.title='Delete';
+      del.onclick=function(){ LIB.links.splice(idx,1); renderLib(); libDirty(); };
+      var tg=document.createElement('label'); tg.className='lib-tgl';
+      var cb=document.createElement('input'); cb.type='checkbox'; cb.checked=l.active!==false;
+      cb.onchange=function(){ l.active=cb.checked; row.classList.toggle('off',!cb.checked); libDirty(); };
+      tg.appendChild(cb); tg.appendChild(document.createTextNode('on'));
+      ctl.appendChild(del); ctl.appendChild(tg);
+      row.appendChild(mv); row.appendChild(th); row.appendChild(f); row.appendChild(ctl); lw.appendChild(row);
+    });
+  }
+  function libUpload(file, cb){
+    if(!file) return;
+    var fr=new FileReader();
+    fr.onload=function(){
+      fetch('/api/linkinbio/thumb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dataurl:fr.result})})
+        .then(function(r){return r.json();})
+        .then(function(res){ if(res.ok){ cb(res.path); } else toast('Upload failed: '+(res.error||'')); })
+        .catch(function(){ toast('Upload failed'); });
+    };
+    fr.readAsDataURL(file);
+  }
+  function libSave(){
+    if(!LIB) return;
+    var b=$('lib-save'); b.disabled=true; b.textContent='Saving\u2026';
+    fetch('/api/linkinbio',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(LIB)})
+      .then(function(r){return r.json();})
+      .then(function(res){ if(res.ok){ LIB=res.data; renderLib(); $('lib-save').disabled=true; $('lib-save').textContent='Saved \u2713'; toast('Link-in-bio saved \u2713'); }
+        else { b.disabled=false; b.textContent='Save changes'; toast('Error: '+(res.error||'')); } })
+      .catch(function(){ b.disabled=false; b.textContent='Save changes'; toast('Save failed'); });
+  }
+  /* Campaign-tagged URLs to publish off-site. The site itself never links to
+     these — tagging an internal link does nothing, since the source is fixed at
+     the start of a visit. */
+  var LIB_CAMPAIGNS=[
+    ['Instagram bio','/linkinbio/?utm_source=instagram&utm_medium=social&utm_campaign=bio'],
+    ['Instagram story link sticker','/linkinbio/?utm_source=instagram&utm_medium=social&utm_campaign=story'],
+    ['TikTok bio','/linkinbio/?utm_source=tiktok&utm_medium=social&utm_campaign=bio'],
+    ['Facebook page button','/linkinbio/?utm_source=facebook&utm_medium=social&utm_campaign=page'],
+    ['Google Business Profile — send this one to the home page','/?utm_source=gbp&utm_medium=organic&utm_campaign=maps']
+  ];
+  function renderLibCampaigns(){
+    var box=$('lib-utm'); if(!box) return;
+    box.textContent='';
+    LIB_CAMPAIGNS.forEach(function(c){
+      var url='https://beautyextensionhaus.com'+c[1];
+      var row=document.createElement('div'); row.className='lib-utm-row';
+      var left=document.createElement('div');
+      var w=document.createElement('div'); w.className='lib-utm-where'; w.textContent=c[0];
+      var u=document.createElement('div'); u.className='lib-utm-url'; u.textContent=url;
+      left.appendChild(w); left.appendChild(u);
+      var btn=document.createElement('button'); btn.className='lib-copy'; btn.textContent='Copy';
+      btn.onclick=function(){
+        var done=function(){ btn.textContent='Copied ✓'; toast('Copied — paste it into '+c[0]);
+                             setTimeout(function(){ btn.textContent='Copy'; },1600); };
+        if(navigator.clipboard&&navigator.clipboard.writeText){
+          navigator.clipboard.writeText(url).then(done,function(){ fallback(); });
+        } else fallback();
+        function fallback(){
+          var t=document.createElement('textarea'); t.value=url; document.body.appendChild(t);
+          t.select(); try{ document.execCommand('copy'); done(); }catch(e){ toast('Copy failed — select it by hand'); }
+          document.body.removeChild(t);
+        }
+      };
+      row.appendChild(left); row.appendChild(btn); box.appendChild(row);
+    });
+  }
+
+  (function(){
+    renderLibCampaigns();
+    var s=$('lib-save'); if(s) s.onclick=libSave;
+    var al=$('lib-add-link'); if(al) al.onclick=function(){ if(!LIB) return; LIB.links.push({id:'l'+Date.now(),title:'',href:'',thumb:'',active:true}); renderLib(); libDirty(); };
+    var as=$('lib-add-social'); if(as) as.onclick=function(){ if(!LIB) return; LIB.socials.push({type:'instagram',href:''}); renderLib(); libDirty(); };
+    var nm=$('lib-name'); if(nm) nm.oninput=function(){ if(LIB){ LIB.profile.name=nm.value; libDirty(); } };
+    var tl=$('lib-tagline'); if(tl) tl.oninput=function(){ if(LIB){ LIB.profile.tagline=tl.value; libDirty(); } };
+    var av=$('lib-avatar'); if(av) av.onclick=function(){ $('lib-avatar-file').click(); };
+    var avf=$('lib-avatar-file'); if(avf) avf.onchange=function(){ if(avf.files[0]) libUpload(avf.files[0], function(path){ LIB.profile.avatar=path; renderLib(); libDirty(); }); avf.value=''; };
+    var tf=$('lib-thumb-file'); if(tf) tf.onchange=function(){ var tgt=libThumbTarget; if(tf.files[0]&&tgt) libUpload(tf.files[0], function(path){ tgt.thumb=path; renderLib(); libDirty(); }); tf.value=''; libThumbTarget=null; };
+  })();
+
   /* ---- documents: internal strategy reports, view-only ---- */
   var DOCS=[
-    {id:'nano-extensions-guide', label:'Nano Extensions — Complete Guide',
-     url:'docs/nano-extensions-guide.pdf'},
+    {id:'extension-aftercare-guide', label:'Extension Aftercare — Client Guide',
+     url:'/api/doc/extension-aftercare-guide.html'},
+    {id:'nano-extensions-guide', label:'Nano Extensions — Complete Guide (public)',
+     url:'/guide/nano-bead-extensions/'},
     {id:'nano-bead-sarasota', label:'Nano Beading — Sarasota Case',
-     url:'docs/nano-bead-sarasota.html'}
+     url:'/api/doc/nano-bead-sarasota.html'}
   ];
   var docCur=null;
   function loadDocs(){
@@ -713,7 +960,8 @@
       open.target='_blank'; open.rel='noopener';
       open.className='chip'; open.textContent='↗ Full screen / print';
       open.style.opacity='.72';
-      open.onclick=function(){ var d=DOCS.filter(function(x){return x.id===docCur;})[0]||DOCS[0]; open.href=d.url; };
+      open.id='docopen';
+      open.href=(DOCS[0]||{}).url||'#';
       pick.appendChild(open);
       pick.dataset.built='1';
     }
@@ -723,6 +971,7 @@
     var d=DOCS.filter(function(x){return x.id===id;})[0]; if(!d) return;
     docCur=id;
     $('docframe').src=d.url+'?v='+Date.now();
+    var oa=$('docopen'); if(oa) oa.href=d.url;
     document.querySelectorAll('#docpick .chip').forEach(function(c){ c.classList.toggle('on', c.dataset.id===id); });
   }
 
@@ -754,7 +1003,8 @@
   $('msg-refresh').onclick=loadMessages;
 
   /* ---- text editor: the live page, edited in place ---- */
-  var TX_PAGES=[['index.html','Home'],['services.html','Services'],['care.html','FAQ & Care'],['trade.html','Training'],['why-nano.html','Why Nano']];
+  var TX_PAGES=[['index.html','Home'],['services.html','Services'],['care.html','FAQ & Care'],['trade.html','Training'],['why-nano.html','Why Nano'],
+                ['hair-extensions-barrie.html','Barrie page'],['nano-bead-hair-extensions-sarasota.html','Sarasota page']];
   var txPage='index.html', txWidth='desktop';
   var txLastRange=null, txActiveEl=null;   // last selection + element being edited (for the B/I/U/size toolbar)
 
@@ -817,12 +1067,20 @@
     try{ doc=f.contentDocument; win=f.contentWindow; }catch(e){ return; }
     if(!doc||!doc.body) return;
     var st=doc.createElement('style'); st.textContent=EDIT_CSS; doc.head.appendChild(st);
-    // open the FAQ accordions so every answer is visible + editable; pricing
-    // drops (.menu-drop) stay closed — opening them all blows out the tables
-    doc.querySelectorAll('details.qa').forEach(function(d){ d.open=true; });
+    // open EVERY drop (FAQ accordions + services pricing drops) so all of their
+    // copy is visible and editable. Pricing drops make the service tables tall —
+    // that's the trade for reaching the text inside them.
+    doc.querySelectorAll('details').forEach(function(d){ d.open=true; });
+    // the nav drawer holds editable menu links — surface the hamburger
+    doc.querySelectorAll('[data-menu-open]').forEach(function(b){
+      b.title = 'Open the menu to edit its links';
+    });
     // in edit mode links/buttons don't navigate; a drop only ever opens (never
     // toggles shut) so drops stay put and every layout renders like the live page
     doc.addEventListener('click', function(e){
+      // the site closes the drawer on any link click inside it — that would snatch
+      // the drawer away the moment you click one of its editable links
+      if(e.target.closest('.menu [data-edit]')){ e.preventDefault(); e.stopPropagation(); return; }
       // click a photo → hop to the Images tab with that slot selected
       var slotEl=e.target.closest('[data-slot],[data-slot-pic]');
       if(slotEl && !e.target.closest('[data-edit]')){
@@ -833,7 +1091,10 @@
       if(e.target.closest('a[href]')) e.preventDefault();
       var sm=e.target.closest('summary');
       if(sm){ e.preventDefault(); var d=sm.parentElement; if(d&&d.tagName==='DETAILS') d.open=true; }
-      var trig=e.target.closest('button,[data-menu-open],[data-menu-close],[data-switch-haus]');
+      // the menu open/close buttons stay live — the drawer's links are editable
+      // and there's no other way to reach them
+      var menuBtn=e.target.closest('[data-menu-open],[data-menu-close]');
+      var trig=menuBtn?null:e.target.closest('button,[data-switch-haus]');
       if(trig && !e.target.closest('[data-edit]')){ e.preventDefault(); e.stopPropagation(); }
     }, true);
     doc.querySelectorAll('[data-slot],[data-slot-pic]').forEach(function(el){
@@ -906,9 +1167,17 @@
     txLastRange=null; txActiveEl=null;   // stale after a page/width reload
     var f=$('txframe');
     fitTx();                                  // size the frame before it loads so layout is right first paint
-    try{ sessionStorage.setItem('haus', locale); }catch(e){}   // skip the gate/splash in the frame
+    // Preview the locale being edited. US is gated pre-launch, so the site
+    // ignores a saved haus='us'; the supported override is ?haus=us|ca, which
+    // sets sessionStorage.hausPreview. Drive the frame with it, and clear
+    // hausPreview for CA so switching US->CA doesn't stay stuck on US.
+    try{
+      sessionStorage.setItem('haus', locale);
+      if(locale==='us') sessionStorage.setItem('hausPreview','us');
+      else sessionStorage.removeItem('hausPreview');
+    }catch(e){}
     f.onload=function(){ wireTxFrame(); fitTx(); };
-    f.src='/'+txPage+'?edit='+Date.now();
+    f.src='/'+txPage+'?haus='+locale+'&edit='+Date.now();
   }
 
   // clicking a photo in the live text editor lands you on the Images tab, slot selected

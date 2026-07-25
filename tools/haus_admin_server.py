@@ -16,7 +16,9 @@ serve proxy points at) and adds:
 Tailnet-only by deployment (tailscale serve); no auth of its own.
 """
 import io, json, os, re, subprocess, sys, threading, time
+from http.cookies import SimpleCookie
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+import haus_auth as auth
 from urllib.parse import parse_qs, urlsplit, unquote
 from html import unescape as html_unescape
 from PIL import Image, ImageOps
@@ -24,6 +26,7 @@ from PIL import Image, ImageOps
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # repo root
 SITE = os.path.join(ROOT, "preview", "haus")
 LIB = os.path.join(ROOT, "haus-media-library")
+DOCS_DIR = os.path.join(SITE, "docs")
 PHOTOS = os.path.join(SITE, "assets", "photos")
 ADMIN_HTML = os.path.join(ROOT, "tools", "admin.html")
 # Contact-form submissions, written by the deploy/contact receiver. In the
@@ -173,7 +176,8 @@ def run_sync(drive, url):
     st["running"] = False
 IMG_EXT = (".jpg", ".jpeg", ".png", ".webp")
 VID_EXT = (".mp4", ".mov", ".webm", ".m4v")
-PAGES = ["index.html", "services.html", "care.html", "trade.html", "why-nano.html"]
+PAGES = ["index.html", "services.html", "care.html", "trade.html", "why-nano.html",
+         "hair-extensions-barrie.html", "nano-bead-hair-extensions-sarasota.html"]
 SETTINGS = os.path.join(SITE, "settings.json")
 DEFAULT_SETTINGS = {
     "training": False, "hiring": False, "beforeafter": True,
@@ -762,6 +766,69 @@ def apply_image(slot, fname, crop, viewport="desktop", locale="ca", drive="ca"):
     return new_src
 
 
+# ---- link-in-bio (assets/linkinbio.json, served at /linkinbio) ----
+LINKINBIO_JSON = os.path.join(SITE, "assets", "linkinbio.json")
+LINKINBIO_DIR = os.path.join(SITE, "assets", "linkinbio")
+
+
+def read_linkinbio():
+    try:
+        with open(LINKINBIO_JSON, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {"profile": {"name": "", "tagline": "", "avatar": ""}, "socials": [], "links": []}
+
+
+def write_linkinbio(data):
+    prof = data.get("profile") or {}
+    out = {
+        "profile": {
+            "name": str(prof.get("name", "")),
+            "tagline": str(prof.get("tagline", "")),
+            "avatar": str(prof.get("avatar", "")),
+        },
+        "socials": [{"type": str(s.get("type", "website")), "href": str(s.get("href", "")).strip()}
+                    for s in (data.get("socials") or []) if str(s.get("href", "")).strip()],
+        "links": [],
+    }
+    for i, l in enumerate(data.get("links") or []):
+        title = str(l.get("title", "")).strip()
+        href = str(l.get("href", "")).strip()
+        if not title and not href:
+            continue
+        out["links"].append({
+            "id": str(l.get("id") or ("l%d" % (i + 1))),
+            "title": title,
+            "href": href,
+            "thumb": str(l.get("thumb", "")),
+            "active": bool(l.get("active", True)),
+        })
+    os.makedirs(os.path.dirname(LINKINBIO_JSON), exist_ok=True)
+    tmp = LINKINBIO_JSON + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, indent=2)
+    os.replace(tmp, LINKINBIO_JSON)
+    return out
+
+
+def save_linkinbio_thumb(dataurl):
+    import base64
+    m = re.match(r"data:image/[\w.+-]+;base64,(.+)$", dataurl or "", re.S)
+    if not m:
+        raise ValueError("Unsupported image data.")
+    raw = base64.b64decode(m.group(1))
+    im = ImageOps.exif_transpose(Image.open(io.BytesIO(raw))).convert("RGB")
+    w, h = im.size
+    s = min(w, h)
+    im = im.crop(((w - s) // 2, (h - s) // 2, (w - s) // 2 + s, (h - s) // 2 + s))
+    if s > 240:
+        im = im.resize((240, 240))
+    os.makedirs(LINKINBIO_DIR, exist_ok=True)
+    fn = "up-%d.jpg" % int(time.time() * 1000)
+    im.save(os.path.join(LINKINBIO_DIR, fn), quality=82)
+    return "/assets/linkinbio/%s" % fn
+
+
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *a, **kw):
         super().__init__(*a, directory=SITE, **kw)
@@ -773,6 +840,10 @@ class Handler(SimpleHTTPRequestHandler):
         # static-file responses must never be browser-cached, so admin edits
         # (crown, team, text) show on a normal refresh instead of a hard reload
         self.send_header("Cache-Control", "no-store, must-revalidate")
+        sc = getattr(self, "_pending_setcookie", None)
+        if sc:
+            self.send_header("Set-Cookie", sc)
+            self._pending_setcookie = None
         super().end_headers()
 
     def _json(self, obj, code=200):
@@ -835,8 +906,122 @@ class Handler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    # ---- auth gate --------------------------------------------------------
+    def _cookie(self, name):
+        raw = self.headers.get("Cookie")
+        if not raw:
+            return None
+        try:
+            c = SimpleCookie(raw)
+            return c[name].value if name in c else None
+        except Exception:
+            return None
+
+    def _is_public(self):
+        h = self.headers.get("Host", "").split(":")[0]
+        return h == auth.RP_ID or h == "www." + auth.RP_ID
+
+    def _secure_flag(self):
+        return self.headers.get("X-Forwarded-Proto", "").lower() == "https" or self._is_public()
+
+    def _set_session(self, level):
+        parts = ["haus_sess=" + auth.make_session(level), "Path=/", "HttpOnly",
+                 "SameSite=Lax", "Max-Age=43200"]
+        if self._secure_flag():
+            parts.append("Secure")
+        self._pending_setcookie = "; ".join(parts)
+
+    def _clear_session(self):
+        self._pending_setcookie = "haus_sess=; Path=/; HttpOnly; Max-Age=0"
+
+    def _level(self):
+        return auth.session_level(self._cookie("haus_sess"))
+
+    def _send_login(self):
+        body = auth.LOGIN_HTML.encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _gate_ok(self, p):
+        if p.startswith("/api/auth/"):
+            return True
+        if self._level() == "full":
+            return True
+        if p.startswith("/api/"):
+            self._json({"error": "auth required"}, 401)
+        else:
+            self._send_login()
+        return False
+
+    def _handle_auth(self, p):
+        try:
+            length = int(self.headers.get("Content-Length") or 0)
+            data = json.loads(self.rfile.read(length) or b"{}")
+        except Exception:
+            return self._json({"error": "bad request"}, 400)
+        try:
+            if p == "/api/auth/set-password":
+                if auth.password_set():
+                    return self._json({"error": "Password already set."}, 409)
+                auth.set_password(data.get("password", ""))
+                self._set_session("full")
+                return self._json({"ok": True})
+            if p == "/api/auth/login":
+                if not auth.verify_password(data.get("password", "")):
+                    return self._json({"error": "Incorrect password."}, 401)
+                if auth.has_passkey() and self._is_public():
+                    self._set_session("pw")
+                    return self._json({"ok": True, "passkey_required": True})
+                self._set_session("full")
+                return self._json({"ok": True})
+            if p == "/api/auth/logout":
+                self._clear_session()
+                return self._json({"ok": True})
+            if p.startswith("/api/auth/passkey/") and not auth.webauthn_available():
+                return self._json({"error": "Passkeys are unavailable on the server."}, 500)
+            # passwordless one-tap sign-in — the passkey itself proves identity
+            if p == "/api/auth/passkey/login-begin":
+                if not auth.has_passkey():
+                    return self._json({"error": "No passkey registered yet."}, 400)
+                tok, options = auth.auth_begin()
+                return self._json({"ok": True, "token": tok, "options": options})
+            if p == "/api/auth/passkey/login-finish":
+                auth.auth_finish(data.get("token", ""), json.dumps(data.get("credential")))
+                self._set_session("full")
+                return self._json({"ok": True})
+            # enrolling or removing passkeys requires an authenticated session
+            if self._level() != "full":
+                return self._json({"error": "auth required"}, 401)
+            if p == "/api/auth/passkey/register-begin":
+                tok, options = auth.reg_begin()
+                return self._json({"ok": True, "token": tok, "options": options})
+            if p == "/api/auth/passkey/register-finish":
+                auth.reg_finish(data.get("token", ""), json.dumps(data.get("credential")))
+                return self._json({"ok": True, "passkeys": len(auth.credentials())})
+            if p == "/api/auth/passkey/remove":
+                auth.remove_passkeys()
+                return self._json({"ok": True, "passkeys": 0})
+            return self._json({"error": "not found"}, 404)
+        except ValueError as e:
+            return self._json({"error": str(e)}, 400)
+        except Exception as e:
+            return self._json({"error": "Auth error: %s" % e}, 500)
+
     def do_GET(self):
         p = self.path.split("?")[0]
+        if p == "/api/auth/status":
+            return self._json({
+                "password_set": auth.password_set(),
+                "authed": self._level() == "full",
+                "passkeys": len(auth.credentials()),
+                "public": self._is_public(),
+                "webauthn": auth.webauthn_available(),
+            })
+        if not self._gate_ok(p):
+            return
         if p in ("/admin", "/admin/"):
             return self._file(ADMIN_HTML, "text/html; charset=utf-8")
         if p == "/api/messages":
@@ -861,6 +1046,8 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json(scan_texts())
         if p == "/api/content":
             return self._json(read_content())
+        if p == "/api/linkinbio":
+            return self._json(read_linkinbio())
         if p == "/api/sections":
             q = parse_qs(urlsplit(self.path).query)
             page = (q.get("page") or ["index.html"])[0]
@@ -894,6 +1081,23 @@ class Handler(SimpleHTTPRequestHandler):
             st["library_now"] = len([x for x in os.listdir(lib_dir(drive))
                                      if x.lower().endswith(IMG_EXT)])
             return self._json(st)
+        if p.startswith("/api/doc/"):
+            # Confidential documents (preview/haus/docs). nginx 404s /docs/ on the
+            # public site, so the admin Documents viewer reads them through here —
+            # behind the same session gate as every other /api/ route above.
+            name = os.path.basename(unquote(p[len("/api/doc/"):]))
+            if not name or name.startswith("."):
+                return self._json({"error": "not found"}, 404)
+            ext = os.path.splitext(name)[1].lower()
+            ctypes = {".pdf": "application/pdf",
+                      ".html": "text/html; charset=utf-8"}
+            if ext not in ctypes:
+                return self._json({"error": "not found"}, 404)
+            fp = os.path.join(DOCS_DIR, name)
+            if os.path.dirname(os.path.abspath(fp)) != os.path.abspath(DOCS_DIR) \
+                    or not os.path.isfile(fp):
+                return self._json({"error": "not found"}, 404)
+            return self._file(fp, ctypes[ext])
         if p.startswith("/api/thumb/"):
             rest = p[len("/api/thumb/"):].split("/")
             drive = rest[0] if len(rest) > 1 and rest[0] in drive_ids() else "ca"
@@ -934,6 +1138,10 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_POST(self):
         p = self.path.split("?")[0]
+        if p.startswith("/api/auth/"):
+            return self._handle_auth(p)
+        if self._level() != "full":
+            return self._json({"error": "auth required"}, 401)
         try:
             length = int(self.headers.get("Content-Length") or 0)
             data = json.loads(self.rfile.read(length) or b"{}")
@@ -1132,6 +1340,16 @@ class Handler(SimpleHTTPRequestHandler):
                                           data.get("locale", "ca"),
                                           data["key"], bool(data["hidden"]))
                 return self._json({"ok": True, "layout": items})
+            except (KeyError, ValueError) as e:
+                return self._json({"error": str(e)}, 400)
+        if p == "/api/linkinbio":
+            try:
+                return self._json({"ok": True, "data": write_linkinbio(data)})
+            except (KeyError, ValueError) as e:
+                return self._json({"error": str(e)}, 400)
+        if p == "/api/linkinbio/thumb":
+            try:
+                return self._json({"ok": True, "path": save_linkinbio_thumb(data.get("dataurl", ""))})
             except (KeyError, ValueError) as e:
                 return self._json({"error": str(e)}, 400)
         return self._json({"error": "not found"}, 404)

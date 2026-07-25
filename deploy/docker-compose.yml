@@ -23,7 +23,13 @@ services:
       - ./web/.htpasswd:/etc/nginx/.htpasswd:ro
     depends_on:
       - contact
+      - hooks
       - admin
+    # `plausible` net = first-party analytics proxy: nginx reaches the Plausible CE
+    # container (own stack) same-origin at /js/script.js + /api/event. See nginx.conf.
+    networks:
+      - default
+      - plausible
     # No `ports:` on purpose — only cloudflared (same network) talks to it.
 
   # Contact-form receiver (replaces the old Square contact iframe). nginx proxies
@@ -41,6 +47,25 @@ services:
     volumes:
       - ./data:/data
 
+  # Booking webhook receiver. Square (Barrie) and Mangomint (Sarasota) both book
+  # off-site, so a completed appointment is invisible to the browser — these
+  # server-to-server deliveries are the only signal. nginx proxies /api/hook/*
+  # here; every delivery is logged to ./data/hooks.jsonl and the mapped ones are
+  # forwarded to Plausible as custom events (hence the `plausible` network).
+  # Secrets live in ./hooks.env (see hooks.env.example); without them the
+  # endpoints 401 everything, which is the correct pre-setup state.
+  hooks:
+    build: ./hooks
+    restart: unless-stopped
+    env_file:
+      - path: ./hooks.env
+        required: false
+    volumes:
+      - ./data:/data
+    networks:
+      - default
+      - plausible
+
   # Admin (haus_admin_server.py) — site + /admin + write APIs, no auth of its own.
   # Reachable ONLY two ways, both gated:
   #   - public: admin.beautyextensionhaus.com via cloudflared, behind Cloudflare Access (passkey)
@@ -51,11 +76,15 @@ services:
     restart: unless-stopped
     environment:
       HAUS_MESSAGES: /data/messages.jsonl   # contact submissions, read-only view
+      HAUS_AUTH: /auth                       # admin password + passkey store
+      HAUS_RP_ID: beautyextensionhaus.com    # WebAuthn relying-party ID
+      HAUS_ORIGIN: https://beautyextensionhaus.com
     volumes:
       - ../preview/haus:/home/mj/beautyhaus/preview/haus
       - ../haus-media-library:/home/mj/beautyhaus/haus-media-library
       - ../tools:/home/mj/beautyhaus/tools:ro
       - ./data:/data:ro                     # written by `contact`, shown in Messages tab
+      - ./auth:/auth                        # admin password + passkey credentials (rw)
     ports:
       - "127.0.0.1:8790:8790"   # loopback only — tailnet reach via tailscale serve
 
@@ -71,3 +100,12 @@ services:
     depends_on:
       - web
       - admin
+
+networks:
+  # implicit project network (web/contact/admin/cloudflared talk over this)
+  default:
+  # Plausible CE's network (separate `plausible` compose project). `web` joins it
+  # so nginx can first-party-proxy the tracker + ingestion. External = not managed here.
+  plausible:
+    external: true
+    name: plausible_default

@@ -4,6 +4,7 @@ cloudflared/*.json
 *.pem
 .env
 contact.env
+hooks.env
 
 # Contact-form submissions (stored at runtime — never commit customer messages)
 data/
@@ -14,3 +15,5 @@ web/.htpasswd
 # python bytecode
 __pycache__/
 *.pyc
+
+auth/
