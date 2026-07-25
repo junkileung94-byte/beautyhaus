@@ -81,7 +81,7 @@
     var p = { page: pagePath() };
     if (props) {
       for (var k in props) {
-        var v = clean(props[k], 120);
+        var v = clean(props[k], 300);   // room for a full URL in `href`
         if (v) p[k] = v;
       }
     }
@@ -142,10 +142,13 @@
     var anchor = node.tagName === "A" ? node : node.closest("a[href]");
     var raw = (anchor && anchor.getAttribute("href")) || "";
     var section = node.closest("[data-section]");
+    var bio = node.closest("[data-bio-id]");   // link-in-bio tiles
     track(kindOf(node, raw, anchor), {
       label: labelOf(node, raw),
       section: section && section.getAttribute("data-section"),
-      href: /^https?:/i.test(raw) ? raw : ""
+      href: /^https?:/i.test(raw) ? raw : "",
+      bio_id: bio && bio.getAttribute("data-bio-id"),
+      bio_pos: bio && bio.getAttribute("data-bio-pos")
     });
   }, true);
 

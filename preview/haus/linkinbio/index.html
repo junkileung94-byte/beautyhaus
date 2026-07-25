@@ -235,6 +235,24 @@
       return "Beauty Extension Haus on " + (type ? type.charAt(0).toUpperCase() + type.slice(1) : "social");
     }
 
+    /* Stamp a source on third-party destinations so Square / Viola can see the
+     * bio drove the click (our own side is tracked by js/track.js). Skipped for:
+     *   - our own domain — the visitor is already in an attributed session
+     *   - Amazon and Google short links, which carry their own referral params
+     *     and are the two places where an extra query arg risks the redirect. */
+    var NO_UTM = /(^|\.)(amazon\.[a-z.]+|amzn\.to|g\.page|goo\.gl)$/i;
+    function tagged(href, campaign) {
+      var u;
+      try { u = new URL(href, location.href); } catch (e) { return href; }
+      if (u.hostname === location.hostname) return href;
+      if (NO_UTM.test(u.hostname)) return href;
+      if (u.searchParams.has("utm_source")) return href;   // author set their own
+      u.searchParams.set("utm_source", "beautyhaus-bio");
+      u.searchParams.set("utm_medium", "linkinbio");
+      if (campaign) u.searchParams.set("utm_campaign", campaign);
+      return u.toString();
+    }
+
     function render(data) {
       if (!data || !data.profile) return;
       var p = data.profile;
@@ -267,9 +285,14 @@
           var a = document.createElement("a");
           a.className = "link reveal";
           a.style.animationDelay = (0.22 + i * 0.04).toFixed(2) + "s";
-          a.href = l.href;
+          var id = l.id || "l" + (i + 1);
+          a.href = tagged(l.href, id);
           a.target = "_blank";
           a.rel = "noopener noreferrer";
+          // js/track.js reads these into the event props, so the dashboard shows
+          // WHICH tile was tapped (stable id + position) rather than only its title.
+          a.setAttribute("data-bio-id", id);
+          a.setAttribute("data-bio-pos", i + 1);
           var thumb;
           if (l.thumb) {
             thumb = document.createElement("img");
@@ -308,6 +331,6 @@
       .catch(function () {});
   })();
   </script>
-<script src="/js/track.js?v=20260725b"></script>
+<script src="/js/track.js?v=20260725d"></script>
 </body>
 </html>
