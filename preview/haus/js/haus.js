@@ -75,6 +75,16 @@
     );
   })();
 
+  /* Analytics hook — js/track.js (loaded after this file) defines hausTrack and
+   * appends the " -ca" / " -us" locale suffix. Used for the things a delegated
+   * click can't see: modal opens and form SUCCESSES. */
+  // track.js loads after this file, so boot-time calls (Gate Shown) are queued
+  // and drained by track.js once it defines hausTrack.
+  function trk(name, props) {
+    if (window.hausTrack) { window.hausTrack(name, props); return; }
+    (window.__hausTrackQ = window.__hausTrackQ || []).push([name, props]);
+  }
+
   var ROOT = (function () {
     // resolve asset paths relative to this script (works at any mount path)
     var s = document.currentScript;
@@ -212,24 +222,60 @@
     if (host && !host.querySelector("video[data-slot-video]")) host.classList.remove("slot-live");
   }
 
-  function applyContent(haus) {
-    if (!CONTENT || !CONTENT[haus]) return;
-    var t = CONTENT[haus].text || {};
-    Object.keys(t).forEach(function (id) {
-      var el = document.querySelector('[data-edit="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
-      if (el) el.innerHTML = t[id];
+  // The authored HTML IS the CA/base site (CA carries no overrides of its own).
+  // Snapshot every copy/image slot's default ONCE, before any locale is applied,
+  // so switching locales can REVERT the ids a previous locale overrode. Without
+  // this, US copy/images (63 text overrides) linger on the CA site after a
+  // US→CA switch — CA has nothing to overwrite them back with.
+  var DEFAULTS = null;
+  function snapshotDefaults() {
+    if (DEFAULTS) return;
+    DEFAULTS = { text: {}, img: {}, srcset: {} };
+    document.querySelectorAll("[data-edit]").forEach(function (n) {
+      DEFAULTS.text[n.getAttribute("data-edit")] = n.innerHTML;
     });
-    var img = CONTENT[haus].img || {};
-    Object.keys(img).forEach(function (slot) {
-      var pic = document.querySelector('picture[data-slot-pic="' + slot + '"]');
+    document.querySelectorAll("img[data-slot]").forEach(function (n) {
+      DEFAULTS.img[n.getAttribute("data-slot")] = n.getAttribute("src") || "";
+    });
+    document.querySelectorAll("source[data-slot-src]").forEach(function (n) {
+      DEFAULTS.srcset[n.getAttribute("data-slot-src")] = n.getAttribute("srcset") || "";
+    });
+  }
+
+  function applyContent(haus) {
+    snapshotDefaults();
+    var C = (CONTENT && CONTENT[haus]) || {};
+    var t = C.text || {};
+    var img = C.img || {};
+
+    // text: every snapshotted slot → this locale's override if present, else its
+    // authored default. The default-branch is what reverts a prior locale.
+    Object.keys(DEFAULTS.text).forEach(function (id) {
+      var el = document.querySelector('[data-edit="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
+      if (el) el.innerHTML = (id in t) ? t[id] : DEFAULTS.text[id];
+    });
+
+    // images: reset each slot's <img src> and <source srcset> to default, then
+    // layer this locale's override (if any).
+    Object.keys(DEFAULTS.img).forEach(function (slot) {
       var el = document.querySelector('img[data-slot="' + slot + '"]');
+      if (el) el.src = (img[slot] && img[slot].desktop) || DEFAULTS.img[slot];
+    });
+    Object.keys(DEFAULTS.srcset).forEach(function (slot) {
+      var srcEl = document.querySelector('source[data-slot-src="' + slot + '"]');
+      if (!srcEl) return;
       var o = img[slot] || {};
-      if (el && o.desktop) el.src = o.desktop;
-      if (pic) {
-        var srcEl = pic.querySelector('source[data-slot-src="' + slot + '"]');
-        if (srcEl && (o.mobile || o.desktop)) srcEl.srcset = o.mobile || o.desktop;
+      srcEl.srcset = o.mobile || o.desktop || DEFAULTS.srcset[slot];
+    });
+
+    // mount this locale's slot videos (poster photo stays behind)
+    Object.keys(img).forEach(function (slot) {
+      var o = img[slot] || {};
+      if (o.video && !NO_MOTION) {
+        var pic = document.querySelector('picture[data-slot-pic="' + slot + '"]');
+        var el = document.querySelector('img[data-slot="' + slot + '"]');
+        mountSlotVideo(slot, o.video, el, pic);
       }
-      if (o.video && !NO_MOTION) mountSlotVideo(slot, o.video, el, pic);
     });
     // drop any slot videos not wanted in this locale (e.g. after a CA/US switch)
     document.querySelectorAll("video[data-slot-video]").forEach(function (v) {
@@ -326,11 +372,12 @@
           '<div class="gate__head"><p class="label">Beauty Extension Haus</p>' +
           '<h1 class="gate__title">Choose your Haus</h1></div>' +
           '<div class="gate__inner" style="margin-top:var(--space-xl)">' +
-            '<button class="gate__choice" data-haus="us">' +
+            '<button class="gate__choice gate__choice--soon" data-waitlist type="button">' +
+              '<span class="gate__soon-badge">Opening soon</span>' +
               '<span class="gate__flag">' + FLAG_US + "</span>" +
               '<span class="gate__country">United States</span>' +
               '<span class="gate__city">Sarasota · Florida</span>' +
-              '<span class="gate__note">Opening 2026 — waitlist open</span>' +
+              '<span class="gate__note">Join the waitlist &rarr;</span>' +
             "</button>" +
             '<div class="gate__divider" aria-hidden="true"><img class="gate__crown" src="' + ROOT + 'assets/brand/crown-gold.png" alt=""></div>' +
             '<button class="gate__choice" data-haus="ca">' +
@@ -345,9 +392,16 @@
       "</div>"
     );
     gate.addEventListener("click", function (e) {
-      var b = e.target.closest("[data-haus]");
-      if (!b) return;
-      var haus = b.dataset.haus;
+      // Only the two choice cards act. Scope to .gate__choice so clicks on the
+      // logo / crown / divider / background do nothing — NOT closest("[data-haus]"),
+      // which would walk up to <body data-haus> and silently pick Canada.
+      var choice = e.target.closest(".gate__choice");
+      if (!choice) return;
+      // US is pre-launch: its card opens the waitlist instead of entering the
+      // site. The gate stays behind, so closing the waitlist returns to it.
+      if (choice.hasAttribute("data-waitlist")) { e.preventDefault(); openWaitlist(); return; }
+      var haus = choice.dataset.haus;
+      if (!haus) return;
       try { sessionStorage.setItem("haus", haus); } catch (err) {}
       applyLoc(haus);
       revealIfReady();
@@ -359,6 +413,7 @@
       gate.remove();
     });
     document.body.appendChild(gate);
+    trk("Gate Shown");
   }
 
   // ---- feature flags (settings.json, managed from /admin) ----
@@ -378,11 +433,29 @@
     .catch(function () {}); // no settings file → everything stays hidden
 
   // ---- boot ----
-  var saved = null;
+  // US is pre-launch: the gate offers only Canada; its US button opens the
+  // waitlist rather than entering the site, and a returning "us" session no
+  // longer auto-enters. A ?haus=us|ca override enters that locale AND sticks for
+  // the tab (sessionStorage "hausPreview") so the US build stays browsable for
+  // QA — the public gate never sets it, so real visitors can't reach US.
+  var qHaus = (location.search.match(/[?&]haus=(us|ca)\b/) || [])[1];
+  if (qHaus && LOC[qHaus]) { try { sessionStorage.setItem("hausPreview", qHaus); } catch (err) {} }
+  var preview = null, saved = null;
+  try { preview = sessionStorage.getItem("hausPreview"); } catch (err) {}
   try { saved = sessionStorage.getItem("haus"); } catch (err) {}
-  if (saved && LOC[saved]) {
-    applyLoc(saved);
+  // Geo landing pages carry <body data-haus-pin="ca|us">: render that locale
+  // outright, never show the gate. Additive and opt-in — pages without the
+  // attribute (the entire existing site) fall through to the same branches
+  // as before, and the pin never touches sessionStorage.
+  var pinned = document.body.getAttribute("data-haus-pin");
+  if (pinned && LOC[pinned]) {
+    applyLoc(pinned);
+  } else if (preview && LOC[preview]) {
+    applyLoc(preview);
+  } else if (saved === "ca") {
+    applyLoc("ca");
   } else {
+    if (saved === "us") { try { sessionStorage.removeItem("haus"); } catch (err) {} }
     applyLoc("ca"); // default content under the gate
     showGate();
   }
@@ -427,6 +500,107 @@
       }
     }
     bmodal.showModal();
+    trk("Booking Modal", { label: url });
+  }
+
+  // ---- Sarasota waitlist — pre-launch signup (Formspree AJAX, no page redirect).
+  // Opens over the gate; the US site itself is not entered until launch. ----
+  var WAITLIST_ENDPOINT = "https://formspree.io/f/mlgazeja";
+  var wlModal = null;
+  var CLOSE_X =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 5l14 14M19 5L5 19"/></svg>';
+
+  function openWaitlist() {
+    if (!wlModal) {
+      wlModal = document.createElement("dialog");
+      wlModal.className = "wl";
+      wlModal.innerHTML =
+        '<button class="wl__close" type="button" aria-label="Close waitlist">' + CLOSE_X + "</button>" +
+        '<div class="wl__inner">' +
+          '<img class="wl__crown" src="' + ROOT + 'assets/brand/crown-gold.png" alt="">' +
+          '<p class="label">Sarasota &middot; Florida</p>' +
+          '<h2 class="wl__title">The Sarasota Haus is coming.</h2>' +
+          '<p class="wl__lede">Nano bead extensions for fine, fragile hair &mdash; opening when every detail is right. Join the waitlist and you\'ll be first to know, and first to book.</p>' +
+          '<form class="wl__form" novalidate>' +
+            '<input type="text" name="_gotcha" class="wl__hp" tabindex="-1" autocomplete="off" aria-hidden="true">' +
+            '<input type="hidden" name="_subject" value="New Sarasota waitlist signup">' +
+            '<input type="hidden" name="location" value="Sarasota, FL">' +
+            '<div class="wl__row">' +
+              '<label class="wl__field"><span>Name</span>' +
+                '<input type="text" name="name" autocomplete="name"></label>' +
+              '<label class="wl__field"><span>Phone</span>' +
+                '<input type="tel" name="phone" autocomplete="tel" placeholder="(941) 000-0000"></label>' +
+            "</div>" +
+            '<label class="wl__field"><span>Email</span>' +
+              '<input type="email" name="email" required autocomplete="email" placeholder="you@email.com"></label>' +
+            '<label class="wl__field"><span>What are you hoping for?</span>' +
+              '<select name="goal">' +
+                '<option value="">Select one…</option>' +
+                "<option>Length</option><option>Fullness</option>" +
+                "<option>Both length &amp; fullness</option><option>Not sure yet</option>" +
+              "</select></label>" +
+            '<label class="wl__field"><span>Have you worn extensions before?</span>' +
+              '<select name="extensions_experience">' +
+                '<option value="">Select one…</option>' +
+                "<option>Wearing them now</option><option>Worn them in the past</option><option>First time</option>" +
+              "</select></label>" +
+            '<label class="wl__field"><span>When would you like to start?</span>' +
+              '<select name="timing">' +
+                '<option value="">Select one…</option>' +
+                "<option>As soon as you open</option><option>In the next 1–3 months</option><option>Just exploring for now</option>" +
+              "</select></label>" +
+            '<label class="wl__field"><span>Anything else? <em>(optional)</em></span>' +
+              '<textarea name="notes" rows="2" placeholder="Your natural hair, questions, goals…"></textarea></label>' +
+            '<button class="btn btn--ink wl__submit" type="submit">Join the waitlist</button>' +
+            '<p class="wl__msg" role="status" aria-live="polite"></p>' +
+          "</form>" +
+        "</div>";
+      document.body.appendChild(wlModal);
+      wlModal.querySelector(".wl__close").addEventListener("click", function () { wlModal.close(); });
+      wlModal.addEventListener("click", function (e) { if (e.target === wlModal) wlModal.close(); });
+      wlModal.querySelector(".wl__form").addEventListener("submit", submitWaitlist);
+    }
+    var msg = wlModal.querySelector(".wl__msg");
+    if (msg) { msg.textContent = ""; msg.className = "wl__msg"; }
+    wlModal.showModal();
+    var email = wlModal.querySelector('input[name="email"]');
+    setTimeout(function () { try { email.focus(); } catch (e) {} }, 60);
+  }
+
+  function submitWaitlist(e) {
+    e.preventDefault();
+    var form = e.currentTarget;
+    var btn = form.querySelector(".wl__submit");
+    var msg = form.querySelector(".wl__msg");
+    var label = btn.textContent;
+    btn.disabled = true; btn.textContent = "Sending…";
+    msg.className = "wl__msg"; msg.textContent = "";
+    fetch(WAITLIST_ENDPOINT, {
+      method: "POST",
+      headers: { Accept: "application/json" },
+      body: new FormData(form)
+    }).then(function (r) {
+      if (r.ok) {
+        var inner = wlModal.querySelector(".wl__inner");
+        inner.innerHTML =
+          '<img class="wl__crown" src="' + ROOT + 'assets/brand/crown-gold.png" alt="">' +
+          '<h2 class="wl__title">You\'re on the list.</h2>' +
+          '<p class="wl__lede">Thank you &mdash; we\'ll be in touch the moment the Sarasota Haus opens. Until then, come say hi on Instagram ' +
+            '<a href="https://www.instagram.com/beautyextensionhaus/" target="_blank" rel="noopener">@beautyextensionhaus</a>.</p>' +
+          '<button class="btn btn--ghost" type="button" data-wl-done>Close</button>';
+        inner.querySelector("[data-wl-done]").addEventListener("click", function () { wlModal.close(); });
+        trk("Waitlist Submit", { label: "on-site modal" });
+        return;
+      }
+      return r.json().then(function (d) {
+        var t = d && d.errors && d.errors.map(function (x) { return x.message; }).join(", ");
+        throw new Error(t || "Something went wrong. Please try again.");
+      });
+    }).catch(function (err) {
+      msg.className = "wl__msg is-error";
+      msg.textContent = (err && err.message) || "Couldn't send — check your connection and try again.";
+      btn.disabled = false; btn.textContent = label;
+    });
   }
 
   document.addEventListener("click", function (e) {
@@ -448,6 +622,7 @@
     if (!sw) return;
     e.preventDefault();
     try { sessionStorage.removeItem("haus"); } catch (err) {}
+    try { sessionStorage.removeItem("hausPreview"); } catch (err) {} // also drop any QA preview
     showGate();
   });
 
@@ -490,7 +665,7 @@
     try { if (localStorage.getItem(IG_KEY) === today()) return; } catch (e) {}
     var pop = el(
       '<aside class="igpop" role="dialog" aria-label="Follow Beauty Extension Haus on Instagram">' +
-        '<button class="igpop__x" type="button" aria-label="Dismiss">&times;</button>' +
+        '<button class="igpop__x" type="button" aria-label="Dismiss" data-track-event="IG Popup Dismiss">&times;</button>' +
         '<span class="igpop__icon" aria-hidden="true">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">' +
           '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/>' +
@@ -500,7 +675,7 @@
           '<p class="igpop__sub">Transformations, tips &amp; behind the chair.</p>' +
           '<span class="igpop__handle">@beautyextensionhaus</span>' +
         '</span>' +
-        '<a class="btn igpop__cta" href="' + IG + '" target="_blank" rel="noopener">Follow</a>' +
+        '<a class="btn igpop__cta" href="' + IG + '" target="_blank" rel="noopener" data-track-event="IG Popup Follow">Follow</a>' +
       "</aside>"
     );
     document.body.appendChild(pop);
@@ -518,7 +693,10 @@
       if (shown || done || document.body.classList.contains("is-gated")) return;
       var doc = document.documentElement;
       var max = doc.scrollHeight - window.innerHeight;
-      if (max > 0 && window.scrollY / max >= 0.15) { shown = true; pop.classList.add("is-shown"); }
+      if (max > 0 && window.scrollY / max >= 0.15) {
+        shown = true; pop.classList.add("is-shown");
+        trk("IG Popup Shown");
+      }
     }
     window.addEventListener("scroll", onScroll, { passive: true });
   })();
@@ -563,6 +741,7 @@
       }).then(function (res) {
         if (res.ok && res.d && res.d.ok) {
           form.reset();
+          trk("Contact Submit", { label: "contact form" });
           say("Thank you — your message is with the studio. We'll be in touch soon.", "ok");
         } else {
           say((res.d && res.d.error ? res.d.error.charAt(0).toUpperCase() + res.d.error.slice(1) : "Something went wrong") +
