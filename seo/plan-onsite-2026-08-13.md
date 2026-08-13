@@ -238,9 +238,9 @@ something worth asking Google to recrawl.
 | 2 — internal links | **done** | commit `8fce0b1`. Inbound: Barrie 1→5, Sarasota 2→6, guide 3→4; guide outbound 0→4 |
 | 3 — floor failures | **done** | commit `62459fd`. All 7 targeted pages PASS |
 | 4 — US URLs | **done** | commit `d289714`. `/sarasota/` prerendered, hreflang paired, admin regenerates on save |
-| 5 — content depth | not started | |
-| 6 — technical polish | not started | |
-| 7 — verification gate | **done** (for 0–4) | admin gate PASS, locale render gate PASS, 11 live probes 200/301 |
+| 5 — content depth | **done** | commit `9c8c236`. Barrie 547 -> ~873 words + FAQPage schema; four photographs in the guide |
+| 6 — technical polish | **done (narrowed)** | commit `9c8c236`. Footer logos lazy, 7 images given dimensions; WebP left alone, see below |
+| 7 — verification gate | **done** (for 0–6) | admin gate PASS, locale render gate PASS, 11 live probes 200/301 |
 
 ### Gates built by this pass
 
@@ -304,3 +304,43 @@ pages on its own. If that hook is ever removed, `/sarasota/` silently goes stale
 
 Phase 5 (content depth: the 547-word Barrie page, images in the guide) and Phase 6
 (the 130 unused `.webp` files, lazy-loading, preloads).
+
+
+## Phases 5 and 6 as built
+
+**Phase 5.** The Barrie page carries a five-question FAQ and matching `FAQPage` schema,
+taking it from 547 to ~873 words. Numbers are bound with `data-price` so
+`tools/haus_prices.py` keeps them in step with `prices.json`; answers carry `data-edit`
+ids in the page's `barrie-*` namespace so the client owns the copy.
+
+The guide has four photographs, one per section they illustrate. They live in
+`assets/guide/`, **not** referenced from `assets/photos/slot-*.jpg` — those are
+admin-managed and a client swapping the FAQ photo would silently change the guide.
+
+**Phase 6 was narrowed on evidence, and this is the useful part of the record:**
+
+- **WebP stays unwired.** `deploy/nginx.conf` already documents why: Cloudflare's free
+  plan ignores `Vary: Accept`, so Accept-negotiation would cache one variant for
+  everyone and hand WebP to browsers that cannot render it. Serving the 130 twins needs
+  CF Polish (paid) or `<picture>` sources wired through the admin upload path, where
+  `haus_admin_server.py` rewrites `src`/`srcset` per slot. The run-03 fix list was wrong
+  to call this a quick win.
+- **"Barrie lazy-loads none of its 5 images" was a misread.** Those five are brand logos
+  and a decorative crown; four are above the fold. Only the footer mark was a real
+  candidate, and it is now lazy on all seven pages.
+- **Real and done:** seven images that declared no dimensions now reserve their box, and
+  the four new guide photographs are recompressed (51–254KB), sized, lazy, and stamped
+  with `?v=` because Cloudflare had already cached the unoptimised copies for seven days.
+
+### Cache lesson worth keeping
+
+Publishing an image and *then* optimising it leaves Cloudflare serving the heavy copy
+for the full seven-day TTL. Optimise before first publish, or change the URL.
+
+## Where this leaves Search Console
+
+Everything on-site in this plan is done. The remaining work needs a Google login and is
+listed in `vasco/offsite/operator-checklist.md`: request indexing for the changed URLs
+and the four new `/sarasota/` ones, confirm the Weebly-era titles are gone from the
+index, and read real positions for the six keywords — which also unblocks the SERP step
+run-03 could not measure from this box. The free Moz key belongs in the same session.
