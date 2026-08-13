@@ -1,3 +1,5 @@
 node_modules/
 haus-media-library/
 tools/.venv/
+__pycache__/
+*.pyc
