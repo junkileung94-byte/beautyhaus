@@ -226,3 +226,37 @@ the run-03 link grid into a number.
 Phases 0–3 and 7 are the "before GSC" block: about two days of work, and they are what
 turns the current site from *floor-failing in three places with a starved link graph* into
 something worth asking Google to recrawl.
+
+---
+
+## Status — 2026-08-13
+
+| Phase | State | Evidence |
+|---|---|---|
+| 0 — snapshot + commit | **done** | `~/beautyhaus-preonsite-20260813-1703.tar.gz` (120M, extract-tested), branch `seo-onsite-2026-08-13`, commit `0891c49` |
+| 1 — sitemap / IndexNow | **done** | 8 URLs with true mtimes; IndexNow 200 |
+| 2 — internal links | **done** | commit `8fce0b1`. Inbound: Barrie 1→5, Sarasota 2→6, guide 3→4; guide outbound 0→4 |
+| 3 — floor failures | **done** | commit `62459fd`. All 7 targeted pages PASS |
+| 4 — US URLs | **not started** | URL shape undecided |
+| 5 — content depth | not started | |
+| 6 — technical polish | not started | |
+| 7 — verification gate | **done** (for 0–3) | admin gate PASS, locale render gate PASS, 11 live probes 200/301 |
+
+### Gates built by this pass
+
+- `tools/admin_gate.py` — copies the site to a temp dir, imports the admin server
+  against that copy, and round-trips `set_text` in both locales. Proves the client can
+  still edit every one of the 500 copy slots. Baseline at
+  `seo/vasco/run-03-full-site/admin-gate-baseline.json`; pass it as an argument to fail
+  on any slot id lost since.
+- `~/vasco-run/locale_check.mjs` — loads the live site as `?haus=ca` and `?haus=us`,
+  asserts each locale shows its own geo link and hides the other, and fails on any page
+  JS error.
+- `~/vasco-run/floor.py`, `~/vasco-run/links.py` — the floor grid and internal link graph.
+
+### Correction to run-03
+
+`trade.html`'s absence from the sitemap was listed as a defect in run-03. It is not:
+`settings.json` carries `training: false` and `hiring: false`, `gen_sitemap.py` drops the
+page while both are false, and `js/haus.js:523` redirects it away. The page is dormant by
+design. Run-03 and this plan are both corrected.
