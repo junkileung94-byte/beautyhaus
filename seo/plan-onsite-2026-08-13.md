@@ -237,10 +237,10 @@ something worth asking Google to recrawl.
 | 1 — sitemap / IndexNow | **done** | 8 URLs with true mtimes; IndexNow 200 |
 | 2 — internal links | **done** | commit `8fce0b1`. Inbound: Barrie 1→5, Sarasota 2→6, guide 3→4; guide outbound 0→4 |
 | 3 — floor failures | **done** | commit `62459fd`. All 7 targeted pages PASS |
-| 4 — US URLs | **not started** | URL shape undecided |
+| 4 — US URLs | **done** | commit `d289714`. `/sarasota/` prerendered, hreflang paired, admin regenerates on save |
 | 5 — content depth | not started | |
 | 6 — technical polish | not started | |
-| 7 — verification gate | **done** (for 0–3) | admin gate PASS, locale render gate PASS, 11 live probes 200/301 |
+| 7 — verification gate | **done** (for 0–4) | admin gate PASS, locale render gate PASS, 11 live probes 200/301 |
 
 ### Gates built by this pass
 
@@ -260,3 +260,47 @@ something worth asking Google to recrawl.
 `settings.json` carries `training: false` and `hiring: false`, `gen_sitemap.py` drops the
 page while both are false, and `js/haus.js:523` redirects it away. The page is dormant by
 design. Run-03 and this plan are both corrected.
+
+
+## Phase 4 as built — the US locale at /sarasota/
+
+Chosen shape: **`/sarasota/` prefix**, for the geo keyword in every US path.
+
+| CA | US |
+|---|---|
+| `/` | `/sarasota/` |
+| `/services.html` | `/sarasota/services.html` |
+| `/why-nano.html` | `/sarasota/why-nano.html` |
+| `/care.html` | `/sarasota/care.html` |
+
+`tools/gen_us_pages.py` builds the US set from the CA pages plus the overrides the
+admin console already owns. Per page it applies the US text and image overrides,
+removes the CA-only blocks and anything `layout.json` hides for the US locale, fills
+`[data-loc-field]` from `LOC.us` in `js/haus.js` (so the served HTML carries the
+Sarasota address, not the Barrie one), rewrites relative URLs to root-absolute and
+internal links to their US counterparts, and sets a Sarasota-targeted title and
+description. `data-haus-pin="us"` on the body was already supported by the bootstrap,
+so no JS change was needed.
+
+Both sides carry `hreflang` en-CA / en-US / x-default plus self-canonicals. The CA
+pages get theirs by string insert — a BeautifulSoup round-trip rewrote every attribute
+in the file (1,500 lines of churn) and broke the sitemap's canonical lint, so that
+approach was reverted.
+
+**Staying correct over time:** `haus_admin_server.py` schedules a debounced,
+off-thread rebuild after any content write, so a client edit in /admin reaches the US
+pages on its own. If that hook is ever removed, `/sarasota/` silently goes stale —
+`tools/check_us_pages.py` is the canary.
+
+### Gates for this phase
+
+- `tools/check_us_pages.py` — fetches the live pages as a crawler does (no JS) and
+  asserts self-canonical, reciprocal hreflang both ways, no CA-only blocks, no Barrie
+  address in visible copy, no links leaking back to the CA set.
+- `~/vasco-run/us_render.mjs` — browser pass over the four US pages: locale resolves to
+  `us`, no gate interstitial, no JS errors.
+
+### Not done (do not block Search Console)
+
+Phase 5 (content depth: the 547-word Barrie page, images in the guide) and Phase 6
+(the 130 unused `.webp` files, lazy-loading, preloads).
