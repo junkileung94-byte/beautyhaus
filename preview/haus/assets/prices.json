@@ -1,0 +1,243 @@
+{
+  "deposit": 250,
+  "training_deposit": 550,
+  "ca": {
+    "currency": "CAD",
+    "nano": {
+      "lengths": [
+        {
+          "label": "20”",
+          "bundle": 230
+        },
+        {
+          "label": "24”",
+          "bundle": 255
+        }
+      ],
+      "own_hair": 85,
+      "maint": {
+        "whole": [
+          145,
+          185,
+          220,
+          250,
+          285,
+          325,
+          375
+        ],
+        "half_delta": [
+          10,
+          10,
+          10,
+          15,
+          15,
+          15,
+          10
+        ]
+      },
+      "removal": 95,
+      "dematting": 60,
+      "curling": 35
+    },
+    "wavy": {
+      "lengths": [
+        {
+          "label": "24”",
+          "bundle": 285
+        }
+      ]
+    },
+    "weft": {
+      "hair": [
+        350,
+        375,
+        415,
+        435
+      ],
+      "install": [
+        225,
+        400,
+        475,
+        550
+      ],
+      "maint_rows": [
+        {
+          "label": "1 row",
+          "price": 205
+        },
+        {
+          "label": "2 rows",
+          "price": 285
+        },
+        {
+          "label": "2.5 rows",
+          "price": 325
+        },
+        {
+          "label": "3 rows",
+          "price": 375
+        }
+      ],
+      "cocktail_min": 50,
+      "cocktail_max": 75,
+      "removal": 75
+    },
+    "ktip": {
+      "hair_install": [
+        315,
+        335,
+        355,
+        375
+      ],
+      "removal_min": 125,
+      "removal_max": 175
+    }
+  },
+  "us": {
+    "currency": "USD",
+    "nano": {
+      "install_per_bundle": 100,
+      "lengths": [
+        {
+          "label": "20″",
+          "hair": 185
+        },
+        {
+          "label": "24″",
+          "hair": 210
+        }
+      ],
+      "bundles": 6,
+      "grams_per_bundle": 25,
+      "maint": {
+        "whole": [
+          160,
+          240,
+          320,
+          400,
+          475,
+          550,
+          625
+        ],
+        "half_delta": [
+          40,
+          40,
+          40,
+          40,
+          40,
+          40
+        ]
+      },
+      "removal": 100
+    },
+    "wavy": {
+      "install_per_bundle": 100,
+      "lengths": [
+        {
+          "label": "24″",
+          "hair": 240
+        }
+      ],
+      "bundles": 6,
+      "grams_per_bundle": 25
+    }
+  },
+  "colour": [
+    {
+      "id": "money-piece-foils",
+      "name": "Money piece foils",
+      "value": 85,
+      "fmt": "plus"
+    },
+    {
+      "id": "partial-foils",
+      "name": "Partial foils",
+      "value": 145,
+      "fmt": "plus"
+    },
+    {
+      "id": "half-head-foils",
+      "name": "Half head foils",
+      "value": 170,
+      "fmt": "plus"
+    },
+    {
+      "id": "full-head-foils",
+      "name": "Full head foils",
+      "value": 200,
+      "fmt": "plus"
+    },
+    {
+      "id": "roots-foils",
+      "name": "Roots + foils",
+      "value": 200,
+      "fmt": "plus"
+    },
+    {
+      "id": "balayage",
+      "name": "Balayage",
+      "value": 230,
+      "fmt": "plus"
+    },
+    {
+      "id": "full-color",
+      "name": "Full color",
+      "value": 145,
+      "fmt": "plus"
+    },
+    {
+      "id": "root-touch-up",
+      "name": "Root touch-up",
+      "value": 110,
+      "fmt": "plus"
+    },
+    {
+      "id": "toner-gloss",
+      "name": "Toner / gloss add-on",
+      "value": 40,
+      "fmt": "plus"
+    },
+    {
+      "id": "cut-blowout",
+      "name": "Cut + blowout",
+      "value": 85,
+      "fmt": "plus"
+    },
+    {
+      "id": "deep-repair",
+      "name": "Deep repair add-on",
+      "value": 30,
+      "fmt": "plus"
+    },
+    {
+      "id": "custom-color-extensions",
+      "name": "Custom color for extensions",
+      "value": 45,
+      "fmt": "plain"
+    },
+    {
+      "id": "malibu-cpr",
+      "name": "Malibu CPR treatment",
+      "value": 45,
+      "fmt": "plain"
+    },
+    {
+      "id": "extension-blending",
+      "name": "Extension blending",
+      "value": 30,
+      "fmt": "plain"
+    },
+    {
+      "id": "keratin",
+      "name": "Keratin treatment",
+      "value": 300,
+      "fmt": "from"
+    },
+    {
+      "id": "blowout",
+      "name": "Blowout",
+      "value": 55,
+      "fmt": "plus"
+    }
+  ]
+}

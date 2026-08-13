@@ -1,0 +1,16 @@
+{
+  "training": false,
+  "hiring": false,
+  "beforeafter": true,
+  "queensScrim": 0.74,
+  "driveCa": "https://drive.google.com/drive/folders/1nTIbsLNa0Gt1jgB1-oN5L2yM9aQt11UR",
+  "driveUs": "",
+  "driveClient": "https://drive.google.com/drive/folders/1kG9AkRu93RIjofjViRopVisn2_VdUn1F",
+  "drives": [
+    {
+      "id": "video",
+      "name": "Video",
+      "url": "https://drive.google.com/drive/folders/1iUyx2HpxO1LtOMT62jqFzMS5oTA68ccw"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Deanna",
+    "role": "Founder \u00b7 Lead Extension Specialist",
+    "bio": "Deanna, the specialist behind Beauty Extension Haus. Has spent years wearing and refining the nano method and training the team to her standard. Healthy hair, honest recommendations, and beautiful results are at the heart of everything she does.",
+    "photo": "assets/photos/team-1784863609593.jpg"
+  },
+  {
+    "name": "Jacklyn",
+    "role": "Consults \u00b7 Nanos \u00b7 Genius Wefts",
+    "bio": "Our longest standing queen. Jacklyn has been part of Beauty Extension Haus since the very beginning and has grown alongside of the brand. She specializes in Nano Extensions, Genius Wefts, and consultations, bringing a calm, thoughtful approach to every client.",
+    "photo": "assets/photos/slot-team-jacklyn.jpg"
+  },
+  {
+    "name": "Steph",
+    "role": "Consults \u00b7 Nanos \u00b7 K-Tips",
+    "bio": "Steph joined us as a client before becoming part of the team. She specializes in Nano Extensions and K tips, combining meticulous attention to detail with a genuine love for helping clients feel confident.",
+    "photo": "assets/photos/team-1784863663372.jpg"
+  },
+  {
+    "name": "Kristen",
+    "role": "In-Haus colorist \u00b7 Nanos",
+    "bio": "Our color specialist and nano extension artist. From dimensional color to beautifully blended extension transformations, Kristen has an eye for creating natural, effortless results that are customized to every client.",
+    "photo": "assets/photos/slot-team-kristen.jpg"
+  },
+  {
+    "name": "Heather",
+    "role": "Maintenance Specialist",
+    "bio": "Heather keeps our clients looking their best between installs. From removals and reinstallation to cleanups and refreshes, she ensures every maintenance appointment leaves your extensions, looking and feeling like new.",
+    "photo": "assets/photos/slot-team-heather.jpg"
+  },
+  {
+    "name": "JC",
+    "role": "Maintenance Specialist",
+    "bio": "JC is all about the details. Specializing in extension maintenance, she carefully removes, refreshes, and reinstall every set to keep your extensions, healthy, comfortable, and beautifully blended.",
+    "photo": "assets/photos/team-1784863726458.jpg"
+  },
+  {
+    "name": "Milly",
+    "role": "Salon Manager",
+    "bio": "From your first phone call to your final appointment, Milly keeps everything running smoothly. She's here to answer your questions, coordinate your visits, and make every Beauty Extension Haus experience effortless.",
+    "photo": "assets/photos/team-1784863956462.jpg"
+  }
+]

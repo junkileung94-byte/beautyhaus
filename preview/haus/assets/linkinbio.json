@@ -1,0 +1,85 @@
+{
+  "profile": {
+    "name": "BEAUTY EXTENSION HAUS",
+    "tagline": "Specializing in hair extensions 💜 Your hair.. but BETTER! Barrie, ON 🇨🇦  ·  Now open in Sarasota, FL 🌴",
+    "avatar": "/assets/linkinbio/avatar.jpg"
+  },
+  "socials": [
+    {
+      "type": "instagram",
+      "href": "https://www.instagram.com/beautyextensionhaus"
+    }
+  ],
+  "links": [
+    {
+      "id": "l1",
+      "title": "Book a FREE hair extension consultation 💜 | Barrie, ON 🇨🇦",
+      "href": "https://book.squareup.com/appointments/d2wslhq6ohtrno/location/0SNE1R5SHR4FD/services",
+      "thumb": "/assets/linkinbio/thumb-1.jpg",
+      "active": true
+    },
+    {
+      "id": "l3",
+      "title": "Book a Nano Consultation! | Sarasota, FL 🌴 now open",
+      "href": "https://booking.mangomint.com/733325",
+      "thumb": "/assets/linkinbio/thumb-3.jpg",
+      "active": true
+    },
+    {
+      "id": "l4",
+      "title": "Learn more about Nano Hair Extensions on my website!",
+      "href": "https://beautyextensionhaus.com/",
+      "thumb": "/assets/linkinbio/thumb-4.jpg",
+      "active": true
+    },
+    {
+      "id": "care",
+      "title": "Hair extension aftercare & FAQ 💜",
+      "href": "https://beautyextensionhaus.com/care.html",
+      "thumb": "/assets/photos/slot-faq-care.jpg",
+      "active": true
+    },
+    {
+      "id": "guide",
+      "title": "Nano beading, understood — the complete guide 📖",
+      "href": "https://beautyextensionhaus.com/guide/nano-bead-extensions/",
+      "thumb": "/assets/photos/slot-faq-basics.jpg",
+      "active": true
+    },
+    {
+      "id": "l5",
+      "title": "Shop Viola Canada Nano Hair Extensions | for professionals only 💜",
+      "href": "https://violahairextensions.co/",
+      "thumb": "/assets/linkinbio/thumb-5.jpg",
+      "active": true
+    },
+    {
+      "id": "l6",
+      "title": "Leave a google review on your experience getting nanos with us!",
+      "href": "https://g.page/r/Cct4ScFqy8LqEBE/review",
+      "thumb": "/assets/linkinbio/thumb-6.jpg",
+      "active": true
+    },
+    {
+      "id": "l7",
+      "title": "Safe sunscreens for blonde extensions ☀️",
+      "href": "https://www.amazon.ca/shop/beautyextensionhaus/list/38GLI3BBMAO2O?ref_=cm_sw_r_apin_aipsflist_aipsfbeautyextensionhaus_TVW6A7NYQ92XDJSSVWW1&language=en_US",
+      "thumb": "/assets/linkinbio/thumb-7.jpg",
+      "active": true
+    },
+    {
+      "id": "l8",
+      "title": "My favourite nano salon products for hair techs from Amazon!",
+      "href": "https://amzn.to/3LvKKt0",
+      "thumb": "/assets/linkinbio/thumb-8.jpg",
+      "active": true
+    },
+    {
+      "id": "l9",
+      "title": "My Favourite beauty products on Amazon!",
+      "href": "https://www.amazon.ca/shop/beautyextensionhaus/list/2OSNVKBR34JSE?ref_=cm_sw_r_apin_aipsflist_aipsfbeautyextensionhaus_FTSDGX883ABQCGG5F4GB",
+      "thumb": "/assets/linkinbio/thumb-9.jpg",
+      "active": true
+    }
+  ]
+}

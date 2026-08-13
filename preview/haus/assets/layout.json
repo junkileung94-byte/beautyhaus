@@ -1,0 +1,10 @@
+{
+  "ca": {},
+  "us": {
+    "index.html": {
+      "hidden": [
+        "studio"
+      ]
+    }
+  }
+}

@@ -1,0 +1,89 @@
+/* Hallmark · macrostructure: Photographic · H6 photographic-fold knobs: image=full-bleed, caption=lower-left, text=overlaid-glass
+ * theme: custom · vibe: "lilac porcelain, champagne gold, charcoal — glass atelier"
+ * brand anchor: #EBD2FD = oklch(89.8% 0.064 311) · paper: oklch(97% 0.010 311) · accent: oklch(52% 0.115 80)
+ * display: Playfair Display · body: Jost · axes: light / roman-serif / warm (gold accent on lilac neutrals)
+ * darks are charcoal-violet (chroma ≤0.014 — deliberately NOT Deep/Midnight Plum) · WCAG: all pairs ≥4.6:1, body ≥6.8:1
+ * nav: N9 edge-aligned minimal · footer: Ft5 statement · enrichment: placeholder photography (client assets pending)
+ * studied: no · context: user-provided (brand #EBD2FD, Playfair Display, glass, parallax; plum darks rejected) · Hallmark v1.1.0
+ */
+
+:root {
+  /* colour — lilac gradient ramp (hue ~311), gold carries the CTAs.
+   * ramp: FBF5FF lightest · E8DBF1 lighter · EBD2FD brand · D4B0EE darkest */
+  --color-brand:      #EBD2FD;                    /* exact brand */
+  --color-lilac-1:    #FBF5FF;                    /* lightest — paper */
+  --color-lilac-2:    #E8DBF1;                    /* lighter */
+  --color-lilac-3:    #EBD2FD;                    /* brand */
+  --color-lilac-4:    #D4B0EE;                    /* darkest lilac — gradient ends, dividers */
+  --color-paper:      oklch(97.8% 0.015 312);     /* #FBF5FF */
+  --color-paper-2:    oklch(90.8% 0.033 312);     /* #E8DBF1 */
+  --color-paper-3:    oklch(89.8% 0.064 311);     /* #EBD2FD brand band */
+  --color-ink:        oklch(21% 0.012 311);       /* #1A171C charcoal, violet whisper — 16:1 on paper */
+  --color-ink-2:      oklch(34% 0.012 311);
+  --color-muted:      oklch(45% 0.014 311);
+  --color-rule:       oklch(84% 0.055 311);       /* lilac hairline */
+  --color-rule-2:     oklch(90% 0.038 311);
+  --color-accent:     oklch(52% 0.115 80);        /* champagne gold — 5.2:1 on paper */
+  --color-accent-2:   oklch(76% 0.085 85);        /* pale gold — labels on dark, 8.6:1 */
+  --color-accent-ink: oklch(97.8% 0.015 312);
+  --color-focus:      oklch(52% 0.18 80);
+  --color-dark:       oklch(19% 0.014 311);       /* charcoal band — not plum */
+  --color-dark-2:     oklch(24% 0.016 311);
+  --color-ink-on-dark:oklch(94% 0.014 311);
+
+  /* glass surfaces — the one deliberate depth device (overlays above photography) */
+  --glass-light:      oklch(97.8% 0.020 312 / 0.55);
+  --glass-light-brd:  oklch(99% 0.010 312 / 0.65);
+  --glass-dark:       oklch(20% 0.014 311 / 0.62);
+  --glass-dark-brd:   oklch(76% 0.085 85 / 0.35);
+  --glass-blur:       blur(18px) saturate(1.3);
+
+  /* type */
+  --font-display: "Playfair Display", "Georgia", ui-serif, serif;
+  --font-emotive: "Cormorant Garamond", "Georgia", ui-serif, serif;
+  --font-body:    "Jost", ui-sans-serif, system-ui, sans-serif;
+
+  --text-xs:   0.72rem;
+  --text-sm:   0.85rem;
+  --text-base: 1rem;
+  --text-md:   1.2rem;
+  --text-lg:   1.45rem;
+  --text-xl:   1.85rem;
+  --text-2xl:  2.35rem;
+  --text-3xl:  2.95rem;
+  --text-display-s: clamp(1.9rem, 3.2vw + 1rem, 3.2rem);
+  --text-display:   clamp(2.5rem, 4.5vw + 1rem, 4.9rem);
+
+  /* space — 4pt scale */
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+  --space-4xl: 9rem;
+  --page-gutter: clamp(1.1rem, 4.5vw, 3.5rem);
+
+  /* motion */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long:  420ms;
+
+  /* rules / radius */
+  --rule-hair: 1px;
+  --radius-arch: 240px 240px 18px 18px;  /* Victorian arch crop, kept from the brief */
+  --radius-card: 20px;
+  --radius-pill: 999px;
+
+  /* z-scale */
+  --z-base: 1;
+  --z-raised: 10;
+  --z-sticky: 200;
+  --z-modal: 400;
+  --z-gate: 500;
+}
