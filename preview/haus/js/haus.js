@@ -182,12 +182,21 @@
     entries.forEach(function (en) {
       var v = en.target;
       if (en.isIntersecting && en.intersectionRatio >= 0.6) {
+        // in view = the clip must actually load now. Bump preload off "metadata"
+        // (which only ever reaches readyState 1 — no frame) and start the
+        // watchdog that restores the photo if no frame arrives.
+        if (v.preload !== "auto") v.preload = "auto";
+        if (v.__arm) v.__arm();
         var pr = v.play(); if (pr && pr.catch) pr.catch(function () {});
       } else if (!v.paused) { v.pause(); }
     });
   }, { threshold: [0, 0.6, 1] }) : null;
 
   function resolveUrl(u) { return /^(https?:|\/|data:|blob:)/.test(u) ? u : ROOT + u; }
+
+  // How long a slot video that is ON SCREEN may go without producing a frame
+  // before we fall back to its photo.
+  var VID_WATCHDOG_MS = 7000;
 
   // mount/update a slot's muted looping video overlay (the photo stays behind as poster)
   function mountSlotVideo(slot, url, imgEl, picEl) {
@@ -202,20 +211,77 @@
       vid.muted = true; vid.defaultMuted = true; vid.loop = true; vid.playsInline = true;
       vid.setAttribute("muted", ""); vid.setAttribute("loop", ""); vid.setAttribute("playsinline", "");
       vid.preload = "metadata";
-      vid.addEventListener("loadeddata", function () { vid.classList.add("is-ready"); });
+
+      // The clip is only ever "ready" once it holds a decodable frame
+      // (readyState >= HAVE_CURRENT_DATA). `loadeddata` alone is not enough to
+      // rely on: with preload="metadata" iOS stops at readyState 1 and never
+      // fires it, so listen for every event that can signal a first frame.
+      function ready() {
+        if (vid.readyState < 2 || vid.classList.contains("is-ready")) return;
+        clearTimeout(vid.__wd); vid.__wd = null;
+        vid.classList.add("is-ready");
+        // frame is on screen and opaque → drop the poster photo underneath so it
+        // can't flash through a loop seam.
+        host.classList.add("slot-live");
+      }
+      ["loadeddata", "canplay", "canplaythrough", "playing", "timeupdate"].forEach(function (ev) {
+        vid.addEventListener(ev, ready);
+      });
+
+      // No frame = fall back to the photo. This is the path that used to leave a
+      // bare pink block: the photo was hidden at mount time and nothing ever put
+      // it back when the clip failed to decode. Chrome keeps its media cache
+      // across sessions (Safari's clears more readily), so one truncated range
+      // response can wedge the same slot on every later visit — hence the single
+      // cache-busted retry before giving up.
+      function fail() {
+        if (vid.classList.contains("is-ready")) return;   // already playing — ignore late noise
+        clearTimeout(vid.__wd); vid.__wd = null;
+        if (!vid.__retried) {
+          vid.__retried = 1;
+          var u = vid.__src;
+          vid.setAttribute("src", u + (u.indexOf("?") > -1 ? "&" : "?") + "cb=" + Date.now());
+          vid.load();
+          var pr = vid.play(); if (pr && pr.catch) pr.catch(function () {});
+          vid.__arm();
+          return;
+        }
+        removeSlotVideo(vid);
+      }
+      vid.addEventListener("error", fail);
+      // NOT `stalled`/`waiting` — those fire routinely while buffering a big clip
+      // on a slow phone connection. Treating them as failure would throw away a
+      // download that was going to succeed.
+      vid.__arm = function () { if (!vid.__wd) vid.__wd = setTimeout(fail, VID_WATCHDOG_MS); };
+      // Bytes are still arriving → reset the watchdog. So the timeout means
+      // "stuck for 7s", not "slower than 7s" — a phone on a weak connection keeps
+      // its clip instead of being dropped to the photo for being slow.
+      vid.addEventListener("progress", function () {
+        if (!vid.__wd || vid.classList.contains("is-ready")) return;
+        clearTimeout(vid.__wd); vid.__wd = null; vid.__arm();
+      });
+
       if (getComputedStyle(host).position === "static") host.style.position = "relative";
-      // this slot holds a video → hide its poster photo now so the old image
-      // is NEVER shown (no first-paint show, no loop-seam flash). Host bg fills
-      // the gap until the clip fades in.
-      host.classList.add("slot-live");
       host.appendChild(vid);
       if (VID_IO) VID_IO.observe(vid);
     }
-    if (vid.getAttribute("src") !== src) vid.setAttribute("src", src);
+    if (vid.getAttribute("src") !== src) {
+      // new clip for this slot: show the photo again until the new one has a frame
+      vid.__src = src; vid.__retried = 0;
+      clearTimeout(vid.__wd); vid.__wd = null;
+      vid.classList.remove("is-ready");
+      host.classList.remove("slot-live");
+      vid.setAttribute("src", src);
+    }
+    // the slot's own photo doubles as the clip's poster, so even a video that
+    // never decodes paints the right image instead of the section background.
+    var poster = (imgEl && (imgEl.currentSrc || imgEl.src)) || "";
+    if (poster && vid.poster !== poster) vid.poster = poster;
   }
 
   function removeSlotVideo(vid) {
     if (VID_IO) VID_IO.unobserve(vid);
+    clearTimeout(vid.__wd); vid.__wd = null;
     try { vid.pause(); } catch (e) {}
     var host = vid.parentElement;
     vid.remove();
@@ -239,6 +305,16 @@
     });
     document.querySelectorAll("source[data-slot-src]").forEach(function (n) {
       DEFAULTS.srcset[n.getAttribute("data-slot-src")] = n.getAttribute("srcset") || "";
+    });
+    // inline <video data-vid> (the welcome clip) — these play with sound on a
+    // click, so they're separate from the muted autoplay slot videos above.
+    DEFAULTS.vid = {};
+    document.querySelectorAll("video[data-vid]").forEach(function (n) {
+      var s = n.querySelector("source");
+      DEFAULTS.vid[n.getAttribute("data-vid")] = {
+        src: (s && s.getAttribute("src")) || n.getAttribute("src") || "",
+        poster: n.getAttribute("poster") || ""
+      };
     });
   }
 
@@ -282,6 +358,28 @@
       var s = v.getAttribute("data-slot-video");
       var oo = img[s];
       if (!oo || !oo.video || NO_MOTION) removeSlotVideo(v);
+    });
+
+    // inline videos: point each at this locale's clip. CA is the authored base,
+    // so it falls back to the clip in the HTML; any other locale needs its own
+    // (set in /admin) — otherwise its block is hidden, never borrowed from CA.
+    var vid = C.vid || {};
+    Object.keys(DEFAULTS.vid).forEach(function (name) {
+      var el = document.querySelector('video[data-vid="' + name + '"]');
+      if (!el) return;
+      var o = vid[name] || (haus === "ca" ? DEFAULTS.vid[name] : null);
+      var wrap = el.closest('[data-vid-wrap="' + name + '"]') || el.parentElement;
+      if (!o || !o.src) { if (wrap) wrap.classList.add("vid-empty"); return; }
+      if (wrap) wrap.classList.remove("vid-empty");
+      var src = resolveUrl(o.src);
+      var srcEl = el.querySelector("source");
+      if (srcEl) {
+        // <source> changes need an explicit load() — unlike src on the element
+        if (srcEl.getAttribute("src") !== src) { srcEl.setAttribute("src", src); el.load(); }
+      } else if (el.getAttribute("src") !== src) {
+        el.setAttribute("src", src);
+      }
+      el.poster = o.poster ? resolveUrl(o.poster) : "";
     });
     document.dispatchEvent(new CustomEvent("haus:locale", { detail: haus }));
   }
@@ -372,12 +470,11 @@
           '<div class="gate__head"><p class="label">Beauty Extension Haus</p>' +
           '<h1 class="gate__title">Choose your Haus</h1></div>' +
           '<div class="gate__inner" style="margin-top:var(--space-xl)">' +
-            '<button class="gate__choice gate__choice--soon" data-waitlist type="button">' +
-              '<span class="gate__soon-badge">Opening soon</span>' +
+            '<button class="gate__choice" data-haus="us">' +
               '<span class="gate__flag">' + FLAG_US + "</span>" +
               '<span class="gate__country">United States</span>' +
               '<span class="gate__city">Sarasota · Florida</span>' +
-              '<span class="gate__note">Join the waitlist &rarr;</span>' +
+              '<span class="gate__note">Nano bead specialists</span>' +
             "</button>" +
             '<div class="gate__divider" aria-hidden="true"><img class="gate__crown" src="' + ROOT + 'assets/brand/crown-gold.png" alt=""></div>' +
             '<button class="gate__choice" data-haus="ca">' +
@@ -397,9 +494,6 @@
       // which would walk up to <body data-haus> and silently pick Canada.
       var choice = e.target.closest(".gate__choice");
       if (!choice) return;
-      // US is pre-launch: its card opens the waitlist instead of entering the
-      // site. The gate stays behind, so closing the waitlist returns to it.
-      if (choice.hasAttribute("data-waitlist")) { e.preventDefault(); openWaitlist(); return; }
       var haus = choice.dataset.haus;
       if (!haus) return;
       try { sessionStorage.setItem("haus", haus); } catch (err) {}
@@ -433,11 +527,10 @@
     .catch(function () {}); // no settings file → everything stays hidden
 
   // ---- boot ----
-  // US is pre-launch: the gate offers only Canada; its US button opens the
-  // waitlist rather than entering the site, and a returning "us" session no
-  // longer auto-enters. A ?haus=us|ca override enters that locale AND sticks for
-  // the tab (sessionStorage "hausPreview") so the US build stays browsable for
-  // QA — the public gate never sets it, so real visitors can't reach US.
+  // Both locales are live: the gate offers Canada and the US, and a saved choice
+  // re-enters that locale for the tab. A ?haus=us|ca override still enters that
+  // locale AND sticks for the tab (sessionStorage "hausPreview") so a locale can
+  // be linked to / QA'd directly without the gate.
   var qHaus = (location.search.match(/[?&]haus=(us|ca)\b/) || [])[1];
   if (qHaus && LOC[qHaus]) { try { sessionStorage.setItem("hausPreview", qHaus); } catch (err) {} }
   var preview = null, saved = null;
@@ -452,10 +545,9 @@
     applyLoc(pinned);
   } else if (preview && LOC[preview]) {
     applyLoc(preview);
-  } else if (saved === "ca") {
-    applyLoc("ca");
+  } else if (saved && LOC[saved]) {
+    applyLoc(saved);
   } else {
-    if (saved === "us") { try { sessionStorage.removeItem("haus"); } catch (err) {} }
     applyLoc("ca"); // default content under the gate
     showGate();
   }
@@ -503,106 +595,6 @@
     trk("Booking Modal", { label: url });
   }
 
-  // ---- Sarasota waitlist — pre-launch signup (Formspree AJAX, no page redirect).
-  // Opens over the gate; the US site itself is not entered until launch. ----
-  var WAITLIST_ENDPOINT = "https://formspree.io/f/mlgazeja";
-  var wlModal = null;
-  var CLOSE_X =
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 5l14 14M19 5L5 19"/></svg>';
-
-  function openWaitlist() {
-    if (!wlModal) {
-      wlModal = document.createElement("dialog");
-      wlModal.className = "wl";
-      wlModal.innerHTML =
-        '<button class="wl__close" type="button" aria-label="Close waitlist">' + CLOSE_X + "</button>" +
-        '<div class="wl__inner">' +
-          '<img class="wl__crown" src="' + ROOT + 'assets/brand/crown-gold.png" alt="">' +
-          '<p class="label">Sarasota &middot; Florida</p>' +
-          '<h2 class="wl__title">The Sarasota Haus is coming.</h2>' +
-          '<p class="wl__lede">Nano bead extensions for fine, fragile hair &mdash; opening when every detail is right. Join the waitlist and you\'ll be first to know, and first to book.</p>' +
-          '<form class="wl__form" novalidate>' +
-            '<input type="text" name="_gotcha" class="wl__hp" tabindex="-1" autocomplete="off" aria-hidden="true">' +
-            '<input type="hidden" name="_subject" value="New Sarasota waitlist signup">' +
-            '<input type="hidden" name="location" value="Sarasota, FL">' +
-            '<div class="wl__row">' +
-              '<label class="wl__field"><span>Name</span>' +
-                '<input type="text" name="name" autocomplete="name"></label>' +
-              '<label class="wl__field"><span>Phone</span>' +
-                '<input type="tel" name="phone" autocomplete="tel" placeholder="(941) 000-0000"></label>' +
-            "</div>" +
-            '<label class="wl__field"><span>Email</span>' +
-              '<input type="email" name="email" required autocomplete="email" placeholder="you@email.com"></label>' +
-            '<label class="wl__field"><span>What are you hoping for?</span>' +
-              '<select name="goal">' +
-                '<option value="">Select one…</option>' +
-                "<option>Length</option><option>Fullness</option>" +
-                "<option>Both length &amp; fullness</option><option>Not sure yet</option>" +
-              "</select></label>" +
-            '<label class="wl__field"><span>Have you worn extensions before?</span>' +
-              '<select name="extensions_experience">' +
-                '<option value="">Select one…</option>' +
-                "<option>Wearing them now</option><option>Worn them in the past</option><option>First time</option>" +
-              "</select></label>" +
-            '<label class="wl__field"><span>When would you like to start?</span>' +
-              '<select name="timing">' +
-                '<option value="">Select one…</option>' +
-                "<option>As soon as you open</option><option>In the next 1–3 months</option><option>Just exploring for now</option>" +
-              "</select></label>" +
-            '<label class="wl__field"><span>Anything else? <em>(optional)</em></span>' +
-              '<textarea name="notes" rows="2" placeholder="Your natural hair, questions, goals…"></textarea></label>' +
-            '<button class="btn btn--ink wl__submit" type="submit">Join the waitlist</button>' +
-            '<p class="wl__msg" role="status" aria-live="polite"></p>' +
-          "</form>" +
-        "</div>";
-      document.body.appendChild(wlModal);
-      wlModal.querySelector(".wl__close").addEventListener("click", function () { wlModal.close(); });
-      wlModal.addEventListener("click", function (e) { if (e.target === wlModal) wlModal.close(); });
-      wlModal.querySelector(".wl__form").addEventListener("submit", submitWaitlist);
-    }
-    var msg = wlModal.querySelector(".wl__msg");
-    if (msg) { msg.textContent = ""; msg.className = "wl__msg"; }
-    wlModal.showModal();
-    var email = wlModal.querySelector('input[name="email"]');
-    setTimeout(function () { try { email.focus(); } catch (e) {} }, 60);
-  }
-
-  function submitWaitlist(e) {
-    e.preventDefault();
-    var form = e.currentTarget;
-    var btn = form.querySelector(".wl__submit");
-    var msg = form.querySelector(".wl__msg");
-    var label = btn.textContent;
-    btn.disabled = true; btn.textContent = "Sending…";
-    msg.className = "wl__msg"; msg.textContent = "";
-    fetch(WAITLIST_ENDPOINT, {
-      method: "POST",
-      headers: { Accept: "application/json" },
-      body: new FormData(form)
-    }).then(function (r) {
-      if (r.ok) {
-        var inner = wlModal.querySelector(".wl__inner");
-        inner.innerHTML =
-          '<img class="wl__crown" src="' + ROOT + 'assets/brand/crown-gold.png" alt="">' +
-          '<h2 class="wl__title">You\'re on the list.</h2>' +
-          '<p class="wl__lede">Thank you &mdash; we\'ll be in touch the moment the Sarasota Haus opens. Until then, come say hi on Instagram ' +
-            '<a href="https://www.instagram.com/beautyextensionhaus/" target="_blank" rel="noopener">@beautyextensionhaus</a>.</p>' +
-          '<button class="btn btn--ghost" type="button" data-wl-done>Close</button>';
-        inner.querySelector("[data-wl-done]").addEventListener("click", function () { wlModal.close(); });
-        trk("Waitlist Submit", { label: "on-site modal" });
-        return;
-      }
-      return r.json().then(function (d) {
-        var t = d && d.errors && d.errors.map(function (x) { return x.message; }).join(", ");
-        throw new Error(t || "Something went wrong. Please try again.");
-      });
-    }).catch(function (err) {
-      msg.className = "wl__msg is-error";
-      msg.textContent = (err && err.message) || "Couldn't send — check your connection and try again.";
-      btn.disabled = false; btn.textContent = label;
-    });
-  }
-
   document.addEventListener("click", function (e) {
     var book = e.target.closest('[data-loc-field="book"]');
     if (!book) return;
@@ -611,7 +603,7 @@
     // Mangomint booking opens in its own overlay — its app.js (loaded in <head>)
     // intercepts the click on this link, so leave the event alone and let it run.
     if (/booking\.mangomint\.com/.test(url)) return;
-    // Everything else (US waitlist) opens in the on-site iframe modal.
+    // Everything else (Square) opens in the on-site iframe modal.
     e.preventDefault();
     openBooking(url);
   });

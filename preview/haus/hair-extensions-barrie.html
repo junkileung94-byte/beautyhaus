@@ -28,7 +28,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/haus.css?v=20260723r">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/haus.css?v=20260806d">
 <script defer data-domain="beautyextensionhaus.com" data-api="/api/event" src="/js/script.pageview-props.js?v=1"></script>
 <script>document.documentElement.classList.add('ns-js');</script>
 <script type="application/ld+json">
@@ -129,7 +130,13 @@
 
 <nav class="menu" aria-label="Site menu">
   <div class="menu__top">
-    <img src="assets/logo-cream.png" alt="" width="52">
+    <div class="menu__brand">
+      <img src="assets/logo-cream.png" alt="" width="52">
+      <button class="menu__loc" type="button" data-switch-haus data-menu-close aria-label="Switch location">
+        <span class="nav__flag" data-loc-flag></span>
+        <span data-loc-field="short">Barrie &middot; ON</span>
+      </button>
+    </div>
     <button class="menu__close" data-menu-close aria-label="Close menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 5l14 14M19 5L5 19"/></svg>
     </button>
@@ -193,7 +200,7 @@
           <p data-edit="barrie-svc3-p">Color and texture matching is built into every install, with custom-ordered lengths from 16&quot; to 28&quot; and textures from wavy to extra curly. Nobody should be able to tell where you end and the hair begins.</p>
         </div>
       </div>
-      <p class="geo-body" style="margin-top:var(--space-xl)" data-edit="barrie-svc-prices">New installs start at $230 per 25g bundle, maintenance from $145, and installing hair you already own from $85 per bundle. The full menu, with everything included in every install, lives on the <a class="tlink" href="services.html">service menu</a>.</p>
+      <p class="geo-body" style="margin-top:var(--space-xl)" data-edit="barrie-svc-prices">New installs start at <span data-price="ca.nano.bundle_min" contenteditable="false">$230</span> per 25g bundle, maintenance from <span data-price="ca.nano.maint.min" contenteditable="false">$145</span>, and installing hair you already own from <span data-price="ca.nano.own_hair" contenteditable="false">$85</span> per bundle. The full menu, with everything included in every install, lives on the <a class="tlink" href="services.html">service menu</a>.</p>
     </div>
   </section>
 
@@ -276,18 +283,19 @@
     <img class="foot__logo" src="assets/logo-cream.png" alt="Beauty Extension Haus" width="623" height="721">
     <span>Barrie ON · Sarasota FL</span>
     <span>© 2026 Beauty Extension Haus</span>
+    <p class="tiy-credit">Designed by <a href="https://thisisyours.site" target="_blank" rel="noopener">thisisyours<span class="tiy-dot">.</span></a></p>
   </div>
 </footer>
 
 <aside class="bookbar">
   <span class="bookbar__note">
     <span data-loc="ca">Free consultations, always.</span>
-    <span data-loc="us">Sarasota opens 2026.</span>
+    <span data-loc="us">Now open in Sarasota.</span>
   </span>
   <a class="btn btn--ghost" href="#" data-loc-field="book">Book now</a>
 </aside>
 
-<script src="js/haus.js?v=20260725a"></script>
+<script src="js/haus.js?v=20260806d"></script>
 <script>
   (function () {
     var els = document.querySelectorAll('.ns-reveal');

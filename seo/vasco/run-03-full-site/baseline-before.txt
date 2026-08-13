@@ -1,0 +1,46 @@
+{"file": "index.html", "keyword": "hair extensions barrie", "slug_exact": false, "title_starts": true, "title": "Hair Extensions Barrie &amp; Sarasota | Beauty Extension Haus", "title_len": 61, "desc_len": 150, "h1": "Your hair\u2026 but better.", "h1_has_kw": false, "h1_count": 1, "h2_count": 15, "words": 1103, "kw_count": 1, "canonical": "https://beautyextensionhaus.com/", "schema": ["AdministrativeArea", "City", "HairSalon", "OpeningHoursSpecification", "Organization", "PostalAddress", "WebPage", "WebSite"], "og": true, "hreflang": 0, "noindex": false, "imgs": 16, "imgs_no_alt": 0, "internal_links": 7}
+{"file": "hair-extensions-barrie.html", "keyword": "hair extensions barrie", "slug_exact": true, "title_starts": true, "title": "Hair Extensions Barrie | Beauty Extension Haus", "title_len": 46, "desc_len": 154, "h1": "Hair extensions in Barrie \u2014 done the healthy-hair way.", "h1_has_kw": false, "h1_count": 1, "h2_count": 5, "words": 547, "kw_count": 1, "canonical": "https://beautyextensionhaus.com/hair-extensions-barrie.html", "schema": ["AdministrativeArea", "BreadcrumbList", "City", "HairSalon", "ListItem", "OpeningHoursSpecification", "PostalAddress"], "og": true, "hreflang": 0, "noindex": false, "imgs": 5, "imgs_no_alt": 0, "internal_links": 5}
+{"file": "nano-bead-hair-extensions-sarasota.html", "keyword": "nano bead hair extensions sarasota", "slug_exact": true, "title_starts": true, "title": "Nano Bead Hair Extensions Sarasota | Beauty Extension Haus", "title_len": 58, "desc_len": 155, "h1": "Nano bead hair extensions, now here in Sarasota.", "h1_has_kw": false, "h1_count": 1, "h2_count": 4, "words": 464, "kw_count": 1, "canonical": "https://beautyextensionhaus.com/nano-bead-hair-extensions-sarasota.html", "schema": ["BreadcrumbList", "City", "HairSalon", "ListItem", "PostalAddress"], "og": true, "hreflang": 0, "noindex": false, "imgs": 7, "imgs_no_alt": 0, "internal_links": 5}
+{"file": "services.html", "keyword": "hair extension prices barrie", "slug_exact": false, "title_starts": false, "title": "Hair Extension Prices &amp; Services | Beauty Extension Haus", "title_len": 60, "desc_len": 149, "h1": "No two heads are the same. Neither is our approach.", "h1_has_kw": false, "h1_count": 1, "h2_count": 11, "words": 2234, "kw_count": 0, "canonical": "https://beautyextensionhaus.com/services.html", "schema": ["BreadcrumbList", "ListItem", "Offer", "OfferCatalog", "PriceSpecification", "Service"], "og": true, "hreflang": 0, "noindex": false, "imgs": 12, "imgs_no_alt": 0, "internal_links": 5}
+{"file": "why-nano.html", "keyword": "nano bead extensions", "slug_exact": false, "title_starts": false, "title": "Why Nano Bead Extensions \u2014 Beauty Extension Haus", "title_len": 48, "desc_len": 146, "h1": "Finally \u2014 extensions your fine hair can actually wear.", "h1_has_kw": false, "h1_count": 1, "h2_count": 5, "words": 718, "kw_count": 3, "canonical": "https://beautyextensionhaus.com/why-nano.html", "schema": ["BreadcrumbList", "ListItem"], "og": true, "hreflang": 0, "noindex": false, "imgs": 8, "imgs_no_alt": 0, "internal_links": 5}
+{"file": "care.html", "keyword": "hair extension aftercare", "slug_exact": false, "title_starts": true, "title": "Hair Extension Aftercare &amp; FAQ | Beauty Extension Haus", "title_len": 58, "desc_len": 147, "h1": "Ask us anything. We've heard it all.", "h1_has_kw": false, "h1_count": 1, "h2_count": 7, "words": 1898, "kw_count": 1, "canonical": "https://beautyextensionhaus.com/care.html", "schema": ["Answer", "BreadcrumbList", "FAQPage", "ListItem", "Question"], "og": true, "hreflang": 0, "noindex": false, "imgs": 10, "imgs_no_alt": 0, "internal_links": 5}
+{"file": "trade.html", "keyword": "nano bead extension training", "slug_exact": false, "title_starts": false, "title": "Training &amp; Careers \u2014 Beauty Extension Haus", "title_len": 46, "desc_len": 151, "h1": "Build your nano business.", "h1_has_kw": false, "h1_count": 1, "h2_count": 3, "words": 274, "kw_count": 0, "canonical": "https://beautyextensionhaus.com/trade.html", "schema": ["BreadcrumbList", "ListItem"], "og": true, "hreflang": 0, "noindex": false, "imgs": 5, "imgs_no_alt": 0, "internal_links": 5}
+{"file": "guide/nano-bead-extensions/index.html", "keyword": "nano bead extensions", "slug_exact": true, "title_starts": true, "title": "Nano Bead Extensions Explained \u2014 The Complete Guide", "title_len": 51, "desc_len": 142, "h1": "Nano Beading,Understood", "h1_has_kw": false, "h1_count": 1, "h2_count": 10, "words": 2990, "kw_count": 1, "canonical": "https://beautyextensionhaus.com/guide/nano-bead-extensions/", "schema": ["Article", "BreadcrumbList", "ListItem", "Organization"], "og": true, "hreflang": 0, "noindex": false, "imgs": 0, "imgs_no_alt": 0, "internal_links": 1}
+PAGE                                                 IN OUT
+404.html                                              0   4
+care.html                                             7   5
+docs/extension-aftercare-guide.html                   0   0
+docs/nano-bead-sarasota.html                          0   0
+guide/nano-bead-extensions/index.html                 3   0
+hair-extensions-barrie.html                           1   5
+index.html                                            8   6
+linkinbio/index.html                                  1   1
+nano-bead-hair-extensions-sarasota.html               2   6
+services.html                                         7   4
+trade.html                                            6   4
+waitlist/index.html                                   0   1
+why-nano.html                                         6   5
+
+-- who links to the guide --
+   nano-bead-hair-extensions-sarasota.html
+   why-nano.html
+   care.html
+
+-- sitemap --
+   https://beautyextensionhaus.com/
+   https://beautyextensionhaus.com/care.html
+   https://beautyextensionhaus.com/guide/nano-bead-extensions/
+   https://beautyextensionhaus.com/hair-extensions-barrie.html
+   https://beautyextensionhaus.com/linkinbio/
+   https://beautyextensionhaus.com/nano-bead-hair-extensions-sarasota.html
+   https://beautyextensionhaus.com/services.html
+   https://beautyextensionhaus.com/why-nano.html
+
+-- robots.txt --
+User-agent: *
+Disallow: /admin
+Disallow: /api/
+Allow: /
+
+Sitemap: https://beautyextensionhaus.com/sitemap.xml
+

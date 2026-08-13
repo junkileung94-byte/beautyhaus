@@ -28,7 +28,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/haus.css?v=20260723r">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/haus.css?v=20260806d">
 <script defer data-domain="beautyextensionhaus.com" data-api="/api/event" src="/js/script.pageview-props.js?v=1"></script>
 <style>
   .qa { border-bottom: var(--rule-hair) solid var(--color-rule-2); }
@@ -279,7 +280,13 @@
 
 <nav class="menu" aria-label="Site menu">
   <div class="menu__top">
-    <img src="assets/logo-cream.png" alt="" width="52">
+    <div class="menu__brand">
+      <img src="assets/logo-cream.png" alt="" width="52">
+      <button class="menu__loc" type="button" data-switch-haus data-menu-close aria-label="Switch location">
+        <span class="nav__flag" data-loc-flag></span>
+        <span data-loc-field="short">Barrie &middot; ON</span>
+      </button>
+    </div>
     <button class="menu__close" data-menu-close aria-label="Close menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 5l14 14M19 5L5 19"/></svg>
     </button>
@@ -331,7 +338,7 @@
       </details>
       <details class="qa">
         <summary data-edit="care-q-3">Do I need a consultation first?</summary>
-        <div class="a"><p data-edit="care-6">Yes, for all new extension clients. Your complimentary consultation allows us to assess your hair, discuss your goals, color match, and recommend the best method, length, texture and amount of hair for your desired result.<br>A $250 non-refundable deposit then secures your install and comes off your final total.</p></div>
+        <div class="a"><p data-edit="care-6">Yes, for all new extension clients. Your complimentary consultation allows us to assess your hair, discuss your goals, color match, and recommend the best method, length, texture and amount of hair for your desired result.<br>A <span data-price="deposit" contenteditable="false">$250</span> non-refundable deposit then secures your install and comes off your final total.</p></div>
       </details>
       <details class="qa">
         <summary data-edit="care-q-4">Can I still wear my hair up?</summary>
@@ -553,19 +560,20 @@
     <img class="foot__logo" src="assets/logo-cream.png" alt="Beauty Extension Haus" width="623" height="721">
     <span>Barrie ON · Sarasota FL</span>
     <span>© 2026 Beauty Extension Haus</span>
+    <p class="tiy-credit">Designed by <a href="https://thisisyours.site" target="_blank" rel="noopener">thisisyours<span class="tiy-dot">.</span></a></p>
   </div>
 </footer>
 
 <aside class="bookbar">
   <span class="bookbar__note">
     <span data-loc="ca">Free consultations, always.</span>
-    <span data-loc="us">Sarasota opens 2026.</span>
+    <span data-loc="us">Now open in Sarasota.</span>
   </span>
   <a class="btn btn--ghost" href="#" data-loc-field="book">Book now</a>
 </aside>
 
 <script src="js/vendor/parallax-controller.min.js"></script>
-<script src="js/haus.js?v=20260725a"></script>
+<script src="js/haus.js?v=20260806d"></script>
 <script src="js/parallax.js?v=20260723n"></script>
 <script src="/js/track.js?v=20260725d"></script>
 </body>

@@ -28,7 +28,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/haus.css?v=20260723r">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/haus.css?v=20260806d">
 <script defer data-domain="beautyextensionhaus.com" data-api="/api/event" src="/js/script.pageview-props.js?v=1"></script>
 <script type="application/ld+json">
 {
@@ -158,7 +159,7 @@
           "priceSpecification": {
             "@type": "PriceSpecification",
             "minPrice": 285.0,
-            "priceCurrency": "CAD"
+            "priceCurrency": "USD"
           }
         },
         {
@@ -173,7 +174,37 @@
           "priceSpecification": {
             "@type": "PriceSpecification",
             "minPrice": 310.0,
+            "priceCurrency": "USD"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Wavy nano — hair + install",
+            "provider": {
+              "@id": "https://beautyextensionhaus.com/hair-extensions-barrie.html#salon"
+            }
+          },
+          "priceSpecification": {
+            "@type": "PriceSpecification",
+            "minPrice": 285.0,
             "priceCurrency": "CAD"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "24″ Wavy nano — hair + install",
+            "provider": {
+              "@id": "https://beautyextensionhaus.com/hair-extensions-barrie.html#salon"
+            }
+          },
+          "priceSpecification": {
+            "@type": "PriceSpecification",
+            "minPrice": 340.0,
+            "priceCurrency": "USD"
           }
         },
         {
@@ -188,7 +219,7 @@
           "priceSpecification": {
             "@type": "PriceSpecification",
             "minPrice": 160.0,
-            "priceCurrency": "CAD"
+            "priceCurrency": "USD"
           }
         },
         {
@@ -203,7 +234,7 @@
           "priceSpecification": {
             "@type": "PriceSpecification",
             "minPrice": 100.0,
-            "priceCurrency": "CAD"
+            "priceCurrency": "USD"
           }
         },
         {
@@ -579,7 +610,13 @@
 
 <nav class="menu" aria-label="Site menu">
   <div class="menu__top">
-    <img src="assets/logo-cream.png" alt="" width="52">
+    <div class="menu__brand">
+      <img src="assets/logo-cream.png" alt="" width="52">
+      <button class="menu__loc" type="button" data-switch-haus data-menu-close aria-label="Switch location">
+        <span class="nav__flag" data-loc-flag></span>
+        <span data-loc-field="short">Barrie &middot; ON</span>
+      </button>
+    </div>
     <button class="menu__close" data-menu-close aria-label="Close menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 5l14 14M19 5L5 19"/></svg>
     </button>
@@ -622,7 +659,7 @@
   <section data-section="us-intro" data-section-label="Sarasota note (US)" class="section section--tight" data-loc="us">
     <div class="wrap wrap--narrow glass" style="padding:var(--space-lg)">
       <p class="label" style="color:var(--color-accent)" data-edit="services-3">Sarasota, Florida</p>
-      <p style="margin-top:var(--space-xs)" data-edit="services-4">Sarasota opens 2026. Nano bead extensions are our specialty — and we also offer custom color, keratin smoothing treatments, and signature blowouts. Extension prices below are in USD, and hair is priced separately from the install. <a class="tlink" href="https://booking.mangomint.com/733325">Book now</a></p>
+      <p style="margin-top:var(--space-xs)" data-edit="services-4">The Sarasota Haus is open. Nano bead extensions are our specialty — and we also offer custom color, keratin smoothing treatments, and signature blowouts. Extension prices below are in USD, and hair is priced separately from the install. <a class="tlink" href="https://booking.mangomint.com/733325">Book now</a></p>
     </div>
   </section>
 
@@ -668,7 +705,7 @@ Designed with healthy hair in mind, they're lightweight, comfortable, and especi
             <th>
               <span class="name" data-edit="services-name-3">New install — hair + install</span>
               <span class="desc" data-edit="services-desc-3">Your transformation is fully customized, so pricing depends on the length, density, and number of bundles your hair requires.<br><br>Starting at:
-<br>20” from $230 per 25g bundle&nbsp; <br>24” from $255 per 25g  bundle
+<br><span data-price="ca.nano.starting" contenteditable="false">20” from $230 per 25g bundle<br>24” from $255 per 25g bundle</span>
 <br><br>Every new install includes:
 <br>Custom color match texture matching
 <br>Precision installation
@@ -678,14 +715,14 @@ Designed with healthy hair in mind, they're lightweight, comfortable, and especi
 <br>Beauty Haus brush<br>Refreshments during your appointment</span>
               <details class="menu-drop">
                 <summary data-edit="services-q-1">Custom lengths + textures available</summary>
-                <p data-edit="services-11">Need something specific? We can special order lengths from 16” to 28” and textures from wavy to extra curly to create a look that’s uniquely yours.</p>
+                <p data-edit="services-11">Need something specific? Wavy is stocked and priced on its own menu below. Beyond that, we can special order lengths from 16” to 28” and textures from deep wave to extra curly to create a look that’s uniquely yours.</p>
               </details>
             </th>
-            <td><span class="price" data-edit="services-price-3">from $230</span><span class="time" data-edit="services-time-3">per bundle</span></td>
+            <td><span class="price" data-price="ca.nano.from">from $230</span><span class="time" data-edit="services-time-3">per bundle</span></td>
           </tr>
           <tr>
             <th><span class="name" data-edit="services-name-4">Install — bring your own hair</span><span class="desc" data-edit="services-desc-4">Already have extension hair? We’ll assess the quality and, if it’s suitable, professionally install it for you.</span></th>
-            <td><span class="price" data-edit="services-price-4">$85</span><span class="time" data-edit="services-time-4">per bundle</span></td>
+            <td><span class="price" data-price="ca.nano.own_hair">$85</span><span class="time" data-edit="services-time-4">per bundle</span></td>
           </tr>
           <tr>
             <th>
@@ -696,28 +733,28 @@ Designed with healthy hair in mind, they're lightweight, comfortable, and especi
                 <div class="drop-cols tnum">
                   <div>
                     <p class="label" style="letter-spacing:.14em" data-edit="services-12">Whole bundles</p>
-                    <p data-edit="services-13">1 — $145<br>2 — $185<br>3 — $220<br>4 — $250<br>5 — $285<br>6 — $325<br>7 — $375</p>
+                    <p data-price="ca.nano.maint.whole">1 — $145<br>2 — $185<br>3 — $220<br>4 — $250<br>5 — $285<br>6 — $325<br>7 — $375</p>
                   </div>
                   <div>
                     <p class="label" style="letter-spacing:.14em" data-edit="services-14">Half bundles</p>
-                    <p data-edit="services-15">1.5 — $155<br>2.5 — $195<br>3.5 — $230<br>4.5 — $265<br>5.5 — $300<br>6.5 — $340<br>7.5 — $385</p>
+                    <p data-price="ca.nano.maint.half">1.5 — $155<br>2.5 — $195<br>3.5 — $230<br>4.5 — $265<br>5.5 — $300<br>6.5 — $340<br>7.5 — $385</p>
                   </div>
                 </div>
               </details>
             </th>
-            <td><span class="price" data-edit="services-price-5">from $145</span><span class="time" data-edit="services-time-5">6–8 weeks</span></td>
+            <td><span class="price" data-price="ca.nano.maint.from">from $145</span><span class="time" data-edit="services-time-5">6–8 weeks</span></td>
           </tr>
           <tr>
             <th><span class="name" data-edit="services-name-6">Removal</span><span class="desc" data-edit="services-desc-6">Whether you’re taking a break or starting fresh, we’ll safely remove your extensions while protecting your natural hair. <br><br>Gentle techniques only..no harsh solvents or unnecessary damage.</span></th>
-            <td><span class="price" data-edit="services-price-6">$95</span><span class="time" data-edit="services-time-6">&nbsp;</span></td>
+            <td><span class="price" data-price="ca.nano.removal">$95</span><span class="time" data-edit="services-time-6">&nbsp;</span></td>
           </tr>
           <tr>
             <th><span class="name" data-edit="services-name-7">Dematting</span><span class="desc" data-edit="services-desc-7">Sometimes life happens. If tangling or matting occurs, we’ll carefully detangle your hair while preserving both your extensions and your natural hair whenever possible.</span></th>
-            <td><span class="price" data-edit="services-price-7">$60+</span><span class="time" data-edit="services-time-7">&nbsp;</span></td>
+            <td><span class="price" data-price="ca.nano.dematting">$60+</span><span class="time" data-edit="services-time-7">&nbsp;</span></td>
           </tr>
           <tr>
             <th><span class="name" data-edit="services-name-8">Hair curling</span><span class="desc" data-edit="services-desc-8">Need your hair styled for a special occasion or simply want beautiful curls without the effort? <br>Book a standalone styling appointment for polished curls or soft, effortless waves that last.</span></th>
-            <td><span class="price" data-edit="services-price-8">$35</span><span class="time" data-edit="services-time-8"><br></span></td>
+            <td><span class="price" data-price="ca.nano.curling">$35</span><span class="time" data-edit="services-time-8"><br></span></td>
           </tr>
         </tbody>
       </table>
@@ -743,12 +780,12 @@ Designed with healthy hair in mind, they're lightweight, comfortable, and especi
                 <div class="drop-cols tnum">
                   <div>
                     <p class="label" style="letter-spacing:.14em" data-edit="services-lbl-3">Hair + install → total</p>
-                    <p>25 g (1) — $185 + $100 = $285<br>50 g (2) — $370 + $200 = $570<br>75 g (3) — $555 + $300 = $855<br>100 g (4) — $740 + $400 = $1,140<br>125 g (5) — $925 + $500 = $1,425<br>150 g (6) — $1,110 + $600 = $1,710</p>
+                    <p data-price="us.nano.20.table">25 g (1) — $185 + $100 = $285<br>50 g (2) — $370 + $200 = $570<br>75 g (3) — $555 + $300 = $855<br>100 g (4) — $740 + $400 = $1,140<br>125 g (5) — $925 + $500 = $1,425<br>150 g (6) — $1,110 + $600 = $1,710</p>
                   </div>
                 </div>
               </details>
             </th>
-            <td><span class="price" data-edit="services-price-9">from $285</span><span class="time" data-edit="services-time-9">full set</span></td>
+            <td><span class="price" data-price="us.nano.20.from">from $285</span><span class="time" data-edit="services-time-9">full set</span></td>
           </tr>
           <tr>
             <th>
@@ -759,12 +796,12 @@ Designed with healthy hair in mind, they're lightweight, comfortable, and especi
                 <div class="drop-cols tnum">
                   <div>
                     <p class="label" style="letter-spacing:.14em" data-edit="services-lbl-4">Hair + install → total</p>
-                    <p>25 g (1) — $210 + $100 = $310<br>50 g (2) — $420 + $200 = $620<br>75 g (3) — $630 + $300 = $930<br>100 g (4) — $840 + $400 = $1,240<br>125 g (5) — $1,050 + $500 = $1,550<br>150 g (6) — $1,260 + $600 = $1,860</p>
+                    <p data-price="us.nano.24.table">25 g (1) — $210 + $100 = $310<br>50 g (2) — $420 + $200 = $620<br>75 g (3) — $630 + $300 = $930<br>100 g (4) — $840 + $400 = $1,240<br>125 g (5) — $1,050 + $500 = $1,550<br>150 g (6) — $1,260 + $600 = $1,860</p>
                   </div>
                 </div>
               </details>
             </th>
-            <td><span class="price" data-edit="services-price-10">from $310</span><span class="time" data-edit="services-time-10">full set</span></td>
+            <td><span class="price" data-price="us.nano.24.from">from $310</span><span class="time" data-edit="services-time-10">full set</span></td>
           </tr>
           <tr>
             <th><span class="name" data-edit="services-name-11">Custom lengths</span><span class="desc" data-edit="services-desc-11">14″–28″ available by order — mention it at your consult.</span></th>
@@ -779,20 +816,93 @@ Designed with healthy hair in mind, they're lightweight, comfortable, and especi
                 <div class="drop-cols tnum">
                   <div>
                     <p class="label" style="letter-spacing:.14em" data-edit="services-lbl-5">Whole bundles</p>
-                    <p>1 — $160+<br>2 — $240+<br>3 — $320+<br>4 — $400+<br>5 — $475+<br>6 — $550+<br>7 — $625+</p>
+                    <p data-price="us.nano.maint.whole">1 — $160+<br>2 — $240+<br>3 — $320+<br>4 — $400+<br>5 — $475+<br>6 — $550+<br>7 — $625+</p>
                   </div>
                   <div>
                     <p class="label" style="letter-spacing:.14em" data-edit="services-lbl-6">Half bundles</p>
-                    <p>1.5 — $200+<br>2.5 — $280+<br>3.5 — $360+<br>4.5 — $440+<br>5.5 — $515+<br>6.5 — $590+</p>
+                    <p data-price="us.nano.maint.half">1.5 — $200+<br>2.5 — $280+<br>3.5 — $360+<br>4.5 — $440+<br>5.5 — $515+<br>6.5 — $590+</p>
                   </div>
                 </div>
               </details>
             </th>
-            <td><span class="price" data-edit="services-price-12">from $160</span><span class="time" data-edit="services-time-12">6–8 weeks</span></td>
+            <td><span class="price" data-price="us.nano.maint.from">from $160</span><span class="time" data-edit="services-time-12">6–8 weeks</span></td>
           </tr>
           <tr>
             <th><span class="name" data-edit="services-name-13">Removal only</span><span class="desc" data-edit="services-desc-13">Removal without reinstall.</span></th>
-            <td><span class="price" data-edit="services-price-13">from $100</span><span class="time" data-edit="services-time-13">&nbsp;</span></td>
+            <td><span class="price" data-price="us.nano.removal">from $100</span><span class="time" data-edit="services-time-13">&nbsp;</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- wavy · CA — its own hair, priced all-in per bundle like the straight nano menu -->
+  <section data-section="wavy-ca" data-section-label="Wavy nano (CA)" class="section section--tight" data-loc="ca">
+    <div class="wrap">
+      <div class="section__head">
+        <p class="label" data-edit="services-wavy-lbl-1">New texture</p>
+        <h2 class="section__title" data-edit="services-wavy-title-1">Wavy nano beads</h2>
+        <p class="muted" data-edit="services-wavy-intro-1">If your hair has its own wave, you shouldn’t have to straighten it just to wear extensions. Wavy is the same gentle nano bead method — strand by strand, no glue, no heat — in a soft, lived-in wave that blends without a hot tool. It’s sourced separately from our straight hair, so it carries its own price.</p>
+      </div>
+      <table class="menu-sheet tnum">
+        <tbody>
+          <tr>
+            <th>
+              <span class="name" data-edit="services-wavy-name-1">Wavy install — hair + install</span>
+              <span class="desc" data-edit="services-wavy-desc-1">Custom to your hair, so pricing depends on length, density and the number of bundles you need.<br><br>Starting at:
+<br><span data-price="ca.wavy.starting" contenteditable="false">24” from $285 per 25g bundle</span>
+<br><br>Every new install includes:
+<br>Custom color match texture matching
+<br>Precision installation
+<br>Custom cut &amp; blend
+<br>Style
+<br>Complimentary 3-week adjustment
+<br>Beauty Haus brush<br>Refreshments during your appointment</span>
+              <details class="menu-drop">
+                <summary data-edit="services-wavy-q-1">Other lengths and textures</summary>
+                <p data-edit="services-wavy-drop-1">We stock wavy at 24” for now. Anything from 16” to 28”, and textures from a soft wave through to extra curly, can be special ordered — tell us at your consult and we’ll quote it honestly before you commit.</p>
+              </details>
+            </th>
+            <td><span class="price" data-price="ca.wavy.from">from $285</span><span class="time" data-edit="services-wavy-time-1">per bundle</span></td>
+          </tr>
+          <tr>
+            <th><span class="name" data-edit="services-wavy-name-2">Maintenance, removal &amp; care</span><span class="desc" data-edit="services-wavy-desc-2">Wavy wears the same way straight does, so it’s priced the same way — a full removal, clean-up and reinstall every 6–8 weeks, never a quick push-up. The full ladder is on the nano bead menu above.</span></th>
+            <td><span class="price" data-price="ca.nano.maint.from">from $145</span><span class="time" data-edit="services-wavy-time-2">6–8 weeks</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- wavy · US (Sarasota) — hair priced separately, prices in USD -->
+  <section data-section="wavy-us" data-section-label="Wavy nano (US)" class="section section--tight" data-loc="us">
+    <div class="wrap">
+      <div class="section__head">
+        <p class="label" data-edit="services-wavy-lbl-2">New texture</p>
+        <h2 class="section__title" data-edit="services-wavy-title-2">Wavy nano beads</h2>
+        <p class="muted" data-edit="services-wavy-intro-2">If your hair has its own wave, you shouldn’t have to heat it straight just to wear extensions. Wavy is the same nano bead method we do here — strand by strand, no glue, no heat, no chemicals — in a soft, lived-in wave. The hair is sourced separately, so it’s priced separately. All prices in USD.</p>
+      </div>
+      <table class="menu-sheet tnum">
+        <tbody>
+          <tr>
+            <th>
+              <span class="name" data-edit="services-wavy-name-3">24″ Wavy — hair + install</span>
+              <span class="desc" data-edit="services-wavy-desc-3">Per 25 g bundle of premium remy hair, plus install. An average head is 3–5 bundles — full-set totals below.</span>
+              <details class="menu-drop">
+                <summary data-edit="services-wavy-q-2">Full bundle pricing</summary>
+                <div class="drop-cols tnum">
+                  <div>
+                    <p class="label" style="letter-spacing:.14em" data-edit="services-wavy-lbl-3">Hair + install → total</p>
+                    <p data-price="us.wavy.24.table">25 g (1) — $240 + $100 = $340<br>50 g (2) — $480 + $200 = $680<br>75 g (3) — $720 + $300 = $1,020<br>100 g (4) — $960 + $400 = $1,360<br>125 g (5) — $1,200 + $500 = $1,700<br>150 g (6) — $1,440 + $600 = $2,040</p>
+                  </div>
+                </div>
+              </details>
+            </th>
+            <td><span class="price" data-price="us.wavy.24.from">from $340</span><span class="time" data-edit="services-wavy-time-3">full set</span></td>
+          </tr>
+          <tr>
+            <th><span class="name" data-edit="services-wavy-name-4">Maintenance, removal &amp; care</span><span class="desc" data-edit="services-wavy-desc-4">Wavy wears the same way straight does, so it’s priced the same way — a full removal and reinstall every 6–8 weeks. The full ladder is on the nano bead menu above.</span></th>
+            <td><span class="price" data-price="us.nano.maint.from">from $160</span><span class="time" data-edit="services-wavy-time-4">6–8 weeks</span></td>
           </tr>
         </tbody>
       </table>
@@ -813,12 +923,12 @@ Designed with healthy hair in mind, they're lightweight, comfortable, and especi
       <table class="menu-sheet tnum">
         <tbody>
           <tr>
-            <th><span class="name" data-edit="services-name-14">Weft hair</span><span class="desc" data-edit="services-desc-14">Per 50 g+ pack; most sets use two or more. <br>$350 / $375 / $415 / $435 by length.</span></th>
-            <td><span class="price" data-edit="services-price-14">from $350</span><span class="time" data-edit="services-time-14">per pack</span></td>
+            <th><span class="name" data-edit="services-name-14">Weft hair</span><span class="desc" data-edit="services-desc-14">Per 50 g+ pack; most sets use two or more. <br><span data-price="ca.weft.hair_list" contenteditable="false">$350 / $375 / $415 / $435</span> by length.</span></th>
+            <td><span class="price" data-price="ca.weft.hair_from">from $350</span><span class="time" data-edit="services-time-14">per pack</span></td>
           </tr>
           <tr>
-            <th><span class="name" data-edit="services-name-15">Custom install</span><span class="desc" data-edit="services-desc-15">Per row — <br>$225 / $400 / $475 / $550 by row count and build.</span></th>
-            <td><span class="price" data-edit="services-price-15">from $225</span><span class="time" data-edit="services-time-15">3–5 hrs</span></td>
+            <th><span class="name" data-edit="services-name-15">Custom install</span><span class="desc" data-edit="services-desc-15">Per row — <br><span data-price="ca.weft.install_list" contenteditable="false">$225 / $400 / $475 / $550</span> by row count and build.</span></th>
+            <td><span class="price" data-price="ca.weft.install_from">from $225</span><span class="time" data-edit="services-time-15">3–5 hrs</span></td>
           </tr>
           <tr>
             <th>
@@ -829,24 +939,24 @@ Designed with healthy hair in mind, they're lightweight, comfortable, and especi
                 <div class="drop-cols tnum">
                   <div>
                     <p class="label" style="letter-spacing:.14em" data-edit="services-lbl-7">By row</p>
-                    <p data-edit="services-19">1 row — $205<br>2 rows — $285<br>2.5 rows — $325<br>3 rows — $375</p>
+                    <p data-price="ca.weft.maint_rows">1 row — $205<br>2 rows — $285<br>2.5 rows — $325<br>3 rows — $375</p>
                   </div>
                   <div>
                     <p class="label" style="letter-spacing:.14em" data-edit="services-20">Add-ons</p>
-                    <p data-edit="services-21">Nano cocktail (15–25 g) — $50–$75<br>Weft removal — from $75</p>
+                    <p data-price="ca.weft.addons">Nano cocktail (15–25 g) — $50–$75<br>Weft removal — from $75</p>
                   </div>
                 </div>
               </details>
             </th>
-            <td><span class="price" data-edit="services-price-16">from $205</span><span class="time" data-edit="services-time-16">6–8 weeks</span></td>
+            <td><span class="price" data-price="ca.weft.maint_from">from $205</span><span class="time" data-edit="services-time-16">6–8 weeks</span></td>
           </tr>
           <tr>
             <th><span class="name" data-edit="services-name-17">Nano cocktail pieces</span><span class="desc" data-edit="services-desc-17">Face-framing nano strands alongside your rows, per 15–25 g.</span></th>
-            <td><span class="price" data-edit="services-price-17">$50–$75</span><span class="time" data-edit="services-time-17">add-on</span></td>
+            <td><span class="price" data-price="ca.weft.cocktail">$50–$75</span><span class="time" data-edit="services-time-17">add-on</span></td>
           </tr>
           <tr>
             <th><span class="name" data-edit="services-name-18">Weft removal</span><span class="desc" data-edit="services-desc-18">&nbsp;</span></th>
-            <td><span class="price" data-edit="services-price-18">from $75</span><span class="time" data-edit="services-time-18">&nbsp;</span></td>
+            <td><span class="price" data-price="ca.weft.removal">from $75</span><span class="time" data-edit="services-time-18">&nbsp;</span></td>
           </tr>
         </tbody>
       </table>
@@ -867,12 +977,12 @@ Designed with healthy hair in mind, they're lightweight, comfortable, and especi
       <table class="menu-sheet tnum">
         <tbody>
           <tr>
-            <th><span class="name" data-edit="services-name-19">Hair + install</span><span class="desc" data-edit="services-desc-19">Per 25 g — <br>$315 / $335 / $355 / $375 by length.</span></th>
-            <td><span class="price" data-edit="services-price-19">from $315</span><span class="time" data-edit="services-time-19">per bundle</span></td>
+            <th><span class="name" data-edit="services-name-19">Hair + install</span><span class="desc" data-edit="services-desc-19">Per 25 g — <br><span data-price="ca.ktip.list" contenteditable="false">$315 / $335 / $355 / $375</span> by length.</span></th>
+            <td><span class="price" data-price="ca.ktip.from">from $315</span><span class="time" data-edit="services-time-19">per bundle</span></td>
           </tr>
           <tr>
             <th><span class="name" data-edit="services-name-20">Removal</span><span class="desc" data-edit="services-desc-20">Professional removal only — never at home.</span></th>
-            <td><span class="price" data-edit="services-price-20">$125–$175</span><span class="time" data-edit="services-time-20">2–4 months</span></td>
+            <td><span class="price" data-price="ca.ktip.removal">$125–$175</span><span class="time" data-edit="services-time-20">2–4 months</span></td>
           </tr>
         </tbody>
       </table>
@@ -891,7 +1001,7 @@ Designed with healthy hair in mind, they're lightweight, comfortable, and especi
         </div>
         <figure class="figure-ph figure-ph--arch" data-slot="wavy-curly"><picture data-slot-pic="wavy-curly"><source data-slot-src="wavy-curly" media="(max-width: 60rem)" srcset="assets/photos/slot-wavy-curly.jpg?v=1784740828"><img data-slot="wavy-curly" src="assets/photos/slot-wavy-curly.jpg?v=1784740828" alt="wavy curly" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" width="982" height="736"></picture></figure>
       </div>
-      <p class="label" style="color:var(--color-accent); letter-spacing:.14em" data-edit="services-wc-textures">Soft wave · Deep wave · Curly · Extra curly · Coily — available by custom order</p>
+      <p class="label" style="color:var(--color-accent); letter-spacing:.14em" data-edit="services-wc-textures">Soft wave — stocked at 24”, priced on its own menu above · Deep wave · Curly · Extra curly · Coily — available by custom order</p>
     </div>
   </section>
 
@@ -908,23 +1018,23 @@ Designed with healthy hair in mind, they're lightweight, comfortable, and especi
       </div>
       <table class="menu-sheet tnum">
         <tbody>
-          <tr><th><span class="name" data-edit="services-name-21">Money piece foils</span></th><td><span class="price" data-edit="services-price-21">$85+</span></td></tr>
-          <tr><th><span class="name" data-edit="services-name-22">Partial foils</span></th><td><span class="price" data-edit="services-price-22">$145+</span></td></tr>
-          <tr><th><span class="name" data-edit="services-name-23">Half head foils</span></th><td><span class="price" data-edit="services-price-23">$170+</span></td></tr>
-          <tr><th><span class="name" data-edit="services-name-24">Full head foils</span></th><td><span class="price" data-edit="services-price-24">$200+</span></td></tr>
-          <tr><th><span class="name" data-edit="services-name-25">Roots + foils</span></th><td><span class="price" data-edit="services-price-25">$200+</span></td></tr>
-          <tr><th><span class="name" data-edit="services-name-26">Balayage</span></th><td><span class="price" data-edit="services-price-26">$230+</span></td></tr>
-          <tr><th><span class="name" data-edit="services-name-27">Full color</span></th><td><span class="price" data-edit="services-price-27">$145+</span></td></tr>
-          <tr><th><span class="name" data-edit="services-name-28">Root touch-up</span></th><td><span class="price" data-edit="services-price-28">$110+</span></td></tr>
-          <tr><th><span class="name" data-edit="services-name-29">Toner / gloss add-on</span></th><td><span class="price" data-edit="services-price-29">$40+</span></td></tr>
-          <tr><th><span class="name" data-edit="services-name-30">Cut + blowout</span></th><td><span class="price" data-edit="services-price-30">$85+</span></td></tr>
-          <tr><th><span class="name" data-edit="services-name-31">Deep repair add-on</span></th><td><span class="price" data-edit="services-price-31">$30+</span></td></tr>
-          <tr><th><span class="name" data-edit="services-name-32">Custom color for extensions</span><span class="desc" data-edit="services-desc-21">Per 25 g bundle.</span></th><td><span class="price" data-edit="services-price-32">$45</span></td></tr>
-          <tr><th><span class="name" data-edit="services-name-33">Malibu CPR treatment</span><span class="desc" data-edit="services-desc-22">Discoloration rescue, per 25 g.</span></th><td><span class="price" data-edit="services-price-33">$45</span></td></tr>
-          <tr><th><span class="name" data-edit="services-name-34">Extension blending</span></th><td><span class="price" data-edit="services-price-34">$30</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-21">Money piece foils</span></th><td><span class="price" data-price="colour.money-piece-foils">$85+</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-22">Partial foils</span></th><td><span class="price" data-price="colour.partial-foils">$145+</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-23">Half head foils</span></th><td><span class="price" data-price="colour.half-head-foils">$170+</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-24">Full head foils</span></th><td><span class="price" data-price="colour.full-head-foils">$200+</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-25">Roots + foils</span></th><td><span class="price" data-price="colour.roots-foils">$200+</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-26">Balayage</span></th><td><span class="price" data-price="colour.balayage">$230+</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-27">Full color</span></th><td><span class="price" data-price="colour.full-color">$145+</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-28">Root touch-up</span></th><td><span class="price" data-price="colour.root-touch-up">$110+</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-29">Toner / gloss add-on</span></th><td><span class="price" data-price="colour.toner-gloss">$40+</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-30">Cut + blowout</span></th><td><span class="price" data-price="colour.cut-blowout">$85+</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-31">Deep repair add-on</span></th><td><span class="price" data-price="colour.deep-repair">$30+</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-32">Custom color for extensions</span><span class="desc" data-edit="services-desc-21">Per 25 g bundle.</span></th><td><span class="price" data-price="colour.custom-color-extensions">$45</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-33">Malibu CPR treatment</span><span class="desc" data-edit="services-desc-22">Discoloration rescue, per 25 g.</span></th><td><span class="price" data-price="colour.malibu-cpr">$45</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-34">Extension blending</span></th><td><span class="price" data-price="colour.extension-blending">$30</span></td></tr>
           <tr><th><span class="name" data-edit="services-name-35">Color correction</span></th><td><span class="price" data-edit="services-price-35">by consult</span></td></tr>
-          <tr><th><span class="name" data-edit="services-name-36">Keratin treatment</span><span class="desc" data-edit="services-desc-25">Smooths and calms frizz for months. Final price depends on your hair's density and length.</span></th><td><span class="price" data-edit="services-price-36">from $300</span></td></tr>
-          <tr><th><span class="name" data-edit="services-name-37">Blowout</span></th><td><span class="price" data-edit="services-price-37">$55+</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-36">Keratin treatment</span><span class="desc" data-edit="services-desc-25">Smooths and calms frizz for months. Final price depends on your hair's density and length.</span></th><td><span class="price" data-price="colour.keratin">from $300</span></td></tr>
+          <tr><th><span class="name" data-edit="services-name-37">Blowout</span></th><td><span class="price" data-price="colour.blowout">$55+</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -938,7 +1048,7 @@ Designed with healthy hair in mind, they're lightweight, comfortable, and especi
       <p class="label" style="color:var(--color-accent)" data-edit="services-lbl-10">The honest bit</p>
       <div class="flourish" aria-hidden="true"><img class="flourish__crown" src="assets/brand/crown-gold.png" alt="" width="255" height="206"></div>
       <ul style="margin:0; padding-left:1.1rem; display:grid; gap:var(--space-sm)">
-        <li><span data-loc="ca">A $250 non-refundable deposit holds your install and comes straight off your final total — it's not an extra.</span><span data-loc="us">A $250 non-refundable hair deposit is required before ordering your custom hair, and comes off your final total.</span></li>
+        <li><span data-loc="ca">A <span data-price="deposit" contenteditable="false">$250</span> non-refundable deposit holds your install and comes straight off your final total — it's not an extra.</span><span data-loc="us">A <span data-price="deposit" contenteditable="false">$250</span> non-refundable hair deposit is required before ordering your custom hair, and comes off your final total.</span></li>
         <li data-edit="services-li-1">Every install comes with a free adjustment within 3 weeks. If something's not sitting right, you come back. Don't live with hair you don't love.</li>
         <li data-edit="services-li-2">Maintenance every 6–8 weeks is the whole secret. It's not the beads that damage hair — it's skipping the upkeep. We'll keep you on schedule.</li>
         <li><span data-loc="ca">Prices are before tax, in CAD, at the Barrie studio.</span><span data-loc="us">Prices are before tax, in USD, at the Sarasota studio. Hair is priced separately from the install.</span> What we quote at your consult is what you pay.</li>
@@ -1030,19 +1140,20 @@ Designed with healthy hair in mind, they're lightweight, comfortable, and especi
     <img class="foot__logo" src="assets/logo-cream.png" alt="Beauty Extension Haus" width="623" height="721">
     <span>Barrie ON · Sarasota FL</span>
     <span>© 2026 Beauty Extension Haus</span>
+    <p class="tiy-credit">Designed by <a href="https://thisisyours.site" target="_blank" rel="noopener">thisisyours<span class="tiy-dot">.</span></a></p>
   </div>
 </footer>
 
 <aside class="bookbar">
   <span class="bookbar__note">
     <span data-loc="ca">Free consultations, always.</span>
-    <span data-loc="us">Sarasota opens 2026.</span>
+    <span data-loc="us">Now open in Sarasota.</span>
   </span>
   <a class="btn btn--ghost" href="#" data-loc-field="book">Book now</a>
 </aside>
 
 <script src="js/vendor/parallax-controller.min.js"></script>
-<script src="js/haus.js?v=20260725a"></script>
+<script src="js/haus.js?v=20260806d"></script>
 <script src="js/parallax.js?v=20260723n"></script>
 <script src="/js/track.js?v=20260725d"></script>
 </body>

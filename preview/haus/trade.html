@@ -28,7 +28,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/haus.css?v=20260723r">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/haus.css?v=20260806d">
 <script defer data-domain="beautyextensionhaus.com" data-api="/api/event" src="/js/script.pageview-props.js?v=1"></script>
 <script type="application/ld+json">
 {
@@ -73,7 +74,13 @@
 
 <nav class="menu" aria-label="Site menu">
   <div class="menu__top">
-    <img src="assets/logo-cream.png" alt="" width="52">
+    <div class="menu__brand">
+      <img src="assets/logo-cream.png" alt="" width="52">
+      <button class="menu__loc" type="button" data-switch-haus data-menu-close aria-label="Switch location">
+        <span class="nav__flag" data-loc-flag></span>
+        <span data-loc-field="short">Barrie &middot; ON</span>
+      </button>
+    </div>
     <button class="menu__close" data-menu-close aria-label="Close menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 5l14 14M19 5L5 19"/></svg>
     </button>
@@ -119,7 +126,7 @@
       </div>
       <ol class="steps">
         <li><div><strong>Reach out.</strong> Tell us where you're at — licensed stylist, extension tech, or crossing over.</div></li>
-        <li><div><strong>Reserve your seat.</strong> A $550 training deposit secures your date.</div></li>
+        <li><div><strong>Reserve your seat.</strong> A <span data-price="training_deposit" contenteditable="false">$550</span> training deposit secures your date.</div></li>
         <li><div><strong>Train in-studio.</strong> Hands-on with live models, the Haus way — gentle, precise, healthy-hair first.</div></li>
       </ol>
       <p style="margin-top:var(--space-lg)" data-edit="trade-6"><a class="btn btn--ink" href="mailto:barrie@beautyextensionhaus.com?subject=Nano%20training">Ask about training</a></p>
@@ -131,8 +138,8 @@
     <div class="wrap">
       <div class="section__head">
         <p class="label" data-edit="trade-7">Now hiring</p>
-        <h2 class="section__title" data-edit="trade-8">Sarasota, Florida — 2026.</h2>
-        <p class="muted" data-edit="trade-9">We're opening a boutique nano bead salon in Sarasota and looking for two Florida stylists. Color required, extensions trained.</p>
+        <h2 class="section__title" data-edit="trade-8">Sarasota, Florida — now open.</h2>
+        <p class="muted" data-edit="trade-9">Our boutique nano bead salon in Sarasota is open, and we're looking for two Florida stylists. Color required, extensions trained.</p>
       </div>
 
       <form class="form glass" style="max-width:34rem" action="mailto:barrie@beautyextensionhaus.com" method="post" enctype="text/plain">
@@ -203,19 +210,20 @@
     <img class="foot__logo" src="assets/logo-cream.png" alt="Beauty Extension Haus" width="623" height="721">
     <span>Barrie ON · Sarasota FL</span>
     <span>© 2026 Beauty Extension Haus</span>
+    <p class="tiy-credit">Designed by <a href="https://thisisyours.site" target="_blank" rel="noopener">thisisyours<span class="tiy-dot">.</span></a></p>
   </div>
 </footer>
 
 <aside class="bookbar">
   <span class="bookbar__note">
     <span data-loc="ca">Free consultations, always.</span>
-    <span data-loc="us">Sarasota opens 2026.</span>
+    <span data-loc="us">Now open in Sarasota.</span>
   </span>
   <a class="btn btn--ghost" href="#" data-loc-field="book">Book now</a>
 </aside>
 
 <script src="js/vendor/parallax-controller.min.js"></script>
-<script src="js/haus.js?v=20260725a"></script>
+<script src="js/haus.js?v=20260806d"></script>
 <script src="js/parallax.js?v=20260723n"></script>
 <script src="/js/track.js?v=20260725d"></script>
 </body>

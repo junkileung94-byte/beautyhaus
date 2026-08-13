@@ -19,6 +19,7 @@ import io, json, os, re, subprocess, sys, threading, time
 from http.cookies import SimpleCookie
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import haus_auth as auth
+import haus_prices as prices
 from urllib.parse import parse_qs, urlsplit, unquote
 from html import unescape as html_unescape
 from PIL import Image, ImageOps
@@ -199,6 +200,7 @@ def read_content():
         c.setdefault(loc, {})
         c[loc].setdefault("text", {})
         c[loc].setdefault("img", {})
+        c[loc].setdefault("vid", {})       # per-locale inline videos (the welcome clip)
         c[loc].setdefault("contact", {})   # per-locale phone/email overrides (visit section, nav, footer)
     c["us"].setdefault("team", [])   # Sarasota team lives in content.json (CA team lives in team.json)
     return c
@@ -610,11 +612,16 @@ def apply_video(slot, fname, locale="ca", drive="ca"):
     slug = re.sub(r"[^a-z0-9-]", "", slot.lower())
     out_name = "slot-%s%s.mp4" % (slug, "-us" if locale == "us" else "")
     out_path = os.path.join(VIDEOS, out_name)
-    # H.264/faststart, capped to 1280w, audio stripped (autoplay is muted anyway)
+    # H.264/faststart, capped to 720w, audio stripped (autoplay is muted anyway).
+    # 720w/CRF26 is deliberate: at 1280w/CRF24 these came out 8-12 MB each, and a
+    # phone that can't finish the download is the whole reason slot clips were
+    # failing. A slot video is never shown wider than ~800 CSS px (mobile caps it
+    # at 24rem), so the extra pixels bought nothing. Do not raise these without
+    # re-checking the mobile transfer weight.
     cmd = ["ffmpeg", "-y", "-i", src_path,
-           "-vf", "scale='min(1280,iw)':-2",
+           "-vf", "scale='min(720,iw)':-2",
            "-c:v", "libx264", "-profile:v", "main", "-pix_fmt", "yuv420p",
-           "-crf", "24", "-preset", "veryfast", "-movflags", "+faststart",
+           "-crf", "26", "-preset", "medium", "-g", "60", "-movflags", "+faststart",
            "-an", out_path]
     r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode != 0 or not os.path.exists(out_path):
@@ -631,6 +638,51 @@ def remove_video(slot, locale="ca"):
     entry = c.get(locale, {}).get("img", {}).get(slot)
     if entry:
         entry.pop("video", None)
+        write_content(c)
+    return True
+
+
+def apply_inline_video(name, fname, locale="ca", drive="ca"):
+    """Transcode a library clip for an inline <video data-vid> block (the welcome
+    clip) and register it on that name for this locale. Unlike the slot videos,
+    these are watched on a click — so the audio is kept and a poster is made."""
+    src_path = safe_media_path(fname, drive)
+    if not src_path or not fname.lower().endswith(VID_EXT):
+        raise ValueError("unknown library video")
+    slug = re.sub(r"[^a-z0-9-]", "", name.lower())
+    base = "vid-%s%s" % (slug, "-us" if locale == "us" else "")
+    out_path = os.path.join(VIDEOS, base + ".mp4")
+    # 720w as above — the block is never rendered wider than 420 px. Audio kept.
+    cmd = ["ffmpeg", "-y", "-i", src_path,
+           "-vf", "scale='min(720,iw)':-2",
+           "-c:v", "libx264", "-profile:v", "main", "-pix_fmt", "yuv420p",
+           "-crf", "26", "-preset", "medium", "-g", "60", "-movflags", "+faststart",
+           "-c:a", "aac", "-b:a", "128k", "-ac", "2", out_path]
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode != 0 or not os.path.exists(out_path):
+        raise ValueError("video conversion failed: " + (r.stderr or "")[-300:])
+    # a frame ~1s in, so the block isn't a black box before someone hits play
+    poster_path = os.path.join(VIDEOS, base + "-poster.jpg")
+    subprocess.run(["ffmpeg", "-y", "-ss", "1", "-i", out_path, "-frames:v", "1",
+                    "-vf", "scale='min(1280,iw)':-2", "-q:v", "4", poster_path],
+                   capture_output=True, text=True)
+    stamp = int(time.time())
+    c = read_content()
+    entry = c[locale].setdefault("vid", {}).setdefault(name, {})
+    entry["src"] = "assets/videos/%s.mp4?v=%d" % (base, stamp)
+    if os.path.exists(poster_path):
+        entry["poster"] = "assets/videos/%s-poster.jpg?v=%d" % (base, stamp)
+    write_content(c)
+    return entry["src"]
+
+
+def remove_inline_video(name, locale="ca"):
+    """Clear this locale's clip. CA falls back to the one authored in the HTML;
+    any other locale hides the block until it gets one of its own."""
+    c = read_content()
+    vids = c.get(locale, {}).get("vid", {})
+    if name in vids:
+        vids.pop(name, None)
         write_content(c)
     return True
 
@@ -662,6 +714,12 @@ def scan_slots():
                 "src": dsrc, "alt": alt.group(1) if alt else "",
                 "mobile_src": m_src,
                 "mobile_distinct": bool(m_src and m_src != dsrc),
+            })
+        # inline video blocks (<video data-vid="...">) — a clip per locale, sound on
+        for m in re.finditer(r'<video[^>]*\bdata-vid="([^"]+)"[^>]*>', html):
+            slots.append({
+                "slot": m.group(1), "page": page, "kind": "video",
+                "src": None, "alt": "video block — plays with sound on a click",
             })
         for m in re.finditer(r'<div class="ph[^"]*"[^>]*data-slot="([^"]+)"', html):
             kind_m = re.search(
@@ -1046,6 +1104,9 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json(scan_texts())
         if p == "/api/content":
             return self._json(read_content())
+        if p == "/api/prices":
+            pr = prices.read_prices()
+            return self._json({"prices": pr, "rendered": prices.render(pr)})
         if p == "/api/linkinbio":
             return self._json(read_linkinbio())
         if p == "/api/sections":
@@ -1160,10 +1221,12 @@ class Handler(SimpleHTTPRequestHandler):
             try:
                 slot = data["slot"]
                 loc = data.get("locale", "ca")
+                inline = data.get("kind") == "video"   # <video data-vid> block, not a photo slot
                 if data.get("remove"):
-                    remove_video(slot, loc)
+                    (remove_inline_video if inline else remove_video)(slot, loc)
                     return self._json({"ok": True, "removed": True})
-                url = apply_video(slot, data["file"], loc, data.get("drive", "ca"))
+                fn = apply_inline_video if inline else apply_video
+                url = fn(slot, data["file"], loc, data.get("drive", "ca"))
                 return self._json({"ok": True, "video": url, "locale": loc})
             except (KeyError, ValueError) as e:
                 return self._json({"error": str(e)}, 400)
@@ -1173,6 +1236,20 @@ class Handler(SimpleHTTPRequestHandler):
                 return self._json({"ok": ok})
             except KeyError as e:
                 return self._json({"error": "missing " + str(e)}, 400)
+        if p == "/api/prices":
+            # {prices:{...}, preview?:true} — preview re-renders without saving,
+            # so the Pricing tab can show the recalculated tables as you type.
+            try:
+                merged = prices.merge(prices.read_prices(), data.get("prices") or {})
+            except (KeyError, TypeError, ValueError) as e:
+                return self._json({"error": str(e)}, 400)
+            if data.get("preview"):
+                return self._json({"ok": True, "prices": merged,
+                                   "rendered": prices.render(merged)})
+            prices.write_prices(merged)
+            report = prices.apply_prices(merged)
+            return self._json({"ok": True, "prices": merged,
+                               "rendered": prices.render(merged), "report": report})
         if p == "/api/contact":
             # per-locale phone/email override (blank clears → falls back to the built-in default)
             loc = data.get("locale", "ca")

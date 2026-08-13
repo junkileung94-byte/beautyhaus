@@ -27,7 +27,9 @@ body {
     background-attachment: fixed;
   }
 }
-img { max-width: 100%; display: block; }
+/* height:auto keeps the intrinsic ratio when only the width is styled —
+ * without it the width/height attributes stretch the image (the old footer logo). */
+img { max-width: 100%; height: auto; display: block; }
 h1, h2, h3, h4 { font-family: var(--font-display); font-style: normal; font-weight: 500; line-height: 1.08; margin: 0; overflow-wrap: anywhere; min-width: 0; letter-spacing: -0.015em; }
 p { margin: 0; }
 a { color: inherit; }
@@ -116,7 +118,6 @@ a { color: inherit; }
   .gate__crown { padding: 0.35rem 0.6rem; }
   .gate__choice { padding: var(--space-lg); }
 }
-
 /* ---------- splash ---------- */
 .splash {
   position: fixed; inset: 0; z-index: var(--z-gate);
@@ -181,7 +182,16 @@ body.is-gated { overflow: hidden; }
 .nav__menu svg { width: 26px; height: 26px; }
 @media (max-width: 40rem) {
   .nav__wordmark { display: none; }
-  /* keep the flag switcher visible on mobile — it's compact */
+  /* five items don't fit a phone bar — the 1fr columns squashed the wordmark to
+   * an illegible smear. Mobile keeps the crown, Book and the burger; the
+   * wordmark and the flag switcher move into the menu. */
+  .nav { grid-template-columns: auto 1fr; gap: var(--space-xs); }
+  .nav__brand { display: none; }
+  .nav__crown { grid-column: 1; justify-self: start; }
+  .nav__right { grid-column: 2; }
+  .nav__loc { display: none; }
+  .nav__right { gap: var(--space-sm); }
+  .nav__book { padding: 0.55rem 1rem; letter-spacing: 0.1em; }
 }
 
 /* full-screen glass menu */
@@ -198,6 +208,15 @@ body.is-gated { overflow: hidden; }
 }
 .menu.is-open { opacity: 1; visibility: visible; transition: opacity var(--dur-long) var(--ease-out); }
 .menu__top { display: flex; justify-content: space-between; align-items: center; }
+.menu__brand { display: flex; align-items: center; gap: var(--space-sm); }
+.menu__loc {
+  display: flex; align-items: center; gap: var(--space-2xs);
+  background: none; border: 0; cursor: pointer; padding: 0.3rem 0;
+  color: oklch(80% 0.015 311); font-family: inherit;
+  font-size: var(--text-xs); letter-spacing: 0.12em; text-transform: uppercase;
+}
+.menu__loc .nav__flag { box-shadow: 0 0 0 1px oklch(99% 0.008 311 / 0.35); }
+.menu__loc:hover { color: var(--color-accent-2); }
 .menu__close { width: 44px; height: 44px; background: none; border: 0; color: inherit; cursor: pointer; display: grid; place-items: center; }
 .menu__close svg { width: 26px; height: 26px; }
 .menu__links { align-self: center; display: grid; gap: var(--space-md); list-style: none; margin: 0; padding: 0; }
@@ -243,6 +262,10 @@ body.is-gated { overflow: hidden; }
   z-index: 0;
 }
 .fold__content { position: relative; z-index: var(--z-base); padding: var(--space-xl) var(--page-gutter) var(--space-2xl); }
+
+/* CA site: center the "Still on the fence?" consult card in its band */
+body[data-haus="ca"] [data-section="care-band"] .fold__content { display: grid; justify-items: center; text-align: center; }
+body[data-haus="ca"] [data-section="care-band"] .glass { margin-inline: auto; }
 
 /* parallax handled by js/parallax.js (parallax-controller — the engine inside
  * react-scroll-parallax); .fold__media keeps its -12% bleed for headroom */
@@ -699,7 +722,12 @@ body.is-gated { overflow: hidden; }
   padding-top: var(--space-md);
   font-size: var(--text-xs); letter-spacing: 0.12em; text-transform: uppercase; color: oklch(68% 0.015 311);
 }
-.foot__logo { width: 72px; }
+.foot__logo { width: 64px; height: auto; opacity: 0.85; }
+@media (max-width: 40rem) {
+  /* stacked, left-aligned — space-between strands the lines mid-row on a phone */
+  .foot__meta { flex-direction: column; align-items: flex-start; gap: var(--space-xs); }
+  .foot__logo { margin-bottom: var(--space-2xs); }
+}
 
 /* ---------- reveal (one orchestrated entrance) ---------- */
 .reveal { opacity: 0; transform: translateY(10px); animation: reveal var(--dur-long) var(--ease-out) forwards; animation-delay: calc(var(--i, 0) * 90ms); }
@@ -867,9 +895,16 @@ html[data-ba="off"] [data-section="beforeafter"] { display: none !important; }
   pointer-events: none; background: transparent;
 }
 .slot-video.is-ready { opacity: 1; }
-/* video fully covers → drop the poster photo so it can't flash through loop seams */
+/* Both classes are set ONLY once the clip holds a decodable frame (haus.js). The
+   photo has to stay visible until then — hiding it at mount time left a bare
+   background block whenever the clip failed to load. */
 .slot-live > picture,
 .slot-live > img[data-slot] { opacity: 0; transition: opacity 0.3s var(--ease-out); }
+
+/* inline <video data-vid> blocks (the welcome clip) — hidden before a locale is
+   resolved, and hidden for good in a locale with no clip of its own */
+body:not([data-haus]) [data-vid-wrap],
+[data-vid-wrap].vid-empty { display: none !important; }
 
 /* location-scoped content */
 /* Locale gating: hide the WRONG locale only — never override the shown element's
@@ -888,3 +923,11 @@ body:not(.loc-ready) [data-slot] {
   visibility: hidden;
   animation: haus-loc-reveal 0s linear 1.6s forwards;
 }
+
+/* ---- "Designed by thisisyours" footer credit ---------------------------- */
+/* Sits in .foot__meta, which is uppercase + letterspaced — neutralize both
+   so the wordmark reads as set. Color inherits the meta's muted lavender. */
+.tiy-credit { font-size: .78rem; opacity: .55; margin: 0; text-transform: none; letter-spacing: normal; }
+.tiy-credit a { font-family: "Newsreader", ui-serif, Georgia, "Times New Roman", serif; font-weight: 700; font-size: .92rem; color: inherit; text-decoration: none; }
+.tiy-credit a:hover { text-decoration: underline; }
+.tiy-dot { color: #D87656; }

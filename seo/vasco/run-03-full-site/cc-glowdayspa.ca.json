@@ -1,0 +1,24 @@
+{
+  "status": "success",
+  "data": {
+    "domain": "glowdayspa.ca",
+    "in_crawl": true,
+    "in_rankings": true,
+    "pagerank": 4.8652185031524914e-09,
+    "pagerank_rank": 18500030,
+    "harmonic_centrality": 13902205.0,
+    "harmonic_centrality_rank": 7338110,
+    "n_hosts": 2,
+    "top_referring_domains": [],
+    "referring_domains_sample": 0,
+    "note": "Domain-level metrics from CC web graph. Quarterly updates."
+  },
+  "error": null,
+  "metadata": {
+    "source": "commoncrawl",
+    "release": "cc-main-2026-jan-feb-mar",
+    "from_cache": false,
+    "timestamp": "2026-08-13T19:47:54Z",
+    "cached_at": 1786650474.2155845
+  }
+}

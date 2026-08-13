@@ -49,6 +49,8 @@
   .lib { padding: .8rem 1rem; overflow-y:auto; max-height:calc(100dvh - 54px); }
   .lib .bar { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:.7rem; flex-wrap:wrap; }
   .lib .bar .sel-note { font-size:.85rem; color:var(--color-muted); }
+  /* jump back to the slot list — only meaningful once the panes stack (phone) */
+  #backtoslots { display:none; flex:none; }
   .lib .bar .sel-note b { color: var(--color-accent); }
   .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap:.6rem; }
   .cell { border:0; padding:0; background:var(--color-paper-2); border-radius:10px; overflow:hidden; aspect-ratio:1;
@@ -261,6 +263,127 @@
   .tmember__ops .rm { background:rgba(20,15,25,.7); color:#fff; }
   #teamadd.arming { background:var(--color-ink); border-color:var(--color-ink); }
   .tmember.armed .tmember__pic { outline:2px solid var(--color-accent); outline-offset:2px; }
+
+  /* =====================================================================
+     Phone / touch layout.
+     Everything above this line is the desktop admin. These rules take over
+     on a narrow or a touch screen, and live in one block at the end so they
+     reliably win without having to out-specify anything above.
+     ===================================================================== */
+
+  /* The sticky chrome (header + tab bar + US banner) has no fixed height: the
+     header wraps at narrow widths and the banner appears only for the US
+     locale. setChrome() measures it into --chrome, so the one-screen views
+     below are exactly one screen instead of guessing a constant. */
+  :root { --chrome: 92px; }
+
+  @media (max-width: 46rem) {
+    /* ---- header: two honest rows instead of one squashed one ---- */
+    header { flex-wrap:wrap; row-gap:.45rem; padding:.55rem .8rem; }
+    header h1 { font-size:1rem; white-space:nowrap; }
+    header .hint { display:none; }        /* "Editing site" / "Sync drives ↓" — noise on a phone */
+    header .modewrap { order:3; width:100%; gap:.45rem; }
+    header .modewrap .vpswitch { flex:1; }      /* the CA/US chips were overlapping each other */
+    header .modewrap .vpswitch .chip { flex:1; padding:.45rem .3rem; }
+    #pkwrap { flex-wrap:wrap; }
+
+    /* ---- tab bar: scrolls sideways instead of overflowing the page ----
+       The six tabs are 499px wide. Overflowing, they widened the layout
+       viewport to 500px, so Chrome shrank the ENTIRE admin to fit — and
+       Messages sat off-screen where it could not be tapped at all. */
+    .tabs { flex-wrap:nowrap; overflow-x:auto; overscroll-behavior-x:contain;
+            scrollbar-width:none; padding:.4rem .5rem 0; }
+    .tabs::-webkit-scrollbar { display:none; }
+    .tab { flex:none; white-space:nowrap; font-size:.8rem; padding:.5rem .7rem; }
+
+    /* ---- images: one scroller, not two nested ones ----
+       The panes already stacked at this width but each kept its own
+       overflow-y, so a swipe over the library scrolled the library inside a
+       page that also scrolled. Let the page own the scroll. */
+    main { grid-template-columns:1fr; min-height:0; }
+    .slots, .lib { max-height:none; overflow:visible; }
+    .slots { border-right:0; border-bottom:1px solid var(--color-rule); }
+    .lib { padding:.7rem .8rem 3rem; }
+    .grid { grid-template-columns:repeat(auto-fill, minmax(96px,1fr)); gap:.45rem; }
+    /* keep "which slot am I filling" on screen while scrolling the thumbnails —
+       but shallow, since every pixel of it is a pixel not showing photos */
+    .lib .bar { position:sticky; top:var(--headerh, 54px); z-index:5; margin:0 -.8rem .6rem;
+                padding:.5rem .8rem; background:var(--color-paper);
+                border-bottom:1px solid var(--color-rule);
+                justify-content:flex-start; gap:.4rem .5rem; font-size:.78rem; }
+    .lib .bar #libcount { display:none; }         /* the drive picker already names the drive */
+    .lib .bar .modewrap { gap:.35rem; }
+    .lib .bar .modewrap .hint { display:none; }   /* "Crop for" — the two chips say it themselves */
+    .lib .bar .vpswitch .chip { padding:.4rem .65rem; }
+    .lib .bar .libdrive-wrap { margin-left:auto; }
+    .lib .bar #libdrive { padding:.3rem .35rem; }
+    #backtoslots { display:inline-block; }
+
+    /* ---- one-screen views: dvh (mobile browser chrome) + the real header height ---- */
+    #view-documents, #view-layout { height:calc(100dvh - var(--chrome)); }
+    /* the document picker wrapped to four rows and left the document itself a
+       sliver — same sideways-scroll treatment as the tab bar */
+    .docpick { flex-wrap:nowrap; overflow-x:auto; overscroll-behavior-x:contain;
+               scrollbar-width:none; max-width:100%; }
+    .docpick::-webkit-scrollbar { display:none; }
+    .docpick .chip { flex:none; white-space:nowrap; }
+    .dochelp { margin-left:0; }
+    #view-text { display:flex; flex-direction:column; height:calc(100dvh - var(--chrome)); }
+    .txstage { height:auto; flex:1; min-height:0; padding:.4rem; }
+    .txbar { padding:.5rem .8rem; gap:.5rem .6rem; }
+    .txfmt { flex-wrap:wrap; }             /* this row was 509px wide and refused to wrap */
+    .txbar select, .txfmt .fsize { max-width:100%; }
+    .txhelp { margin-left:0; font-size:.7rem; }
+    /* seven page chips wrapped to two rows and ate the preview. Scroll them
+       sideways instead — same treatment as the tab bar. */
+    .txpages { flex-wrap:nowrap; overflow-x:auto; overscroll-behavior-x:contain;
+               scrollbar-width:none; max-width:100%; }
+    .txpages::-webkit-scrollbar { display:none; }
+    .txpage { flex:none; }
+
+    /* ---- crop editor: the whole screen, head and foot pinned ----
+       [open] matters: styling the bare #cropdlg would override the UA's
+       `dialog:not([open]) { display:none }` and leave it permanently on screen. */
+    #cropdlg[open] { width:100vw; max-width:100vw; height:100dvh; max-height:100dvh;
+                     margin:0; border-radius:0; display:flex; flex-direction:column; }
+    #cropdlg .crop-head, #cropdlg .crop-foot { flex:none; padding:.5rem .7rem; }
+    #cropdlg .crop-vp { font-size:.85rem; }
+    #cropdlg .stage-wrap { flex:1; min-height:0; padding:.5rem; }
+    /* an explicit budget, not max-height:100% — a percentage against the
+       auto-height .stage resolves to none */
+    #cropdlg .stage img { max-width:calc(100vw - 1rem); max-height:calc(100dvh - 190px); }
+    .crop-foot .btn { flex:1; }
+
+    #drivesdlg { width:100vw; max-width:100vw; max-height:100dvh; border-radius:0; }
+    #toast { left:14px; right:14px; text-align:center; }
+  }
+
+  /* ---- fingertip-sized controls ----
+     Keyed on the pointer, not the width: a tablet is wide AND touch. */
+  @media (pointer: coarse) {
+    /* 34px, not the 44px ideal: three of these overlay a ~110px carousel
+       thumbnail, and 44 would bury the photo they sit on. */
+    .galcell .rm { width:34px; height:34px; top:3px; right:3px; font-size:1rem; }
+    .galcell .mv { width:34px; height:34px; bottom:3px; font-size:.85rem; }
+    .galcell .mv.l { left:3px; } .galcell .mv.r { left:41px; }
+    .tmember__ops button { width:34px; height:34px; font-size:1rem; }
+    .drive-rm { width:34px; height:34px; }
+    .rect .hd { width:28px; height:28px; right:-14px; bottom:-14px; }
+    /* the whole label row is the target, so give it room around the box */
+    .tgl { padding:.5rem 0; }
+    .tgl input { width:1.35rem; height:1.35rem; }
+    .chip, .btn { padding:.55rem .9rem; }
+    .rmvid { padding:.4rem .7rem; }
+    /* text fields: typing on glass needs a taller box, and <16px input text
+       makes iOS Safari zoom the page on focus */
+    .tmember__fields input, .tmember__fields textarea, .drv, .laysel,
+    #libdrive, .txfmt .fsize, #view-linkinbio input[type=text], #view-linkinbio textarea {
+      font-size:16px; padding:.5rem .55rem;
+    }
+    .txfmt .fbtn { width:38px; height:38px; }
+  }
+  /* the hover card is a mouse affordance — it has no dismiss on touch */
+  @media (hover: none) { #hoverprev { display:none !important; } }
 </style>
 </head>
 <body>
@@ -283,6 +406,7 @@
 <nav class="tabs">
   <button class="tab" data-view="images">🖼 Images</button>
   <button class="tab" data-view="text">✏️ Text</button>
+  <button class="tab" data-view="prices">💲 Prices</button>
   <button class="tab" data-view="layout">🧩 Sections</button>
   <button class="tab" data-view="documents">📄 Documents</button>
   <button class="tab" data-view="linkinbio">🔗 Link in bio</button>
@@ -334,6 +458,9 @@
   </aside>
   <section class="lib">
     <div class="bar">
+      <!-- phone only (hidden by default, shown by the narrow-screen block): the
+           panes stack there, so the slot list is a long scroll back up -->
+      <button class="chip" id="backtoslots">▲ Slots</button>
       <span class="sel-note" id="selnote">No slot selected — click one on the left.</span>
       <div class="modewrap">
         <span class="hint" style="color:var(--color-muted)">Crop for</span>
@@ -426,9 +553,71 @@
   <div id="msglist" class="msglist"></div>
 </section>
 
+<section id="view-prices" style="display:none;">
+  <style>
+    #view-prices{ flex-direction:column; gap:.9rem; max-width:820px; padding:1rem; }
+    #view-prices .pr-head{ position:sticky; top:0; z-index:3; display:flex; gap:.8rem;
+      align-items:flex-start; justify-content:space-between; flex-wrap:wrap;
+      background:var(--color-paper); padding:.2rem 0 .6rem; border-bottom:1px solid var(--color-rule); }
+    #view-prices .pr-head h2{ font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; color:var(--color-muted); margin:0 0 .25rem; }
+    #view-prices .pr-sub{ font-size:.78rem; line-height:1.5; color:var(--color-ink-2); margin:0; max-width:52ch; }
+    #view-prices .pr-save{ background:var(--color-accent); color:#fff; border:0; border-radius:999px;
+      padding:.55rem 1.1rem; font:inherit; font-weight:500; cursor:pointer; white-space:nowrap; }
+    #view-prices .pr-save:disabled{ opacity:.5; cursor:default; }
+    #view-prices .pr-card{ border:1px solid var(--color-rule); border-radius:14px; padding:.9rem; background:var(--color-paper); margin-bottom:.9rem; }
+    #view-prices .pr-card h2{ font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; color:var(--color-muted); margin:0 0 .5rem; }
+    #view-prices .pr-note{ font-size:.76rem; line-height:1.5; color:var(--color-ink-2); margin:0 0 .7rem; }
+    #view-prices .pr-row{ display:flex; flex-wrap:wrap; gap:.7rem; margin-bottom:.6rem; }
+    #view-prices .pr-f{ display:flex; flex-direction:column; gap:.25rem; }
+    #view-prices .pr-l{ font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--color-muted); }
+    #view-prices .pr-in{ display:inline-flex; align-items:center; gap:.15rem; border:1px solid var(--color-rule);
+      border-radius:9px; background:#fff; padding:.4rem .55rem; color:var(--color-muted); font-size:.85rem; }
+    #view-prices .pr-in input{ font:inherit; font-size:.9rem; border:0; outline:0; background:transparent;
+      color:var(--color-ink); width:5.2rem; padding:0; }
+    #view-prices .pr-in input::-webkit-outer-spin-button,
+    #view-prices .pr-in input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+    #view-prices .pr-in input[type=number]{ -moz-appearance:textfield; }
+    #view-prices .pr-sfx{ font-size:.78rem; }
+    #view-prices .pr-ladder{ display:flex; flex-direction:column; gap:.3rem; margin:.2rem 0 .7rem; }
+    #view-prices .pr-lrow{ display:grid; grid-template-columns:3.2rem 1fr 1fr 5.5rem; gap:.5rem; align-items:center; }
+    #view-prices .pr-lhead span{ font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--color-muted); }
+    #view-prices .pr-lbl{ font-size:.85rem; color:var(--color-ink-2); }
+    #view-prices .pr-half{ font-size:.85rem; color:var(--color-ink); font-variant-numeric:tabular-nums; }
+    #view-prices .pr-pvwrap{ border-top:1px dashed var(--color-rule); padding-top:.55rem; margin-top:.3rem; }
+    #view-prices .pr-pvl{ font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color:var(--color-accent); }
+    #view-prices .pr-pv{ font-size:.84rem; line-height:1.7; color:var(--color-ink); font-variant-numeric:tabular-nums; margin-top:.2rem; }
+    #view-prices .pr-crow{ display:grid; grid-template-columns:1fr auto auto 5.5rem; gap:.5rem;
+      align-items:center; padding:.35rem 0; border-top:1px solid var(--color-rule); }
+    #view-prices .pr-crow:first-child{ border-top:0; }
+    #view-prices .pr-cname{ font-size:.85rem; color:var(--color-ink); }
+    #view-prices .pr-fmt{ font:inherit; font-size:.8rem; padding:.35rem; border:1px solid var(--color-rule);
+      border-radius:8px; background:#fff; color:var(--color-ink); }
+    #view-prices .pr-cpv{ font-size:.85rem; text-align:right; color:var(--color-ink-2); font-variant-numeric:tabular-nums; }
+    @media (max-width: 46rem){
+      #view-prices{ padding:.8rem; }
+      #view-prices .pr-in input{ font-size:16px; width:4.4rem; }
+      #view-prices .pr-lrow{ grid-template-columns:2.4rem 1fr 1fr; }
+      #view-prices .pr-lrow .pr-half{ grid-column:2 / -1; }
+      #view-prices .pr-lhead span:last-child{ display:none; }
+      #view-prices .pr-crow{ grid-template-columns:1fr auto; row-gap:.3rem; }
+      #view-prices .pr-crow .pr-cname{ grid-column:1 / -1; }
+      #view-prices .pr-cpv{ text-align:left; }
+    }
+  </style>
+  <div class="pr-head">
+    <div>
+      <h2>Prices &middot; <span id="pr-loc"></span></h2>
+      <p class="pr-sub">Change a number and save — the menu, the full-set totals, every &ldquo;from $…&rdquo;, the deposit wording and the Google listing all update together.</p>
+    </div>
+    <button class="pr-save" id="pr-save" disabled>Saved &check;</button>
+  </div>
+  <div id="pr-cards"></div>
+</section>
+
 <section id="view-linkinbio" style="display:none;">
   <style>
-    #view-linkinbio{ flex-direction:column; gap:1rem; max-width:640px; }
+    /* padding, not flush to the window edge — this view had none at any width */
+    #view-linkinbio{ flex-direction:column; gap:1rem; max-width:640px; padding:1rem; }
     #view-linkinbio .lib-head{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; flex-wrap:wrap; }
     #view-linkinbio .lib-head h2{ font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; color:var(--color-muted); margin:0; }
     #view-linkinbio .lib-actions{ display:flex; gap:.5rem; align-items:center; }
@@ -462,9 +651,32 @@
     #view-linkinbio .lib-utm-url{ font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.74rem; color:var(--color-ink); overflow-wrap:anywhere; margin-top:.15rem; }
     #view-linkinbio .lib-copy{ border:1px solid var(--color-rule); background:#fff; border-radius:999px; padding:.35rem .8rem; cursor:pointer; font:inherit; font-size:.78rem; color:var(--color-ink); white-space:nowrap; }
     #view-linkinbio .lib-copy:hover{ border-color:var(--color-accent); color:var(--color-accent); }
+
+    @media (max-width: 46rem) {
+      #view-linkinbio{ padding:.8rem; gap:.8rem; }
+      /* The four-column link row (move · thumb · fields · controls) squeezed
+         both text inputs down to a few visible characters at phone width.
+         Give the fields their own full-width row underneath. */
+      #view-linkinbio .lib-row{ grid-template-columns:auto auto 1fr; row-gap:.5rem;
+        grid-template-areas:"move thumb ctl" "fields fields fields"; }
+      #view-linkinbio .lib-move{ grid-area:move; flex-direction:row; }
+      #view-linkinbio .lib-thumb{ grid-area:thumb; }
+      #view-linkinbio .lib-ctl{ grid-area:ctl; flex-direction:row; justify-content:flex-end; }
+      #view-linkinbio .lib-fields{ grid-area:fields; }
+      /* same idea for a social row: the platform picker gets its own line */
+      #view-linkinbio .lib-social{ grid-template-columns:1fr auto; }
+      #view-linkinbio .lib-social select{ grid-column:1 / -1; }
+      /* dragging a resize corner is a mouse move — show more of the tagline up front */
+      #view-linkinbio textarea{ min-height:5.5rem; }
+    }
+    @media (pointer: coarse) {
+      #view-linkinbio .lib-move button{ width:36px; height:32px; font-size:.75rem; }
+      #view-linkinbio .lib-del{ width:34px; height:34px; }
+      #view-linkinbio .lib-tgl input{ width:1.35rem; height:1.35rem; }
+    }
   </style>
   <div class="lib-head">
-    <h2>\U0001F517 Link in bio &middot; <span style="text-transform:none; letter-spacing:0; color:var(--color-ink-2)">beautyextensionhaus.com/linkinbio</span></h2>
+    <h2>🔗 Link in bio &middot; <span style="text-transform:none; letter-spacing:0; color:var(--color-ink-2)">beautyextensionhaus.com/linkinbio</span></h2>
     <div class="lib-actions">
       <a class="lib-open" id="lib-preview" href="/linkinbio" target="_blank" rel="noopener">Open &#8599;</a>
       <button class="lib-save" id="lib-save" disabled>Saved &#10003;</button>
@@ -557,6 +769,11 @@
   function usImg(slot){ var o=(content.us&&content.us.img)||{}; return o[slot]||null; }
   // current image src for a slot in the active mode + locale
   function slotSrc(s){
+    /* inline video block — its thumb is the clip's poster frame, not a photo */
+    if(s.kind==='video'){
+      var v=content[locale]&&content[locale].vid&&content[locale].vid[s.slot];
+      return (v&&v.poster)||'';
+    }
     if(locale==='us'){ var o=usImg(s.slot); if(o) return (cropVP==='mobile'?(o.mobile||o.desktop):o.desktop)||s.src; }
     return cropVP==='mobile' ? (s.mobile_src||s.src) : s.src;
   }
@@ -611,21 +828,29 @@
         var b=document.createElement('button'); b.className='slot'+(selSlot===s.slot?' sel':'');
         b.dataset.slot=s.slot;
         var thumb=slotSrc(s);
+        var isVid=s.kind==='video';
         var badge='';
-        if(cropVP==='mobile') badge = s.mobile_distinct
+        if(cropVP==='mobile' && !isVid) badge = s.mobile_distinct
           ? '<span class="mbadge">mobile set</span>'
           : '<span class="mbadge none">using desktop</span>';
         var hasVid=slotVideoUrl(s.slot);
-        b.innerHTML=(thumb?'<img src="/'+thumb+'" alt="">':'<span class="empty">empty</span>')+
+        b.innerHTML=(thumb?'<img src="/'+thumb+'" alt="">':'<span class="empty">'+(isVid?'no clip':'empty')+'</span>')+
           (hasVid?'<span class="slotvid" title="Plays a video">▶</span>':'')+
           '<span class="meta"><span class="name">'+s.slot+badge+'</span><br><span class="page">'+
           (s.kind==='placeholder'?'placeholder — '+s.alt:s.alt||'')+'</span></span>';
         b.onclick=function(){ selSlot=s.slot; renderSlots();
           var vurl=slotVideoUrl(s.slot);
-          $('selnote').innerHTML='Slot: <b>'+s.slot+'</b> ('+s.page+') — <b>'+cropVP+'</b> crop · pick a photo, or a <b>▶ video</b> from the library'+(vurl?' · <button class="rmvid">Remove video</button>':'');
+          $('selnote').innerHTML = isVid
+            ? 'Video block: <b>'+s.slot+'</b> ('+s.page+') — pick a <b>▶ video</b> from the library. It plays with sound when someone clicks it.'
+              +(locale==='us'&&!vurl?' Until you set one, this block is hidden on the US site.':'')
+              +(vurl?' · <button class="rmvid">Remove clip</button>':'')
+            : 'Slot: <b>'+s.slot+'</b> ('+s.page+') — <b>'+cropVP+'</b> crop · pick a photo, or a <b>▶ video</b> from the library'+(vurl?' · <button class="rmvid">Remove video</button>':'');
           var rb=$('selnote').querySelector('.rmvid'); if(rb) rb.onclick=function(){ removeVideo(s.slot); };
+          // phone: the library is a screen below — go there, since picking a
+          // slot is always followed by picking a photo for it
+          if(isPhone()){ var lb=document.querySelector('.lib'); if(lb) lb.scrollIntoView({block:'start', behavior:'smooth'}); }
         };
-        b.onmouseenter=function(e){ showPreview(s, e); };
+        b.onmouseenter=function(e){ if(!isVid) showPreview(s, e); };
         b.onmousemove=function(e){ movePreview(e); };
         b.onmouseleave=hidePreview;
         el.appendChild(b);
@@ -685,30 +910,49 @@
           if(baArming){ openCrop(f, 'ba'); return; }
           if(galleryArming){ openCrop(f, 'gallery'); return; }
           if(!selSlot){ toast('Pick a slot first, or use “+ Add photo” / “+ Add before/after” / a team circle'); return; }
+          if(slotKind(selSlot)==='video'){ toast(selSlot+' is a video block — pick a ▶ video, not a photo'); return; }
           openCrop(f, 'slot');
         };
         g.appendChild(b);
       });
     });
   }
+  function slotKind(slot){
+    for(var i=0;i<slots.length;i++) if(slots[i].slot===slot) return slots[i].kind;
+    return 'img';
+  }
+  /* inline <video data-vid> blocks keep their clip under content[locale].vid */
+  function inlineVid(slot){
+    var v=content[locale]&&content[locale].vid&&content[locale].vid[slot];
+    return v||null;
+  }
   function slotVideoUrl(slot){
+    if(slotKind(slot)==='video'){ var v=inlineVid(slot); return (v&&v.src)||''; }
     var im=content[locale]&&content[locale].img&&content[locale].img[slot];
     return (im&&im.video)||'';
   }
   function applyVideo(f){
+    var inline=slotKind(selSlot)==='video';
     toast('Converting video… (a few seconds)');
     fetch('/api/apply-video',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({slot:selSlot, file:f.file, locale:locale, drive:libDrive})})
+      body:JSON.stringify({slot:selSlot, file:f.file, locale:locale, drive:libDrive, kind:inline?'video':'img'})})
       .then(function(r){return r.json();}).then(function(res){
-        if(res.ok){ toast('Video set on '+selSlot+' — it autoplays on scroll'); loadContent(function(){ renderSlots(); }); }
+        if(res.ok){ toast(inline
+            ? 'Welcome clip set on '+selSlot+' — plays with sound on a click'
+            : 'Video set on '+selSlot+' — it autoplays on scroll');
+          loadContent(function(){ renderSlots(); }); }
         else toast('Video: '+(res.error||'error'));
       });
   }
   function removeVideo(slot){
+    var inline=slotKind(slot)==='video';
     fetch('/api/apply-video',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({slot:slot, remove:true, locale:locale})})
+      body:JSON.stringify({slot:slot, remove:true, locale:locale, kind:inline?'video':'img'})})
       .then(function(r){return r.json();}).then(function(res){
-        if(res.ok){ toast('Video removed — the photo shows again'); loadContent(function(){ renderSlots(); }); }
+        if(res.ok){ toast(inline
+            ? (locale==='us' ? 'Clip removed — the US block is hidden again' : 'Clip removed — the built-in one plays again')
+            : 'Video removed — the photo shows again');
+          loadContent(function(){ renderSlots(); }); }
       });
   }
 
@@ -747,12 +991,14 @@
     document.body.classList.toggle('us', locale==='us');
     var vs=document.getElementById('viewsite');
     if(vs) vs.textContent='↗ Preview '+(locale==='us'?'US':'Canada')+' site';
+    setChrome();   // the US banner just appeared or went away — chrome is a different height
   }
   document.querySelectorAll('#localeswitch .chip').forEach(function(b){
     b.onclick=function(){
       locale=b.dataset.loc; drawLocale(); teamPhotoTarget=null;
       loadContent(function(){ renderSlots(); loadGallery(); loadTeam(); if(curView==='text') loadTexts(); });
       if(curView==='layout') loadLayout();
+      if(curView==='prices') renderPrices();
       toast('Now editing the '+(locale==='us'?'US · Sarasota':'Canada')+' site');
     };
   });
@@ -788,23 +1034,336 @@
   }
   (function(){ var a=$('pk-add'); if(a) a.onclick=pkAdd; var c=$('pk-clear'); if(c) c.onclick=pkClear; pkRefresh(); })();
 
+  /* ---- phone chrome + navigation ---------------------------------------
+     The sticky header and the tab bar are not a fixed height: the header
+     wraps on a narrow screen and the US banner appears only for that locale.
+     Measure what is actually on screen into --chrome, which the one-screen
+     views (Text / Sections / Documents) subtract from 100dvh. */
+  function setChrome(){
+    var h=0;
+    ['header','.tabs','#usbanner'].forEach(function(sel){
+      var n=document.querySelector(sel);
+      if(n && n.offsetParent!==null) h+=n.offsetHeight;   // offsetParent null = not displayed
+    });
+    if(h) document.documentElement.style.setProperty('--chrome', h+'px');
+    // the header alone is the sticky part — anything else that sticks has to
+    // sit below it, not under it
+    var hd=document.querySelector('header');
+    if(hd) document.documentElement.style.setProperty('--headerh', hd.offsetHeight+'px');
+  }
+  var isPhone = function(){ return matchMedia('(max-width: 46rem)').matches; };
+
   var curView='images';
   function showView(v){
     curView=v;
     $('view-images').style.display = v==='images'?'':'none';
     $('view-text').style.display = v==='text'?'':'none';
+    $('view-prices').style.display = v==='prices'?'flex':'none';
     $('view-layout').style.display = v==='layout'?'flex':'none';
     $('view-documents').style.display = v==='documents'?'flex':'none';
     $('view-messages').style.display = v==='messages'?'flex':'none';
     $('view-linkinbio').style.display = v==='linkinbio'?'flex':'none';
     document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('on', t.dataset.view===v); });
+    // the tab strip scrolls sideways on a phone — bring the active tab into it.
+    // block:'nearest' so this never yanks the page vertically.
+    var onTab=document.querySelector('.tab.on');
+    if(onTab && onTab.scrollIntoView) onTab.scrollIntoView({block:'nearest', inline:'center'});
+    setChrome();
     if(v==='text') loadTexts();
+    if(v==='prices') loadPrices();
     if(v==='layout') loadLayout();
     if(v==='documents') loadDocs();
     if(v==='messages') loadMessages();
     if(v==='linkinbio') loadLinkinbio();
   }
   document.querySelectorAll('.tab').forEach(function(t){ t.onclick=function(){ showView(t.dataset.view); }; });
+
+  /* ---- prices (assets/prices.json — the one place every price comes from) ----
+     Base numbers only live in the file; the server derives the bundle totals,
+     the ladders and every "from $…" from them, so the arithmetic on the page
+     can't drift away from what's typed here. Previews come back from the same
+     renderer the site is written with — no second copy of the maths. */
+  var PR=null, PRR={}, prTimer=null;
+
+  function prGet(path){
+    return path.split('.').reduce(function(o,k){ return o==null?o:o[k]; }, PR);
+  }
+  function prSet(path,val){
+    var ks=path.split('.'), last=ks.pop();
+    var o=ks.reduce(function(o,k){ return o[k]; }, PR);
+    o[last]=val;
+  }
+  function prMoney(n){
+    n=Number(n)||0;
+    return '$'+n.toLocaleString('en-US',{maximumFractionDigits:2});
+  }
+  function prTouched(){
+    var b=$('pr-save'); if(b){ b.disabled=false; b.textContent='Save prices'; }
+  }
+
+  function loadPrices(){
+    fetch('/api/prices?v='+Date.now()).then(function(r){return r.json();}).then(function(d){
+      PR=d.prices; PRR=d.rendered||{}; renderPrices();
+    }).catch(function(){ toast('Could not load prices'); });
+  }
+
+  // re-render on the server as you type, so the previews are the real output
+  function prPreview(){
+    clearTimeout(prTimer);
+    prTimer=setTimeout(function(){
+      fetch('/api/prices',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({prices:PR, preview:true})})
+        .then(function(r){return r.json();}).then(function(d){
+          if(d && d.rendered){ PRR=d.rendered; prPaint(); }
+        }).catch(function(){});
+    },300);
+  }
+  function prPaint(){
+    document.querySelectorAll('#view-prices [data-pv]').forEach(function(n){
+      n.innerHTML = PRR[n.getAttribute('data-pv')] || '';
+    });
+  }
+
+  function prNumEl(path, after){
+    var box=document.createElement('span'); box.className='pr-in';
+    box.appendChild(document.createTextNode('$'));
+    var i=document.createElement('input');
+    i.type='number'; i.min='0'; i.step='1'; i.inputMode='decimal';
+    i.value=prGet(path);
+    i.oninput=function(){
+      prSet(path, i.value===''?0:parseFloat(i.value));
+      prTouched(); if(after) after(); prPreview();
+    };
+    box.appendChild(i);
+    return box;
+  }
+  function prNum(path,label,suffix){
+    var w=document.createElement('label'); w.className='pr-f';
+    var l=document.createElement('span'); l.className='pr-l'; l.textContent=label;
+    w.appendChild(l); w.appendChild(prNumEl(path));
+    if(suffix){ var s=document.createElement('span'); s.className='pr-sfx'; s.textContent=suffix; w.appendChild(s); }
+    return w;
+  }
+  function prCard(title,note){
+    var c=document.createElement('section'); c.className='pr-card';
+    var h=document.createElement('h2'); h.textContent=title; c.appendChild(h);
+    if(note){ var p=document.createElement('p'); p.className='pr-note'; p.innerHTML=note; c.appendChild(p); }
+    return c;
+  }
+  function prRow(){
+    var d=document.createElement('div'); d.className='pr-row';
+    for(var i=0;i<arguments.length;i++) if(arguments[i]) d.appendChild(arguments[i]);
+    return d;
+  }
+  function prPv(key,label){
+    var d=document.createElement('div'); d.className='pr-pvwrap';
+    if(label){ var s=document.createElement('span'); s.className='pr-pvl'; s.textContent=label; d.appendChild(s); }
+    var v=document.createElement('div'); v.className='pr-pv'; v.setAttribute('data-pv',key);
+    d.appendChild(v); return d;
+  }
+
+  // whole bundles are priced outright; a half bundle is its whole price plus
+  // that step's uplift, so halves follow whenever a whole price moves
+  function prLadder(base){
+    var whole=prGet(base+'.whole'), deltas=prGet(base+'.half_delta');
+    var t=document.createElement('div'); t.className='pr-ladder';
+    var head=document.createElement('div'); head.className='pr-lrow pr-lhead';
+    ['Bundles','Price','Half adds','Half price'].forEach(function(x){
+      var s=document.createElement('span'); s.textContent=x; head.appendChild(s); });
+    t.appendChild(head);
+    var halves=[];
+    function recalc(){
+      halves.forEach(function(h,i){
+        h.textContent=(i+0.5+1)+' — '+prMoney((Number(whole[i])||0)+(Number(deltas[i])||0));
+      });
+    }
+    whole.forEach(function(v,i){
+      var r=document.createElement('div'); r.className='pr-lrow';
+      var lbl=document.createElement('span'); lbl.className='pr-lbl'; lbl.textContent=(i+1);
+      r.appendChild(lbl);
+      r.appendChild(prNumEl(base+'.whole.'+i, recalc));
+      if(i<deltas.length){
+        r.appendChild(prNumEl(base+'.half_delta.'+i, recalc));
+        var h=document.createElement('span'); h.className='pr-half'; halves.push(h); r.appendChild(h);
+      } else {
+        r.appendChild(document.createElement('span'));
+        r.appendChild(document.createElement('span'));
+      }
+      t.appendChild(r);
+    });
+    recalc();
+    return t;
+  }
+
+  var PR_ORD=['1st','2nd','3rd','4th','5th','6th','7th','8th'];
+  function prList(base,heading){
+    var vals=prGet(base), row=document.createElement('div'); row.className='pr-row';
+    vals.forEach(function(v,i){ row.appendChild(prNum(base+'.'+i, PR_ORD[i]||('#'+(i+1)))); });
+    if(heading){ var w=document.createElement('div');
+      var l=document.createElement('p'); l.className='pr-note'; l.innerHTML=heading;
+      w.appendChild(l); w.appendChild(row); return w; }
+    return row;
+  }
+
+  function prColour(){
+    var wrap=document.createElement('div'); wrap.className='pr-colour';
+    PR.colour.forEach(function(c,i){
+      var r=document.createElement('div'); r.className='pr-crow';
+      var n=document.createElement('span'); n.className='pr-cname'; n.textContent=c.name;
+      r.appendChild(n);
+      r.appendChild(prNumEl('colour.'+i+'.value'));
+      var sel=document.createElement('select'); sel.className='pr-fmt';
+      [['plain','$85'],['plus','$85+'],['from','from $85']].forEach(function(o){
+        var op=document.createElement('option'); op.value=o[0]; op.textContent=o[1]; sel.appendChild(op); });
+      sel.value=c.fmt||'plain';
+      sel.title='How the price reads on the menu';
+      sel.onchange=function(){ prSet('colour.'+i+'.fmt', sel.value); prTouched(); prPreview(); };
+      r.appendChild(sel);
+      var pv=document.createElement('span'); pv.className='pr-cpv';
+      pv.setAttribute('data-pv','colour.'+c.id); r.appendChild(pv);
+      wrap.appendChild(r);
+    });
+    return wrap;
+  }
+
+  function renderPrices(){
+    if(!PR) return;
+    $('pr-loc').textContent = locale==='us' ? 'US · Sarasota' : 'Canada · Barrie';
+    var host=$('pr-cards'); host.innerHTML='';
+
+    var dep=prCard('Deposits', 'Used on every page that mentions a deposit — the FAQ, the policy list and the Google listing.');
+    dep.appendChild(prRow(prNum('deposit','Install deposit'),
+                          prNum('training_deposit','Training deposit')));
+    host.appendChild(dep);
+
+    if(locale==='us'){
+      var un=PR.us.nano;
+      var us=prCard('Nano beads · Sarasota',
+        'Hair is priced separately from the install here, so every full-set total is <b>hair &times; bundles + install &times; bundles</b>. Change either number and the whole table below is redone.');
+      us.appendChild(prRow(prNum('us.nano.install_per_bundle','Install, per bundle')));
+      var hairRow=document.createElement('div'); hairRow.className='pr-row';
+      un.lengths.forEach(function(L,i){
+        hairRow.appendChild(prNum('us.nano.lengths.'+i+'.hair','Hair '+L.label+', per bundle'));
+      });
+      us.appendChild(hairRow);
+      un.lengths.forEach(function(L,i){
+        var key=String(L.label).replace(/\D/g,'');
+        us.appendChild(prPv('us.nano.'+key+'.table', L.label+' full-set totals'));
+      });
+      us.appendChild(prPv('us.nano.20.from','Menu shows'));
+      us.appendChild(prPv('us.nano.24.from',''));
+      host.appendChild(us);
+
+      var uwv=prCard('Wavy nano · Sarasota',
+        'Wavy hair is sourced separately, so it carries its own price per bundle. Install is the same work as straight; maintenance and removal use the ladder below.');
+      uwv.appendChild(prRow(prNum('us.wavy.install_per_bundle','Install, per bundle')));
+      var uwvHair=document.createElement('div'); uwvHair.className='pr-row';
+      PR.us.wavy.lengths.forEach(function(L,i){
+        uwvHair.appendChild(prNum('us.wavy.lengths.'+i+'.hair','Hair '+L.label+', per bundle'));
+      });
+      uwv.appendChild(uwvHair);
+      PR.us.wavy.lengths.forEach(function(L){
+        var wkey=String(L.label).replace(/\D/g,'');
+        uwv.appendChild(prPv('us.wavy.'+wkey+'.table', L.label+' full-set totals'));
+        uwv.appendChild(prPv('us.wavy.'+wkey+'.from','Menu shows'));
+      });
+      host.appendChild(uwv);
+
+      var um=prCard('Maintenance &amp; removal · Sarasota',
+        'Full removal + reinstall. Half bundles are each whole price plus that step’s uplift.');
+      um.appendChild(prLadder('us.nano.maint'));
+      um.appendChild(prRow(prNum('us.nano.removal','Removal only, from')));
+      um.appendChild(prPv('us.nano.maint.whole','Whole bundles'));
+      um.appendChild(prPv('us.nano.maint.half','Half bundles'));
+      host.appendChild(um);
+    } else {
+      var cn=PR.ca.nano;
+      var nano=prCard('Nano beads · Barrie',
+        'The install price per 25&nbsp;g bundle. The lowest of these is the &ldquo;from $…&rdquo; on the menu, on the Barrie page and in the page description Google shows.');
+      var lr=document.createElement('div'); lr.className='pr-row';
+      cn.lengths.forEach(function(L,i){
+        lr.appendChild(prNum('ca.nano.lengths.'+i+'.bundle', L.label+' per bundle'));
+      });
+      nano.appendChild(lr);
+      nano.appendChild(prRow(prNum('ca.nano.own_hair','Install your own hair'),
+                             prNum('ca.nano.removal','Removal'),
+                             prNum('ca.nano.dematting','Dematting'),
+                             prNum('ca.nano.curling','Hair curling')));
+      nano.appendChild(prPv('ca.nano.starting','Starting-at lines'));
+      host.appendChild(nano);
+
+      var cm=prCard('Nano maintenance · Barrie',
+        'Half bundles are each whole price plus that step’s uplift — change a whole price and its half follows.');
+      cm.appendChild(prLadder('ca.nano.maint'));
+      cm.appendChild(prPv('ca.nano.maint.whole','Whole bundles'));
+      cm.appendChild(prPv('ca.nano.maint.half','Half bundles'));
+      host.appendChild(cm);
+
+      var cwv=prCard('Wavy nano · Barrie',
+        'Wavy hair is sourced separately from straight, so it has its own price per 25&nbsp;g bundle. Maintenance, removal and dematting follow the nano numbers above.');
+      var wlr=document.createElement('div'); wlr.className='pr-row';
+      PR.ca.wavy.lengths.forEach(function(L,i){
+        wlr.appendChild(prNum('ca.wavy.lengths.'+i+'.bundle', L.label+' per bundle'));
+      });
+      cwv.appendChild(wlr);
+      cwv.appendChild(prPv('ca.wavy.starting','Starting-at lines'));
+      cwv.appendChild(prPv('ca.wavy.from','Menu shows'));
+      host.appendChild(cwv);
+
+      var wf=prCard('Genius Wefts · Barrie');
+      wf.appendChild(prList('ca.weft.hair','Weft hair, per 50&nbsp;g+ pack — shortest length first.'));
+      wf.appendChild(prList('ca.weft.install','Custom install, per row — by row count and build.'));
+      var mr=document.createElement('div'); mr.className='pr-row';
+      PR.ca.weft.maint_rows.forEach(function(r,i){
+        mr.appendChild(prNum('ca.weft.maint_rows.'+i+'.price', r.label));
+      });
+      var mrl=document.createElement('p'); mrl.className='pr-note'; mrl.textContent='Maintenance, by row.';
+      wf.appendChild(mrl); wf.appendChild(mr);
+      wf.appendChild(prRow(prNum('ca.weft.cocktail_min','Nano cocktail, from'),
+                           prNum('ca.weft.cocktail_max','Nano cocktail, to'),
+                           prNum('ca.weft.removal','Weft removal, from')));
+      wf.appendChild(prPv('ca.weft.hair_list','Hair by length'));
+      wf.appendChild(prPv('ca.weft.maint_rows','Maintenance'));
+      wf.appendChild(prPv('ca.weft.addons','Add-ons'));
+      host.appendChild(wf);
+
+      var kt=prCard('Custom K-Tips · Barrie');
+      kt.appendChild(prList('ca.ktip.hair_install','Hair + install, per 25&nbsp;g — shortest length first.'));
+      kt.appendChild(prRow(prNum('ca.ktip.removal_min','Removal, from'),
+                           prNum('ca.ktip.removal_max','Removal, to')));
+      kt.appendChild(prPv('ca.ktip.list','Menu shows'));
+      kt.appendChild(prPv('ca.ktip.removal',''));
+      host.appendChild(kt);
+    }
+
+    var col=prCard('Color, cuts &amp; care',
+      'This menu shows on <b>both</b> sites, so a change here lands in Barrie and Sarasota. The dropdown sets how each price reads.');
+    col.appendChild(prColour());
+    host.appendChild(col);
+
+    prPaint();
+    var b=$('pr-save'); if(b){ b.disabled=true; b.textContent='Saved ✓'; }
+  }
+
+  (function(){
+    var b=$('pr-save'); if(!b) return;
+    b.onclick=function(){
+      b.disabled=true; b.textContent='Saving…';
+      fetch('/api/prices',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({prices:PR})})
+        .then(function(r){return r.json();}).then(function(d){
+          if(d && d.ok){
+            PR=d.prices; PRR=d.rendered||{}; renderPrices();
+            toast('Prices updated across the site');
+          } else {
+            b.disabled=false; b.textContent='Save prices';
+            toast((d && d.error) ? ('Save failed — '+d.error) : 'Save failed');
+          }
+        }).catch(function(){
+          b.disabled=false; b.textContent='Save prices'; toast('Save failed');
+        });
+    };
+  })();
 
   /* ---- link-in-bio editor (assets/linkinbio.json, live at /linkinbio) ---- */
   var LIB=null, libThumbTarget=null;
@@ -1258,7 +1817,16 @@
       el.value='';
     };
   });
-  addEventListener('resize', function(){ if(curView==='text') fitTx(); });
+  addEventListener('resize', function(){ setChrome(); if(curView==='text') fitTx(); });
+  addEventListener('orientationchange', function(){ setChrome(); if(curView==='text') fitTx(); });
+  setChrome();
+
+  // Phone: the panes stack, so the library sits a full screen below the slot
+  // list. Jump between the two rather than making someone scroll 27 slots.
+  $('backtoslots').onclick=function(){
+    var s=document.querySelector('.slot.sel')||document.querySelector('.slots');
+    if(s) s.scrollIntoView({block:'center', behavior:'smooth'});
+  };
 
   /* ---- drives: manage named Google Drive folders ---- */
   var drives=[], syncPolls={};

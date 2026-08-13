@@ -1,0 +1,24 @@
+{
+  "status": "success",
+  "data": {
+    "domain": "chatters.ca",
+    "in_crawl": true,
+    "in_rankings": true,
+    "pagerank": 3.706295909061109e-08,
+    "pagerank_rank": 983720,
+    "harmonic_centrality": 14340696.0,
+    "harmonic_centrality_rank": 2659636,
+    "n_hosts": 5,
+    "top_referring_domains": [],
+    "referring_domains_sample": 0,
+    "note": "Domain-level metrics from CC web graph. Quarterly updates."
+  },
+  "error": null,
+  "metadata": {
+    "source": "commoncrawl",
+    "release": "cc-main-2026-jan-feb-mar",
+    "from_cache": false,
+    "timestamp": "2026-08-13T19:48:15Z",
+    "cached_at": 1786650495.0671182
+  }
+}
